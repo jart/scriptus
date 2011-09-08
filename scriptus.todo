@@ -3,15 +3,16 @@
 	promo
 		JS weekly
 		show HN
-		mefi projects?
-		demo twitter  
-		facebook note
+X no, still a newbie		mefi projects?
+		demo on twitter 
+		 - install the iPhone client
+		   - upgrade firmware, finally
+		facebook apologia
 		blog post
 		share site on buzz
 		ask friends for feedback
 		this guy (rhino maintainer, works @ twitter):  constc.blogspot.com
 	
-	put online
 	
 	markdown
 	
@@ -26,6 +27,8 @@
 	   - duplicates in tweets!
 	 - test twitter integration
 	   - listen
+	   - remove listener registered on timeout
+	   - CID not per-user, too small a namespace...
 
 
 
@@ -207,4 +210,5 @@ X no	     - add explicit check  for readonly
 X	        + reminder for read-only mode
 X test	     - listen is broken
 X test	     - 140-char limit?
+X plunge...	put online
 

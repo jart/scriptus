@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.exceptions.InteractionException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -71,7 +70,7 @@ public class TwitterClientImpl implements TwitterClient {
 			}
 			
 		} catch (TwitterException e) {
-			throw new InteractionException(e);
+			throw new ScriptusRuntimeException(e);
 		}
 		
 		return new ArrayList<Tweet>(result);

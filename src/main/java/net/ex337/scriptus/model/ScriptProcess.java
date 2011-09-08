@@ -1,7 +1,6 @@
 package net.ex337.scriptus.model;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.exceptions.DAOException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.model.api.ErrorTermination;
@@ -22,7 +20,6 @@ import net.ex337.scriptus.model.api.NormalTermination;
 import net.ex337.scriptus.model.support.ContextCall;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.logging.Log;
@@ -83,7 +80,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 //		this.dao = dao;// not set when deserialising below
 
 		if (pid == null) {
-			throw new DAOException("Cannot load null pid");
+			throw new ScriptusRuntimeException("Cannot load null pid");
 		}
 
 		LOG.debug("loading " + pid.toString().substring(30));

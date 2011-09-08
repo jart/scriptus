@@ -5,11 +5,10 @@ import java.util.UUID;
 
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.exceptions.DAOException;
-import net.ex337.scriptus.exceptions.ScriptErrorException;
+import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
-import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.ScriptAction;
+import net.ex337.scriptus.model.ScriptProcess;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +33,7 @@ public class Wait extends ScriptAction implements Serializable {
 		LOG.debug("waiting for "+childPid.toString().substring(30));
 		
 		if( ! process.getChildren().contains(childPid)) {
-			throw new ScriptErrorException("not a child: "+childPid);
+			throw new ScriptusRuntimeException("not a child: "+childPid);
 		}
 
 		try {
@@ -68,7 +67,7 @@ public class Wait extends ScriptAction implements Serializable {
 
 
 		} catch (Exception e) {
-			throw new DAOException(e);
+			throw new ScriptusRuntimeException(e);
 		}
 		
 	}

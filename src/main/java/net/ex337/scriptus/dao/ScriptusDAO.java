@@ -91,17 +91,34 @@ public interface ScriptusDAO {
 	 * @see #listScripts(String)
 	 */
 	public void deleteScript(String userId, String name);
-	
-	//scheduler methods
+
+	/**
+	 * Scheduler methods. Mostly used to wake processes after
+	 * timeout, backed by SDB.
+	 * 
+	 * @param dueDate retrieve all actions scheduled before this date.
+	 * @return
+	 */
 	public List<ScheduledScriptAction> getScheduledTasks(Calendar dueDate);
+
+	/**
+	 * @see #getScheduledTasks(Calendar)
+	 */
 	public void deleteScheduledTask(ScheduledScriptAction t);
+
+	/**
+	 * @see #getScheduledTasks(Calendar)
+	 */
 	public void scheduleTask(Calendar when, ScheduledScriptAction task);
 
 	/*
 	 * this stuff should be in a TwitterInteractionMediumDAO.
 	 */
+	
 	/**
-	 * 
+	 * Used to correlate tweets sent to ask() twitter users things,
+	 * which have a short, high-entropy #tag associated with them
+	 * to keep track of them.
 	 */
 	public void registerTwitterCorrelation(TwitterCorrelation cid);
 	
