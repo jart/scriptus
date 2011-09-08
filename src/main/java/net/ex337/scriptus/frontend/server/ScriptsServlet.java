@@ -1,7 +1,6 @@
 package net.ex337.scriptus.frontend.server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -16,6 +15,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
+/**
+ * 
+ * Servlet responsible for CRUDL admin tasks on scripts.
+ * 
+ * @author ian
+ *
+ */
 public class ScriptsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 50869801033071491L;
@@ -44,10 +50,7 @@ public class ScriptsServlet extends HttpServlet {
 		
 		String path = req.getPathInfo();
 		
-		PrintWriter w = resp.getWriter();
-		
 		if("/list".equals(path)){
-			w.println("<html><head><title>User scripts</title></head><body><h1>User scripts</h1><ul>");
 
 			Set<String> scripts = ((ScriptusDAO) ctx.getBean("dao")).listScripts(openid);
 			

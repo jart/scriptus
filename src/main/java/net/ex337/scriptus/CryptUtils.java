@@ -11,6 +11,12 @@ import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * Not actually used anywhere, yet.
+ * 
+ * @author ian
+ * 
+ */
 public class CryptUtils {
 
 	public static String tokenize(String value, Key key) {
