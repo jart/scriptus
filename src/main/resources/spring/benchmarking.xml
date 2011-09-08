@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+       	"
+       	>
+
+	<bean
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<list>
+				<value>*DAO</value>
+				<value>*Controller</value>
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>benchmarkingAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="benchmarkingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice">
+			<ref local="benchmarkingInterceptor" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>.*get.*</value>
+				<value>.*create.*</value>
+				<value>.*update.*</value>
+				<value>.*delete.*</value>
+				<value>.*cancel.*</value>
+				<value>.*user.*</value>
+				<value>.*handle.*</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="benchmarkingInterceptor" class="net.ex337.operations.benchmarking.BenchmarkingAdvisor"/>
+        
+</beans>

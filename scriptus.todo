@@ -1,0 +1,210 @@
+	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
+
+	promo
+		JS weekly
+		show HN
+		mefi projects?
+		demo twitter  
+		facebook note
+		blog post
+		share site on buzz
+		ask friends for feedback
+		this guy (rhino maintainer, works @ twitter):  constc.blogspot.com
+	
+	put online
+	
+	markdown
+	
+	 - document code
+	   - interaction, dao, config, scheduler, ScriptusAPI (&improvements, top-level object)
+	   - objects, visitor pattern
+	   - todos, javadocs
+	  - design choices
+	   - explain why FS not rdbms
+	   - why not use reply IDs?
+	   - why not use stack for ask()?
+	   - duplicates in tweets!
+	 - test twitter integration
+	   - listen
+
+
+
+	 - DAO API versioning... important for evolution!
+test?	 - wiki/documentation
+	 - examples
+	    - date reminder with stop command
+	    - game tournament
+	    - line diet
+	    - habit ninja from metafilter
+
+	 		 	
+**running track of compromises & known bugs
+	script bodies wrapped with (new function(){...})() at compile time
+	on root process termination, 
+	 - child processes should be re-parented, 
+	     - and when they terminate, what happens if their output has not been waited upon?
+	two concepts of identity: one via openId, one via twitter. Unify?
+	 scriptus AWS DAO should store process state separately - it's updated by itself all the time
+	 nonce should be extended to all continuations?
+	  - avoid double-acting? or if the server is shut down mid-execution, allows recoverability?
+	 
+** features that would be nice
+	API
+	 - pipe(function(in, out){})?
+	  - say & listen to ids
+	  - get(url) & post()? etc?
+	view source principal for scripts (using snapshotted debugger info from rhino)
+	public or shared scripts in the admin interface
+	online REPL / dev environment?
+	 - problem is doing fork & wait in browser JS, where there is no thread model (maybe with narcissus + cloning for fork)
+	regexp based responses in dummy
+	 
+X no 	Wait capital W
+X	bound at "scriptus" not as globals - a good thing?
+X    - logging
+X    - exception hierarchy
+X    - spring configuration
+X    - move to UUIDs
+X	write basic script that 
+X		return
+X		fork
+X		wait
+X		wait2
+X		say
+X		ask
+X	 - in UNIX, wait() returns the pid you got the result for...
+X    - test-cases
+X	get addTwoNumbers running
+X should be OK    - test wait function - what if result is a function referring to this, and it's called?
+X	write basic script that does maths, returns 2+2
+X	 - save and restore, exec twice
+X how can we
+X - add new participants at will
+X - more generally, respond to external events?
+X    --> events should come conversationally
+X	listen(who)
+X	test
+X	 - proper DAO behind a compilable & usable script engine
+X	    - separate out DAO properly
+X	    - get AWS DAO working
+X test	 - basic web interface for launching scripts
+X test		/WEB-INF/jsp/editScript.jsp
+x	    - openID auth
+X test	    - list scripts
+X test	    - C
+X test	      R
+X test	      U
+X test	       - servlet post handling
+X test		wire servlet context
+X  - pom
+X test	      D script
+X test	    - run with args
+X	    = 3 screens
+X no	get runMeeting running needs:
+X no	 - multi-user say, ask, listen
+X	     - collaborative scripts in the end, so no?
+X	 - fix object lifecycle
+X	 - decision: to have script source separated per user, but executions in a global namespace:
+X	     - stupid or not?
+X 	         no, because' of processes are per-user, then the correlation IDs have to 
+X		return a user-UUID instead of just a UUID.
+X seems OK? - script security
+X not for now	 - public scripts?
+X	 - real DAO
+X		 - blob & 
+X		 - map & set storage
+X		 - S3 and SDS.
+X	 story:
+X	 / clean ? --> settings : login
+X	 settings.save --> /scripts/list
+X	 login -> list
+X test	    - config
+X test	    - switcher
+X	 - webapp 1-time configuration (datastore, AWS keys, twitter keys)
+X test	    - settings load/retrieve
+X	 - get webapp links (login, lists, etc.) coherent
+X - bring the whole codebase up to scratch ready for embedding in a webapp
+X	    - products & libraries: Rhino, OpenID4Java, openid-selector, ACE, AWS/S3 & SDB, Spring
+Xtest	 - get twitter medium working
+Xtest	   - check is scriptustest in readonly?
+X test	 - localhost url embedded in consumer_redirect.jsp
+X test	 - fix normal & error terminations when no pid, report results somewhere when top-level process
+X		[Object object] why?
+X test	     - concept of "owner" means scripts can report back to owner,
+X test		 error termination
+X test		 normal terination 
+X no	owner-->userId, all processes report back to admin console 
+X test for now		  - only root process should report back? 
+X no	 	prompt(timeout, particpant, message)
+X no	 	poll(timeout, particpant, message)	 
+X	 	say(participants, message)
+X	 - task scheduler for timeouts (listen, ask)
+X	    - testcase
+X	    - AWS impl
+X test	    - increment of 10 minutes?
+X test		default say,
+X test		 listen
+X test		  & ask
+X test		 exit
+X test		 sleep(date/duration), 
+X no	 - duration arithmetic
+X test	       - ask(msg, [{who:who, timeout:12}]
+X test	       - listen({who:who, timeout:12}]
+X test	         - native object as 2nd or 3rd parameter
+X	GET /process/5c18a2f0-c1a0-4c18-8061-206ddb6d9f4c
+X	send to:robotoscriptu msg:before: Sat Aug 13 2011 21:39:34 GMT+0200 (CEST)
+X	timeout
+X	GET /process/0ab3477d-f693-425c-9db7-ca44fd7e715c
+X	send 47008712-4628-4145-b2ae-5e6dbee3b5de to:robotoscriptu msg:null
+X		1 doesn't work
+X...test!		  -- will need process locking (if waiting and terminating at same time...)
+X test	    - wake
+X 	    - sleep
+X test	    - timeout, but how?
+X test		  -- bug both should be able to stop, and then parent should be able to wait on them later
+X test	 - file-based DAO
+X	   - find system.out.println
+X no	 - duration arithmetic?
+X test	 - process scheduler (with queue, mutable execution properties)
+X	       - internSource is in two places
+X KEEP	         - scriptusAPI, 
+X		 - scriptProcess.create
+X	         + assigning in wait.js, oh my!
+X	       - test with new scriptusapi...
+X	       - load fails?
+X	other stuff
+X test	 - don't forget to empty cidpid map, which should be per user or notat all
+X	listen needs timeout
+X yes    - does moving to a queue system, then altering the properties of the queue, 
+X yes      give greater control e.g. in test-cases than just directly executing stuff?
+X test	    - parameterise scheduling (not going to test twitter with hours of timeout...) 
+X test	       - annoying: if I'm not willing to debug with putatively-final values for durations,
+X test	         why should I expect anyone else to? In other words, why seconds for me debugging
+X test	         and hours for everyone else? implies this will be necessary:
+X test	         GRR
+X test	         ^([0-9]+)[\\ ,]*([smhdwMqyDC])$
+X test	 seconds	minutes	hours	days	weeks	fortnight	months	quarters	years	decades	centuries
+X test	 s		m	h	d	w			M	q		y	
+X	id is composed of:
+X	    * time - 41 bits (millisecond precision w/ a custom epoch gives us 69 years)
+X	    * configured machine id - 10 bits - gives us up to 1024 machines
+X	    * sequence number - 12 bits - rolls over every 4096 per machine (with protection to avoid rollover in the same ms)
+X fixed	the interaction / scheduler interface is not clean;
+X fixed	 - cids should be uniquely dealt with by interaction medium to track
+X	schedulers: not reporting error messages
+X	 + queue?
+X	-> s3 404s...
+X test	     - incomings
+X test	     - scheduled check
+X test	     - what about if user = twitter client? (i.e. from & to ianso)	     
+X test	     - store origin id with correlation?
+X test	     - processed mentions
+X test	     - tweeting undefineds
+X test	 - command-line medium is not thread-safe
+X test	 log file locations
+X now unwrapped	 error messages are wrapped too many times, cause unreadability
+X no	     - add explicit check  for readonly
+X	        + reminder for read-only mode
+X test	     - listen is broken
+X test	     - 140-char limit?
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+	<listener>
+	  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- TODO: Add <servlet> tags for each servlet here. -->
+	
+	<servlet>
+		<servlet-name>scriptus</servlet-name>
+		<servlet-class>net.ex337.scriptus.frontend.server.ScriptsServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>settings</servlet-name>
+		<servlet-class>net.ex337.scriptus.frontend.server.SettingsServlet</servlet-class>
+	</servlet>
+	
+	
+	<!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
+	
+	<servlet-mapping>
+		<servlet-name>scriptus</servlet-name>
+		<url-pattern>/scripts/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>settings</servlet-name>
+		<url-pattern>/settings</url-pattern>
+	</servlet-mapping>
+	
+	<!-- TODO: Optionally add a <welcome-file-list> tag to display a welcome file. -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	
+</web-app>
