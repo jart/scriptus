@@ -19,6 +19,8 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
  * 
  * Servlet responsible for CRUDL admin tasks on scripts.
  * 
+ * Uses openID for identifying users.
+ * 
  * @author ian
  *
  */

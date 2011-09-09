@@ -16,6 +16,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * 
+ * An interaction medium that takesresponses to ask()s
+ * and listen()s from the command-line. Synchronised to 
+ * allow multi-threading. If you want to not respond to
+ * an ask or listen, just hit enter (reply "").
+ * 
+ * @author ian
+ *
+ */
 public class CommandLineInteractionMedium implements InteractionMedium {
 
 	private static final Log LOG = LogFactory.getLog(CommandLineInteractionMedium.class);
@@ -79,7 +89,6 @@ public class CommandLineInteractionMedium implements InteractionMedium {
 	@Override
 	public void ask(UUID pid, String to, String msg) {
 		send(pid, to, msg);
-		//return cid;
 	}
 
 	@Override

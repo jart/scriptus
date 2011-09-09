@@ -16,8 +16,12 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 /**
  * 
- * Servlet reponssible for settings page.
+ * Servlet reponsible for settings page. This servlet doesn't use
+ * openID but will only respond to requests from 127.0.0.1.
  * 
+ * The page is simple enough that it should be usable in links/lynx.
+ * TODO A better security system might be a good idea in the future.
+ *   
  * @author ian
  *
  */
@@ -50,6 +54,10 @@ public class SettingsServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		if( ! req.getRemoteAddr().equals("127.0.0.1")) {
+			resp.sendError(403);
+		}
+
 		ScriptusConfig cfg = (ScriptusConfig) ctx.getBean("config");
 		
 		cfg.setAwsAccessKeyId(req.getParameter("awsAccessKeyId"));

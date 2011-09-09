@@ -2,8 +2,9 @@ package net.ex337.scriptus.exceptions;
 
 /**
  * Placeholder exception thrown wherever a checked Exception
- * has to be caught. Will eventually be the root of a proper
- * exception hierarchy, I imagine.
+ * has to be caught. 
+ * 
+ * TODO a proper exception hierarchy.
  * 
  * @author ian
  *

@@ -12,6 +12,8 @@ import java.util.UUID;
  * expect to hear the response from, to avoid impersonation
  * (and make the CID namespace per-user, meaning it can be shorter).
  * 
+ * TODO move to a better location
+ * 
  * @author ian
  *
  */

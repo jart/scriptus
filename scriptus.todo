@@ -17,9 +17,15 @@ X no, still a newbie		mefi projects?
 	markdown
 	
 	 - document code
+	   - better README + > md
 	   - interaction, dao, config, scheduler, ScriptusAPI (&improvements, top-level object)
 	   - objects, visitor pattern
 	   - todos, javadocs
+	      - twitter, 
+	      process scheduler, 
+	      model, 
+	      tests
+	   - TwitterCorrelation should be moved
 	  - design choices
 	   - explain why FS not rdbms
 	   - why not use reply IDs?
