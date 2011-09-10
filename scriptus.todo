@@ -18,32 +18,27 @@ X no, still a newbie		mefi projects?
 	CID not per-user, too small a namespace...
 	
 	markdown
-	
-	 - document code
-	   - better README + > md
-	   - conceptual overview
-	   - interaction, dao, config, scheduler, ScriptusAPI (&improvements, top-level object)
-	   - objects, visitor pattern
-	   - todos, javadocs
-	      model, 
-	      tests
-	  - design choices
+	document code
+	 - better README + > md
+	 - conceptual overview
+	   - interaction, dao, config, scheduler, ScriptusAPI
+	 - todos, javadocs
+	    model, 
+	    tests
+	 - design choices
 	   - explain why FS not rdbms
 	   - why not use reply IDs?
 	   - why not use stack for ask()?
 	   - duplicates in tweets!
 	 - test twitter integration
 	   - listen
-
-
-
-	 - DAO API versioning... important for evolution!
 test?	 - wiki/documentation
-	 - examples
-	    - date reminder with stop command
-	    - game tournament
-	    - line diet
-	    - habit ninja from metafilter
+	examples
+	 - date reminder with stop command
+	 - game tournament
+	 - line diet
+	 - habit ninja from metafilter
+	DAO API versioning... important for evolution!
 
 	 		 	
 **running track of compromises & known bugs
@@ -219,4 +214,4 @@ X plunge...	put online
 X	      - twitter, 
 X	      process scheduler, 
 X	license
-
+X (&improvements, top-level object)
