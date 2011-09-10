@@ -8,6 +8,12 @@
        	"
        	>
 
+	<!-- 
+	
+	Not used right now.
+	
+	 -->
+
 	<bean
 		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
 		<property name="beanNames">

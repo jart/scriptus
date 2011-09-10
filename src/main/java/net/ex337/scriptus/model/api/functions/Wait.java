@@ -1,4 +1,4 @@
-package net.ex337.scriptus.model.api;
+package net.ex337.scriptus.model.api.functions;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -9,6 +9,7 @@ import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.api.Termination;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

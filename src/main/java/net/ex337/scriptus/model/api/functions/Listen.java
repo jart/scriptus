@@ -1,4 +1,4 @@
-package net.ex337.scriptus.model.api;
+package net.ex337.scriptus.model.api.functions;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -6,27 +6,23 @@ import java.util.Calendar;
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.dao.ScriptusDAO;
 import net.ex337.scriptus.interaction.InteractionMedium;
-import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.ScriptAction;
+import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
 
-public class Ask extends ScriptAction implements Serializable, HasTimeout {
+public class Listen extends ScriptAction implements Serializable, HasTimeout {
 
-	private static final long serialVersionUID = 41890027788062200L;
-
-	private String msg;
+	private static final long serialVersionUID = -6980840436584237850L;
+	
 	private String who;
 	private Calendar timeout;
 	private long nonce;
 
-	public Ask(String msg, String who, Calendar timeout, long nonce){
-		this.msg = msg;
+	public Listen(String who, Calendar timeout, long nonce){
 		this.who = who;
 		this.timeout = timeout;
 		this.nonce = nonce;
-	}
-	public String getMsg() {
-		return msg;
 	}
 	
 	public String getWho() {
@@ -36,17 +32,11 @@ public class Ask extends ScriptAction implements Serializable, HasTimeout {
 	public Calendar getTimeout() {
 		return timeout;
 	}
-
 	
 	@Override
 	public long getNonce() {
 		return nonce;
 	}
-
-	public String toString() {
-		return msg;
-	}
-	
 	
 	@Override
 	public void visit(ProcessScheduler scheduler, InteractionMedium medium, ScriptusDAO dao, ScriptProcess process) {
@@ -55,9 +45,10 @@ public class Ask extends ScriptAction implements Serializable, HasTimeout {
 
 		scheduler.scheduleTask(timeout, new Wake(process.getPid(), nonce));
 
-		medium.ask(process.getPid(), getWho(), getMsg());
+		medium.listen(process.getPid(), getWho());
 		
 	}
+
 
 }
 

@@ -16,7 +16,7 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import net.ex337.scriptus.ScriptUtils;
+import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.Dao;
 import net.ex337.scriptus.dao.ScriptusDAO;
@@ -326,7 +326,7 @@ public abstract class ScriptusDAOAWSImpl extends BaseScriptusDAO implements Scri
 	@Override
 	public List<Long> getTwitterLastMentions() {
 			try {
-				return (List<Long>) ScriptUtils.deserialiseObject(IOUtils.toByteArray(get("/twitter/mentions")));
+				return (List<Long>) SerializableUtils.deserialiseObject(IOUtils.toByteArray(get("/twitter/mentions")));
 			} catch (AmazonS3Exception e) {
 				if(e.getStatusCode() == 404) {
 					return new ArrayList<Long>();
@@ -343,7 +343,7 @@ public abstract class ScriptusDAOAWSImpl extends BaseScriptusDAO implements Scri
 	public void updateTwitterLastMentions(List<Long> processedIncomings) {
 		ObjectMetadata m = new ObjectMetadata();
 		try {
-			s3.putObject(new PutObjectRequest(s3bucket, "/twitter/mentions", new ByteArrayInputStream(ScriptUtils.serialiseObject(processedIncomings)), m));
+			s3.putObject(new PutObjectRequest(s3bucket, "/twitter/mentions", new ByteArrayInputStream(SerializableUtils.serialiseObject(processedIncomings)), m));
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
 		}

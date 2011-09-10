@@ -15,8 +15,8 @@ import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.dao.ScriptusDAO;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
-import net.ex337.scriptus.model.api.ErrorTermination;
-import net.ex337.scriptus.model.api.NormalTermination;
+import net.ex337.scriptus.model.api.output.ErrorTermination;
+import net.ex337.scriptus.model.api.output.NormalTermination;
 import net.ex337.scriptus.model.support.ContextCall;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 

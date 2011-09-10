@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-import net.ex337.scriptus.ScriptUtils;
+import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.dao.ScriptusDAO;
 import net.ex337.scriptus.dao.TwitterCorrelation;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -49,11 +49,11 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		UUID r = UUID.randomUUID();
 		
-		byte[] out = ScriptUtils.serialiseObject(r);
+		byte[] out = SerializableUtils.serialiseObject(r);
 		
 		Thread.sleep(1000);
 		
-		UUID i = (UUID) ScriptUtils.deserialiseObject(out);
+		UUID i = (UUID) SerializableUtils.deserialiseObject(out);
 		
 		assertEquals("UUID serialisation isn't playing silly buggers", r, i);
 		

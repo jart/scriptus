@@ -13,19 +13,20 @@ X no, still a newbie		mefi projects?
 		ask friends for feedback
 		this guy (rhino maintainer, works @ twitter):  constc.blogspot.com
 	
+	TwitterCorrelation should be moved
+	remove listener registered on timeout
+	CID not per-user, too small a namespace...
 	
 	markdown
 	
 	 - document code
 	   - better README + > md
+	   - conceptual overview
 	   - interaction, dao, config, scheduler, ScriptusAPI (&improvements, top-level object)
 	   - objects, visitor pattern
 	   - todos, javadocs
-	      - twitter, 
-	      process scheduler, 
 	      model, 
 	      tests
-	   - TwitterCorrelation should be moved
 	  - design choices
 	   - explain why FS not rdbms
 	   - why not use reply IDs?
@@ -33,8 +34,6 @@ X no, still a newbie		mefi projects?
 	   - duplicates in tweets!
 	 - test twitter integration
 	   - listen
-	   - remove listener registered on timeout
-	   - CID not per-user, too small a namespace...
 
 
 
@@ -217,4 +216,7 @@ X	        + reminder for read-only mode
 X test	     - listen is broken
 X test	     - 140-char limit?
 X plunge...	put online
+X	      - twitter, 
+X	      process scheduler, 
+X	license
 

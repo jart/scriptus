@@ -1,3 +1,12 @@
+/**
+ * 
+ * Because the actual signature for wait() involves passing a function,
+ * that may have to be executed in the same context as the running script,
+ * it made sense to implement it in JavaScript on top of primitive
+ * functions written in Java. Needless to say, this stuff is all internal
+ * and the guts shouldn't be relied on when writing scripts...
+ * 
+ */
 function waitCtor(wait_impl, getlastpid_impl) {
 	
 	return function(fn, pid) {

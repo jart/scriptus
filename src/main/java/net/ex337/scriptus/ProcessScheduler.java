@@ -27,6 +27,19 @@ import net.ex337.scriptus.model.scheduler.Wake;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * This class is responsible for
+ *  - waking sleeping processes
+ *  - executing processes
+ *  - launching processes.
+ *  
+ * Sleeping processes are checked using a primitive task
+ * scheduler where a {@link Wake} has been set.
+ * 
+ * 
+ * @author ian
+ *
+ */
 public class ProcessScheduler implements MessageReceiver {
 	
 	private static final Log LOG = LogFactory.getLog(ProcessScheduler.class);
@@ -42,7 +55,11 @@ public class ProcessScheduler implements MessageReceiver {
 	
 	private Executor processExecutor;
 	private ScheduledExecutorService scheduledTasksChecker;
-	
+
+	/*
+	 * Turns off all that thread pooling malarkey. Might be useful when debugging, but
+	 * will blow your stack eventually.
+	 */
 	private boolean executeInline = false;
 
 	public ProcessScheduler() {

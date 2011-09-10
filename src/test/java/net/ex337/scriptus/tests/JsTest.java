@@ -1,7 +1,7 @@
 package net.ex337.scriptus.tests;
 
 
-import net.ex337.scriptus.ScriptUtils;
+import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -46,7 +46,7 @@ public class JsTest {
 		
 				p.setApplicationState("foo");
 				
-				ScriptUtils.serialiseObject(p);
+				SerializableUtils.serialiseObject(p);
 
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				ScriptableOutputStream out = new ScriptableOutputStream(bout, globalScope);

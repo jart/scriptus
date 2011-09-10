@@ -1,17 +1,14 @@
-package net.ex337.scriptus.model.api;
+package net.ex337.scriptus.model.api.output;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.ex337.scriptus.model.api.Termination;
+
 import org.mozilla.javascript.RhinoException;
-import org.mozilla.javascript.WrappedException;
 
 public class ErrorTermination extends Termination implements Serializable {
 
 	private static final long serialVersionUID = -7019866745775324284L;
-
-	private static final Log LOG = LogFactory.getLog(ErrorTermination.class);
 
 	private RhinoException error;
 	

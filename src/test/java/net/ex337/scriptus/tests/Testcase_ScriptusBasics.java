@@ -10,13 +10,13 @@ import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.interaction.impl.DummyInteractionMedium;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.api.Ask;
-import net.ex337.scriptus.model.api.ErrorTermination;
-import net.ex337.scriptus.model.api.Fork;
-import net.ex337.scriptus.model.api.Listen;
-import net.ex337.scriptus.model.api.NormalTermination;
-import net.ex337.scriptus.model.api.Say;
-import net.ex337.scriptus.model.api.Sleep;
+import net.ex337.scriptus.model.api.functions.Ask;
+import net.ex337.scriptus.model.api.functions.Fork;
+import net.ex337.scriptus.model.api.functions.Listen;
+import net.ex337.scriptus.model.api.functions.Say;
+import net.ex337.scriptus.model.api.functions.Sleep;
+import net.ex337.scriptus.model.api.output.ErrorTermination;
+import net.ex337.scriptus.model.api.output.NormalTermination;
 
 
 public class Testcase_ScriptusBasics extends BaseTestCase {

@@ -1,15 +1,12 @@
-package net.ex337.scriptus.model.api;
+package net.ex337.scriptus.model.api.output;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.ex337.scriptus.model.api.Termination;
 
 public class NormalTermination extends Termination implements Serializable {
 
 	private static final long serialVersionUID = -5502323793196030217L;
-
-	private static final Log LOG = LogFactory.getLog(NormalTermination.class);
 
 	private Object result;
 	

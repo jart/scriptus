@@ -1,4 +1,4 @@
-package net.ex337.scriptus.model.api;
+package net.ex337.scriptus.model.api.functions;
 
 import java.io.Serializable;
 import java.util.UUID;

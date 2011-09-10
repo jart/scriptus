@@ -13,6 +13,8 @@ import org.mozilla.javascript.Undefined;
 
 public abstract class Termination extends ScriptAction implements Serializable {
 	
+	private static final long serialVersionUID = 6168584435270019928L;
+
 	public abstract Object getResult();
 
 	@Override
@@ -20,8 +22,6 @@ public abstract class Termination extends ScriptAction implements Serializable {
 		
 		if(process.getWaiterPid() != null) {
 			
-//			LOG.debug("Waking "+process.getWaiterPid().toString().substring(30));
-
 			scheduler.updateProcessState(process.getWaiterPid(), this.getResult());
 			
 			scheduler.execute(process.getWaiterPid());
@@ -31,6 +31,11 @@ public abstract class Termination extends ScriptAction implements Serializable {
 		} else {
 			
 			if(process.isRoot()) {
+				
+				/*
+				 * At the moment, only the root process say()s it's result
+				 * back to the owner...
+				 */
 
 				try {
 					Context.enter();
@@ -45,6 +50,13 @@ public abstract class Termination extends ScriptAction implements Serializable {
 
 				
 			} else  {
+				/*
+				 * ...otherwise, we keep the state until/if it's parent process
+				 * wait()s for it.
+				 * 
+				 * TODO orphaned processes aren't dealt with at all.
+				 */
+				
 				scheduler.updateProcessState(process.getPid(), this);
 			}
 

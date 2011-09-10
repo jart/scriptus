@@ -17,6 +17,13 @@ import java.util.regex.Pattern;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.api.functions.Ask;
+import net.ex337.scriptus.model.api.functions.Fork;
+import net.ex337.scriptus.model.api.functions.Listen;
+import net.ex337.scriptus.model.api.functions.Say;
+import net.ex337.scriptus.model.api.functions.Sleep;
+import net.ex337.scriptus.model.api.functions.Wait;
+import net.ex337.scriptus.model.api.output.NormalTermination;
 
 import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.Context;
@@ -28,6 +35,18 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.WrappedException;
 
+/**
+ * 
+ * Object that implements the Scriptus API in Java and forms the global
+ * scope for running Scripts. Can be called from within the script via
+ * either scriptus.fork() or just fork(), like window.alert() etc. in
+ * a browser.
+ * 
+ * All member fields must be serialisable.
+ * 
+ * @author ian
+ *
+ */
 public class ScriptusAPI extends ScriptableObject implements Serializable {
 
 	private static final long serialVersionUID = 4654244388518182133L;

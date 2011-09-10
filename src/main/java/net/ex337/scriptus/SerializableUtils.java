@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class ScriptUtils {
+public class SerializableUtils {
 
 	public static byte[] serialiseObject(Object o) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

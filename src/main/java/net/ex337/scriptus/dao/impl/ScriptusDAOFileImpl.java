@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
-import net.ex337.scriptus.ScriptUtils;
+import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.dao.TwitterCorrelation;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
@@ -266,7 +266,7 @@ public abstract class ScriptusDAOFileImpl extends BaseScriptusDAO {
 	@Override
 	public void registerTwitterCorrelation(TwitterCorrelation correlation) {
 		try {
-			FileUtils.writeByteArrayToFile(new File(correlationDir, correlation.getId()), ScriptUtils.serialiseObject(correlation));
+			FileUtils.writeByteArrayToFile(new File(correlationDir, correlation.getId()), SerializableUtils.serialiseObject(correlation));
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
 		}
@@ -281,7 +281,7 @@ public abstract class ScriptusDAOFileImpl extends BaseScriptusDAO {
 				return null;
 			}
 			
-			return (TwitterCorrelation) ScriptUtils.deserialiseObject(FileUtils.readFileToByteArray(cidf));
+			return (TwitterCorrelation) SerializableUtils.deserialiseObject(FileUtils.readFileToByteArray(cidf));
 			
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
@@ -303,7 +303,7 @@ public abstract class ScriptusDAOFileImpl extends BaseScriptusDAO {
 				return new ArrayList<Long>();
 			}
 			
-			return (List<Long>) ScriptUtils.deserialiseObject(FileUtils.readFileToByteArray(mentions));
+			return (List<Long>) SerializableUtils.deserialiseObject(FileUtils.readFileToByteArray(mentions));
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
 		} catch (ClassNotFoundException e) {
@@ -314,7 +314,7 @@ public abstract class ScriptusDAOFileImpl extends BaseScriptusDAO {
 	@Override
 	public void updateTwitterLastMentions(List<Long> processedIncomings) {
 		try {
-			FileUtils.writeByteArrayToFile(new File(correlationDir, "mentions"), ScriptUtils.serialiseObject(processedIncomings));
+			FileUtils.writeByteArrayToFile(new File(correlationDir, "mentions"), SerializableUtils.serialiseObject(processedIncomings));
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
 		}

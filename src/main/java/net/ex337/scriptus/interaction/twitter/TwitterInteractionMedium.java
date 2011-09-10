@@ -29,6 +29,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * The Twitter interaction medium. Periodically polls Twitter for mentions
+ * of the configured account's screen name and sends any tweets found to
+ * the process scheduler and Scriptus processes.
+ * 
+ * Delegates the actual work of interfacing with Twitter to the wired-in
+ * {@link TwitterClient}, so we can test Twitter-related logic in this
+ * class offline.
+ * 
+ * @author ian
+ *
+ */
 public class TwitterInteractionMedium implements InteractionMedium {
 
 	private static final int MAX_CID = 0xFFFFFF;
@@ -46,8 +58,6 @@ public class TwitterInteractionMedium implements InteractionMedium {
 	private ScheduledExecutorService scheduledTwitterChecker;
 	
 	private SecureRandom rnd = new SecureRandom();
-
-    //private Twitter twitter;
 
 	private TwitterClient twitter;
 	
@@ -95,7 +105,13 @@ public class TwitterInteractionMedium implements InteractionMedium {
 		this.londonCalling = londonCalling;
 	}
 
-
+	/**
+	 * Retrieves all mentions from Twitter for the configured account's 
+	 * screen name. Then checks all the tweets up to the last-checked
+	 * tweet to see if (a) they have a correlation ID hashtag, or 
+	 * (b) if the originating user is being listened to by a process.
+	 * 
+	 */
 	protected void checkMessages() {
 		
 		List<Long> lastMentions = dao.getTwitterLastMentions();

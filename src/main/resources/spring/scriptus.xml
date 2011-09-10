@@ -12,12 +12,12 @@
                 xmlns:tx="http://www.springframework.org/schema/tx"
 		default-autowire="byName"
         default-init-method="init" default-destroy-method="destroy">
+        
+        <!-- Scriptus master Spring config file. -->
 
     <context:annotation-config/>
 
     <bean id="config" class="net.ex337.scriptus.config.ScriptusConfig" />
-
-    <bean id="scheduler" class="net.ex337.scriptus.ProcessScheduler" />
 
     <bean id="dummyInteraction" class="net.ex337.scriptus.interaction.impl.DummyInteractionMedium" 
     	p:response="response"/>
@@ -26,8 +26,7 @@
 
     <bean id="interaction" class="net.ex337.scriptus.interaction.InteractionMediumSwitch" />
 
-	<bean id="scriptProcess" class="net.ex337.scriptus.model.ScriptProcess" scope="prototype">
-	</bean>
+	<bean scope="prototype" id="scriptProcess" class="net.ex337.scriptus.model.ScriptProcess"/>
 
     <bean id="baseDAO" abstract="true" >
 		<lookup-method name="createScriptProcess" bean="scriptProcess"/>
@@ -38,5 +37,7 @@
 	 <bean id="awsDAO" parent="baseDAO" class="net.ex337.scriptus.dao.impl.ScriptusDAOAWSImpl" />
 
 	<bean id="dao" class="net.ex337.scriptus.dao.ScriptusDAOSwitch" />
+
+    <bean id="scheduler" class="net.ex337.scriptus.ProcessScheduler" />
 
 </beans>
