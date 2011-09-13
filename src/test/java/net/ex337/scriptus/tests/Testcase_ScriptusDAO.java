@@ -12,7 +12,15 @@ import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 
-
+/**
+ * 
+ * Tests the basics of the {@link ScriptusDAO} interface contract.
+ * If this test passes for the implementation, it's probably OK 
+ * - if it doesn't, it's definitely not.
+ * 
+ * @author ian
+ *
+ */
 public class Testcase_ScriptusDAO extends BaseTestCase {
 	
 	private ScriptusDAO dao;

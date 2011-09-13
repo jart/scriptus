@@ -18,7 +18,12 @@ import net.ex337.scriptus.model.api.functions.Sleep;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 
-
+/**
+ * Tests the Scriptus API calls.
+ * 
+ * @author ian
+ *
+ */
 public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	private static final String TEST_USER = "test";

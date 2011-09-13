@@ -1,6 +1,5 @@
 package net.ex337.scriptus.model.support;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
@@ -9,12 +8,19 @@ import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.ScriptusAPI;
 
-import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 
+/**
+ * 
+ * This is  used when code needs to be exeuted inside a
+ * {@link Context} - deals with optional initialiston of
+ * the scope, setting up the security restrictions, 
+ * configuring the Script engine, etc.
+ * 
+ * @author ian
+ *
+ */
 public abstract class ContextCall implements Callable<Object>, Serializable {
 	
 	private static final long serialVersionUID = 2954636270973183753L;

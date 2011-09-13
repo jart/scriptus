@@ -11,7 +11,17 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import junit.framework.TestCase;
 
-public class BaseTestCase extends TestCase {
+/**
+ * Base test case for running Scriptus tests that 
+ * boots Spring. To specify a different configuration
+ * file, override {@link #setUp()}, set the 
+ * "scriptus.config" system property and then call
+ * super.setUp.
+ * 
+ * @author ian
+ *
+ */
+public abstract class BaseTestCase extends TestCase {
 
 	protected AbstractApplicationContext appContext;
 

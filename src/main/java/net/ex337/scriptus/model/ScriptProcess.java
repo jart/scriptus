@@ -9,12 +9,14 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Resource;
+import javax.smartcardio.TerminalFactory;
 
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.dao.ScriptusDAO;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.model.api.Termination;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 import net.ex337.scriptus.model.support.ContextCall;
@@ -33,6 +35,15 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.serialize.ScriptableInputStream;
 import org.mozilla.javascript.serialize.ScriptableOutputStream;
 
+/**
+ * Represents one script process. The source of the process
+ * is loaded at initialisation time and is kept with the 
+ * process, i.e. changing a script will have no effect on
+ * currently executing scripts.
+ * 
+ * @author ian
+ *
+ */
 public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializable, Cloneable {
 
 	private static final Log LOG = LogFactory.getLog(ScriptProcess.class);
@@ -75,6 +86,13 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	public ScriptProcess() {
 	}
 
+	/**
+	 * Sets the state from DAO using the supplied process ID (pid).
+	 * 
+	 * TODO storage must be versioned, since scripts can have a long life-span.
+	 * 
+	 * @param pid
+	 */
 	public void load(final UUID pid) {
 
 //		this.dao = dao;// not set when deserialising below
@@ -125,6 +143,15 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	}
 
+	/**
+	 * 
+	 * Initialises a process using the supplied source from the given user ID.
+	 * 
+	 * @param userId
+	 * @param sourceName
+	 * @param args
+	 * @param owner
+	 */
 	public void init(String userId, final String sourceName, String args, String owner) {
 
 		LOG.debug("ctor, source=" + sourceName);
@@ -152,6 +179,9 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	}
 
+	/**
+	 * Writes the script state to DAO. If the pid is null we assign a new one.
+	 */
 	public void save() {
 		if (getPid() == null) {
 			setPid(UUID.randomUUID());
@@ -182,6 +212,12 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	}
 
+	/**
+	 * 
+	 * Executes the script and returns the ScriptAction of the next API call, or a {@link Termination}
+	 * if the script finished.
+	 * 
+	 */
 	public ScriptAction call() {
 
 		Object result;
@@ -255,6 +291,10 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	}
 
 
+	/**
+	 * Does the same as call() above, but also saves the process and calls visit()
+	 * on the resulting {@link ScriptAction}.
+	 */
 	@Override
 	public void run() {
 		
@@ -345,7 +385,16 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 
 	
-	
+
+	/**
+	 * Copies the process, used in fork()ing.
+	 * Not a complete clone, the differences are:
+	 *  - isRoot is false
+	 *  - version is 0
+	 *  - pid & waiterPid is null
+	 *  - children is empty
+	 * 
+	 */
 	public ScriptProcess clone() {
 		ScriptProcess r = new ScriptProcess();
 		r.args = this.args;
@@ -372,6 +421,9 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	}
 
+	/**
+	 * deletes the script from DAO.
+	 */
 	public void delete() {
 		dao.deleteProcess(getPid());
 	}

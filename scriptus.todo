@@ -17,20 +17,20 @@ X no, still a newbie		mefi projects?
 	remove listener registered on timeout
 	CID not per-user, too small a namespace...
 	
-	markdown
+	convert docs to markdown
+ * list
+# Head1
+##Head2
+This is [an example](http://example.com/ "Title") 
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
+
 	document code
 	 - better README + > md
-	 - conceptual overview
-	   - interaction, dao, config, scheduler, ScriptusAPI
-	 - todos, javadocs
-	    model, 
-	    tests
-	 - design choices
-	   - explain why FS not rdbms
-	   - why not use reply IDs?
-	   - why not use stack for ask()?
-	   - duplicates in tweets!
-	 - test twitter integration
+	test twitter integration
 	   - listen
 test?	 - wiki/documentation
 	examples
@@ -215,3 +215,14 @@ X	      - twitter,
 X	      process scheduler, 
 X	license
 X (&improvements, top-level object)
+X	 - conceptual overview
+X	   - interaction, dao, config, scheduler, ScriptusAPI
+X	 - todos, javadocs
+X	    model, 
+X	    tests
+X	 - design choices
+X	   - explain why FS not rdbms
+X	   - why not use reply IDs?
+X	   - why not use stack for ask()?
+X	   - duplicates in tweets!
+
