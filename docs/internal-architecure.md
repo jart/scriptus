@@ -1,3 +1,6 @@
+
+#Scriptus: application architecture
+
 The scriptus codebase can be divided into several sections.
 
 The goal of the architecture is to run script processes, persisting them during API calls, and allowing them to interact with users via an interaction medium.

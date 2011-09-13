@@ -5,8 +5,10 @@ Scriptus interacts with people via Twitter, because it's the easiest way in whic
 
 On Twitter, people are asked questions using @mentions and questions are tracked using #hashtags. Responses are sent back to Scriptus in the same way. Anything after "//" will be ignored. For example:
 
+```
 @ianso #ef3hED electing HOW many presidents-for-life?!
 @robotoscriptu #ef3hED 4 //but I can depose them whenever I want!
+```
 
 Scripts are written in JavaScript and are wrapped in a function declaration before being executed - this is why /return/ acts as expected. All the usual JavaScript objects such as Date and String are present and correct, as are top-level functions such as eval(). However, none of the methods associated with in-browser JavaScript such as alert() are present. 
 
@@ -18,7 +20,7 @@ eval("function(){scriptus.say('Where are MY socks?';}")();
 
 The scriptus API is very simple, and can be divided into two main sections, that of interaction and program control. The interaction functions are as follows:
 
-say(message, [person])
+say(message, [{who:person}])
 
 This method sends the message provided to the person specified. If no person is present, the message will be "said" to the script owner.
 
@@ -27,8 +29,8 @@ This method sends the message provided to the person specified. If no person is 
 This method listens for any messages sent from the person specified, or the owner if none is specified, and returns the first one it finds as a string.
 
 The string has an extra properties: 
- - /cid/, the communication ID (message ID)
- - /from/, the user who sent the tweet
+ * /cid/, the communication ID (message ID)
+ * /from/, the user who sent the tweet
  
 The options object is optional and is a Javascript object in which extra parameters can be added. At present there is only one supported parameter, which is "timeout", whose value should be a number. If present, this number specifies how long to listen for before returning, in *** An example follows:
 

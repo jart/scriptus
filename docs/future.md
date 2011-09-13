@@ -1,6 +1,13 @@
+
+#The future
+
+##Short-term
+
 Right now, this is a kind of pet project that I've been working on in my spare time. I'd love to have feedback on the ideas of the project, and still more, if anyone would like to contibute by way of code, docs, example scripts, or anything else, those contributions would be happily and gratefully accepted.
 
 In the short-term I have some bugs and 'good ideas' for features in scriptus.todo.
+
+##Long-term
 
 More broadly, if this project proves to have legs, then the code will evolve first and foremost in response to the needs of anyone who finds the software useful. I think there are three main directions in which I could see the code evolving.
 
