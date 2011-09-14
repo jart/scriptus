@@ -17,7 +17,7 @@ For more, see [the API documentation](https://github.com/ianso/scriptus/tree/mas
 
 You need JDK 6 or more recent, and [Maven 2.2+](http://maven.apache.org/) to build Scriptus. Once you've checked out the project, you need one command:
 
- * `mvn jetty:run` will immediately run Scriptus on port 8080, at [http//127.0.0.1:8080/scriptus/](http//127.0.0.1:8080/scriptus/).
+ * `mvn jetty:run` will immediately run Scriptus on port 8080, at [http://127.0.0.1:8080/scriptus/](http://127.0.0.1:8080/scriptus/).
  
 Alternately, `mvn clean install` will give you a WAR file that can be deployed in any standard servlet container.
 
