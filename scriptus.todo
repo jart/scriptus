@@ -11,14 +11,19 @@ X no, still a newbie		mefi projects?
 		blog post
 		share site on buzz
 		ask friends for feedback
-		this guy (rhino maintainer, works @ twitter):  constc.blogspot.com
+		feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com
+		guy asking about serialisable continuations
 
+	implement get(url)
+
+	BUGS
 	Timeout on listen() should make one last check before returning null to program	
 	TwitterCorrelation should be moved
 	remove listener registered on timeout
 	CID not per-user, too small a namespace...
 	
 	document code
+	 - write a user guide!
 test	 - better README + > md
 	test twitter integration
 	   - listen
@@ -43,9 +48,9 @@ test?	 - wiki/documentation
 	 
 ** features that would be nice
 	API
-	 - pipe(function(in, out){})?
+	- pipe(function(in, out){})?
 	  - say & listen to ids
-	  - get(url) & post()? etc?
+	- get(url) & post()? etc?
 	view source principal for scripts (using snapshotted debugger info from rhino)
 	public or shared scripts in the admin interface
 	online REPL / dev environment?
