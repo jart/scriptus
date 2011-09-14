@@ -6,6 +6,7 @@ Scriptus currently scales vertically only, i.e: to process more load, use a bigg
 If necessary, Scriptus could be made to scale horizontally, partitioning workload across servers. This would be done by partitioning up the PID namespace into as many slices as necessary to bring the load down on the server hosting each slice.
 
 Unresolved issues that would have to be fixed in the process of implementing this are:
+
  * The frontend openId authentication process currently stores things in the HTTPSession, but should use cookies only.
  * The correlation ID namespace would also need to be partitioned.
 

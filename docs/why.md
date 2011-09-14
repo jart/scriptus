@@ -19,8 +19,8 @@ This means that program state must be captured and stored, since such long inter
 
 ##Interaction medium: Twitter
 
-Dialogues must involve both talking and listening, or sending and recieving, whereas the web is typically request-response and requires the users presence in front of a device.
+Conversations must involve both talking and listening, or sending and recieving, whereas the web is typically request-response and requires the users presence in front of a device.
 
-I considered four major, easily available, commonly used "push" technologies that enable two-way dialogs and notifications: SMS, iPhone push, Android C2DM, and Twitter. Receiving SMS in online application requires paying for custom telephone numbers or integrating with proprietary services. iPhone push and Android C2DM are only available on one platform each. Twitter on the other hand, already has clients across multiple platforms, takes care of the push problem, and is relatively open, at the moment.
+I considered four major, easily available, commonly used "push" technologies that enable two-way conversations and notifications: SMS, iPhone push, Android C2DM, and Twitter. Receiving SMS in online application requires paying for custom telephone numbers or integrating with proprietary services. iPhone push and Android C2DM are only available on one platform each. Twitter on the other hand, already has clients across multiple platforms, takes care of the push problem, and is relatively open, at the moment.
 
 

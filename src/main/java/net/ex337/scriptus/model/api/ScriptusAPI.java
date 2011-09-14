@@ -49,6 +49,9 @@ import org.mozilla.javascript.WrappedException;
  */
 public class ScriptusAPI extends ScriptableObject implements Serializable {
 
+	private static final String TIMEOUT_ARG = "timeout";
+	private static final String TO_ARG = "to";
+
 	private static final long serialVersionUID = 4654244388518182133L;
 
 	private static Random rnd = new SecureRandom();
@@ -208,13 +211,13 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 		
 		if(params != null) {
 			
-			Object owho = params.get("who", params);
+			Object owho = params.get(TO_ARG, params);
 			
 			if(owho != null && owho != NativeObject.NOT_FOUND) {
 				who = owho.toString();
 			}
 			
-			Object otimeout = params.get("timeout", params);
+			Object otimeout = params.get(TIMEOUT_ARG, params);
 			
 			if(otimeout != null && otimeout != NativeObject.NOT_FOUND) {
 				timeout = getDuration(otimeout);
@@ -242,7 +245,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 			who = process.getOwner();
 		} else {
 			
-			Object owho = params.get("who", params);
+			Object owho = params.get(TO_ARG, params);
 			
 			if(owho != null && owho != NativeObject.NOT_FOUND) {
 				who = owho.toString();
@@ -274,13 +277,13 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 		
 		if(params != null) {
 			
-			Object owho = params.get("who", params);
+			Object owho = params.get(TO_ARG, params);
 			
 			if(owho != null  && owho != NativeObject.NOT_FOUND) {
 				who = owho.toString();
 			}
 			
-			Object otimeout = params.get("timeout", params);
+			Object otimeout = params.get(TIMEOUT_ARG, params);
 			
 			if(otimeout != null  && otimeout != NativeObject.NOT_FOUND) {
 				timeout = getDuration(otimeout);

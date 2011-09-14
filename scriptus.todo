@@ -12,24 +12,14 @@ X no, still a newbie		mefi projects?
 		share site on buzz
 		ask friends for feedback
 		this guy (rhino maintainer, works @ twitter):  constc.blogspot.com
-	
+
+	Timeout on listen() should make one last check before returning null to program	
 	TwitterCorrelation should be moved
 	remove listener registered on timeout
 	CID not per-user, too small a namespace...
 	
-	convert docs to markdown
- * list
-# Head1
-##Head2
-This is [an example](http://example.com/ "Title") 
-```ruby
-require 'redcarpet'
-markdown = Redcarpet.new("Hello World!")
-puts markdown.to_html
-```
-
 	document code
-	 - better README + > md
+test	 - better README + > md
 	test twitter integration
 	   - listen
 test?	 - wiki/documentation
@@ -225,4 +215,6 @@ X	   - explain why FS not rdbms
 X	   - why not use reply IDs?
 X	   - why not use stack for ask()?
 X	   - duplicates in tweets!
+X	convert docs to markdown
+X !!	docs say "to", code says "who". Fix code!
 

@@ -59,14 +59,14 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 				"} " +
 				"return scriptus.wait(function() {});");
 
-		put("ask.js", "var f = scriptus.ask(\"give me your number\", {who:\"foo\"}); if(f != \"response\") throw 1;");
-		put("askTimeout.js", "var f = scriptus.ask(\"give me your number\", {who:\"foo\", timeout:3}); if(f != \"response\") throw 1;");
+		put("ask.js", "var f = scriptus.ask(\"give me your number\", {to:\"foo\"}); if(f != \"response\") throw 1;");
+		put("askTimeout.js", "var f = scriptus.ask(\"give me your number\", {to:\"foo\", timeout:3}); if(f != \"response\") throw 1;");
 		put("defaultAsk.js", "var f = scriptus.ask(\"give me your number\"); if(f != \"response\") throw 1;");
-		put("say.js", "var foo = scriptus.say(\"message\", {who:\"foo\"}); if(foo == null) throw 1;");
+		put("say.js", "var foo = scriptus.say(\"message\", {to:\"foo\"}); if(foo == null) throw 1;");
 		put("defaultSay.js", "scriptus.say(\"message\"); if(foo == null) throw 1;");
-		put("listen.js", "var foo = scriptus.listen({who:\"foo\"}); if(foo == null) throw 1;");
+		put("listen.js", "var foo = scriptus.listen({to:\"foo\"}); if(foo == null) throw 1;");
 		put("defaultListen.js", "var foo = scriptus.listen(); if(foo == null) throw 1;");
-		put("eval.js", "var foo = eval(\"function() {scriptus.listen({who:\\\"foo\\\"});}\")(); if(foo == null) throw 1;");
+		put("eval.js", "var foo = eval(\"function() {scriptus.listen({to:\\\"foo\\\"});}\")(); if(foo == null) throw 1;");
 		put("breakSec.js", "java.lang.System.out.println(\"foo\");");
 		put("breakSec2.js", "var s = \"foo\"; s.getClass().forName(\"java.lang.System\")");
 		put("breakSec3.js", "java.lang.System.out.println(\"foo\");");

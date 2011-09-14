@@ -1,90 +1,158 @@
+Scriptus programs are written in JavaScript and are wrapped in a function declaration before being executed - this is why `return` acts as expected. All the usual JavaScript objects such as Date and String are present and correct, as are top-level functions such as eval(). However, none of the methods associated with in-browser JavaScript such as alert() are present. 
 
-Scriptus is a way of programming interactions between people. What's new is that these interactions can span days, weeks, months or years, and can be complex: elections, chess tournaments and even ARGs are all easy to create.
+The scriptus API is very simple, and can be divided into two main sections, that of interaction and program control.
 
-Scriptus interacts with people via Twitter, because it's the easiest way in which people can have messages pushed to them. If this idea takes off, then other potential clients could include iPhone, Android, and SMS.
+#Interaction
 
-On Twitter, people are asked questions using @mentions and questions are tracked using #hashtags. Responses are sent back to Scriptus in the same way. Anything after "//" will be ignored. For example:
+##say()
+
+```javascript
+say("this is a message");
+
+say("this is a message to Tim", {to:"tim"});
 
 ```
-@ianso #ef3hED electing HOW many presidents-for-life?!
-@robotoscriptu #ef3hED 4 //but I can depose them whenever I want!
+
+This method sends the message provided to the person specified.
+
+The second argument, providing additional parameters, is optional. "tim" above is an example Twitter screen name.
+
+If no person is present, the message will be "said" to the script owner.
+
+##listen()
+
+```javascript
+var heard = listen();
+
+var heardFromHarper = listen({to:"harper"});
 ```
 
-Scripts are written in JavaScript and are wrapped in a function declaration before being executed - this is why /return/ acts as expected. All the usual JavaScript objects such as Date and String are present and correct, as are top-level functions such as eval(). However, none of the methods associated with in-browser JavaScript such as alert() are present. 
+This method listens for messages. It returns the first message it receives as a string. If the "to" option is missing, it listens to the owner.
 
-SIDEBAR
-Although eval() works, scriptus API methods as listed below cannot be executed within them. For example, this code wouldn't work:
-eval("scriptus.say('Where ARE my socks?')")
-Whereas this code would:
-eval("function(){scriptus.say('Where are MY socks?';}")();
+##Using durations in Scriptus
 
-The scriptus API is very simple, and can be divided into two main sections, that of interaction and program control. The interaction functions are as follows:
+By default listen() waits for *24 hours* before returning to the program with `null` if no message has been received in that time.
 
-say(message, [{who:person}])
+This can be changed using the "timeout" option, which can be used for a number, a date, or a duration. These options can be used wherever a time or duration is possible in Scriptus:
 
-This method sends the message provided to the person specified. If no person is present, the message will be "said" to the script owner.
+```javascript
+//For Leo, a number of hours (4):
 
-/message/ listen([{who:who, timeout:1}])
+var heardFromLeo = listen({to:"leo", timeout:4}); 
 
-This method listens for any messages sent from the person specified, or the owner if none is specified, and returns the first one it finds as a string.
+//For Charles, a date: May day 2020!
+//format: yyyy-MM-dd HH:mm
 
-The string has an extra properties: 
- * /cid/, the communication ID (message ID)
- * /from/, the user who sent the tweet
- 
-The options object is optional and is a Javascript object in which extra parameters can be added. At present there is only one supported parameter, which is "timeout", whose value should be a number. If present, this number specifies how long to listen for before returning, in *** An example follows:
+var heardFromCharles = listen({to:"charles", timeout:"2020-05-01 07:00"}); 
 
-var message = scriptus.listen({who:"ianso", timeout:1}); //listen for 1 hour
+//For Kahlil, a duration - 4 years and a day:
 
-/message/ ask(message, {who:"ianso", timeout:1})
+var heardFromKahlil = listen({to:"kahlil", timeout:"4y, 1d"});
+```
 
-This method sends a message to a person in the style of /say/, and then awaits responses in the style of /listen/. The result, as with /listen/, has extra properties for correlation and identification. The options are as for the listen() method
+In the above snippet, 'y' stands for years and 'd' stands for days. Any number off durations can be combined. The comma is optional, so "4y, 1d" is the same as "4y 1d". Other letters represent other things:
+
+<table>
+    <tr>
+        <th>Letter</th>
+        <th>Time period</th>
+    </tr>
+    <tr>s</td><td>Second</td></tr>
+    <tr>m</td><td>Minute (note: lowercase!)</td></tr>
+    <tr>h</td><td>Hour</td></tr>
+    <tr>d</td><td>Day</td></tr>
+    <tr>w</td><td>Week</td></tr>
+    <tr>M</td><td>Month (note: uppercase!)</td></tr>
+    <tr>q</td><td>Quarter (3 months)</td></tr>
+    <tr>y</td><td>Year</td></tr>
+    <tr>D</td><td>Decade</td></tr>
+    <tr>C</td><td>Century</td></tr>
+</table>
+
+##ask()
+
+```javascript
+var deepThoughts = ask("Wherefore?");
+
+var probablyNotDeep = ask("Dude! What does mine say?", {to:"chester"});
+
+var unlikely = ask("A short novel please", {to:"victor", timeout:"17y"});
+```
+
+This method sends a message to a person in the style of `say`, and then awaits responses in the style of `listen`. The result, as with `listen`, is returned as a string, or null if the method times out.
+
+#Program control
 
 The program control methods are basically taken from UNIX and are as follows:
 
-/pid/ fork()
+##fork()
 
-The fork() method is used to split the current process into two separate processes. Each process then continues exectution.
+```javascript
+var pid = fork();
 
-The child process will have /0/ returned as the pid, and the parent process will have returned the pid of the child.
+if(pid == 0) {
+	//this is the child;
+	return "WAAAAAAA";
+}
+```
+
+The fork() method is used to split the current process into two separate processes. Each process then continues exectution. One of the processes is the 'child' and one of the processes is the 'parent'.
+
+The child process will have /0/ returned as the process identifier (or 'pid'), and the parent process will have returned the pid of the child.
 
 The pid is not a number like in UNIX, but a UUID, represented as a string.
 
-/pid/ wait(fn), /pid/ wait(fn, pid)
+Both processes will continue to execute as normal. The parent process, knowing the identity of the child, can use the following function:
 
-This method blocks on the process indicated by the provided pid, or the last child process created if none is provided.
+##wait()
 
-As in UNIX, the method returns the pid of the process that was waited for. If no process was waited for, either because a bad pid was provided or no pid was provided and the process has not yet forked, -1 is returned.
-
-If the argument 'fn' is provided, it must be a function. Upon waiting sucessfully, this function is called with one argument, which is the result returned by the child process.
-
-A simple example of using fork() and wait() is as follows:
-
-var pid = scriptus.fork();
+```javascript
+var pid = fork();
 
 if(pid == 0) {
-	//I'm in the child process
-	return "WAAAAAAH!";
+	//this is the child;
+	return "WAAAAAAA";
 }
 
-//I'm in the parent process
-var result;
+var fromChild;
 
-wait(function(val){result = val;});
+var receiver = function(result) {fromChild = result;}
 
-//result == "WAAAAAH!";
+var waitedFor = wait(receiver);
 
-exit([val])
+//fromChild == "WAAAAAA";
+//waitedFor == pid;
+```
 
-Quits the current process with the val as the return value, or null if not specified. The value can be any primitive or object.
+What's happened here is a bit more tricky. The fork() call was used to split the process in two as above. Then an empty variable was declared for the results of the child process. Then another variable, "receiver" was declared as a /function/ that takes the result of the child process.
 
-This basically does the same as "return" in the top-level function but it can be called from anywhere.
+The wait function itself returns the PID of the process it waited for. If you have forked() multiple processes and want to wait for one specific process, then you can select the process using it's pid:
 
-sleep(int/string)
+```javascript
+var waitedFor = wait(receiver, pid);
+```
 
-The process will lie dormant for the specified amount of time (in hours) or until the date-time provided (format yyyy-MM-dd HH:mm).
+If no pid is given, then the last process forked is waited for.
 
-It's better to use (listen) so that a script can be woken up by prodding it if necessary.
+If no process was waited for, either because a bad pid was provided or no pid was provided and the process has not yet forked, -1 is returned.
+
+##exit()
+```javascript
+exit("persued by a bear");
+```
+
+Quits the current process with the supplied argument as the return value, or null if not specified. The value can be any primitive or object.
+
+This basically does the same as "return" in the top-level function but it can be called from anywhere in the process.
+
+##sleep()
+```javascript
+sleep("8h");
+```
+
+The process will lie dormant for the specified amount of time, which as elsewhere may be a number of hours, a date, or a duration.
+
+In many places it may be better to use (listen) so that a script can be woken up by prodding it if necessary.
 
 TODO pipe(arr);
 
@@ -100,4 +168,18 @@ At present, only HTTP URLs are supported. If this project takes off, SVN and Git
 
 TODO post(url)
 
+##Note about eval()
 
+Although eval() works, the scriptus API methods as listed above cannot be executed within them. For example, this code wouldn't work:
+
+```javascript
+eval("scriptus.say('Where ARE my socks?')")
+```
+
+Whereas this code would:
+
+```javascript
+eval("function(){scriptus.say('Where are MY socks?';}")();
+```
+
+The reason for this is [documented here](http://mxr.mozilla.org/mozilla/source/js/rhino/testsrc/org/mozilla/javascript/tests/ContinuationsApiTest.java#203).
