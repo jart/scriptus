@@ -30,7 +30,7 @@ A Scriptus server can be stopped at any time. Programs will continue where they 
 
 (Scriptus uses Rhino and serialisable continuations to make long-term persistence of program state possible, and can uses either an in-memory, filesystem or AWS-backed datastore.)
 
-For more, see [the API documentation](https://github.com/ianso/scriptus/tree/master/docs).
+For more, see [the API documentation](https://github.com/ianso/scriptus/tree/master/docs/api.md).
 
 You need JDK 6 or more recent, and [Maven 2.2+](http://maven.apache.org/) to build Scriptus. Once you've checked out the project, you need one command:
 
