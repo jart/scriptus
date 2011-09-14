@@ -57,16 +57,16 @@ In the above snippet, 'y' stands for years and 'd' stands for days. Any number o
         <th>Letter</th>
         <th>Time period</th>
     </tr>
-    <tr>s</td><td>Second</td></tr>
-    <tr>m</td><td>Minute (note: lowercase!)</td></tr>
-    <tr>h</td><td>Hour</td></tr>
-    <tr>d</td><td>Day</td></tr>
-    <tr>w</td><td>Week</td></tr>
-    <tr>M</td><td>Month (note: uppercase!)</td></tr>
-    <tr>q</td><td>Quarter (3 months)</td></tr>
-    <tr>y</td><td>Year</td></tr>
-    <tr>D</td><td>Decade</td></tr>
-    <tr>C</td><td>Century</td></tr>
+    <tr><td>s</td><td>Second</td></tr>
+    <tr><td>m</td><td>Minute (note: lowercase!)</td></tr>
+    <tr><td>h</td><td>Hour</td></tr>
+    <tr><td>d</td><td>Day</td></tr>
+    <tr><td>w</td><td>Week</td></tr>
+    <tr><td>M</td><td>Month (note: uppercase!)</td></tr>
+    <tr><td>q</td><td>Quarter (3 months)</td></tr>
+    <tr><td>y</td><td>Year</td></tr>
+    <tr><td>D</td><td>Decade</td></tr>
+    <tr><td>C</td><td>Century</td></tr>
 </table>
 
 ##ask()
@@ -98,7 +98,7 @@ if(pid == 0) {
 
 The fork() method is used to split the current process into two separate processes. Each process then continues exectution. One of the processes is the 'child' and one of the processes is the 'parent'.
 
-The child process will have /0/ returned as the process identifier (or 'pid'), and the parent process will have returned the pid of the child.
+The child process will have `0` returned as the process identifier (or 'pid'), and the parent process will have returned the pid of the child.
 
 The pid is not a number like in UNIX, but a UUID, represented as a string.
 
