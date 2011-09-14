@@ -58,14 +58,14 @@ In the above snippet, 'y' stands for years and 'd' stands for days. Any number o
         <th>Time period</th>
     </tr>
     <tr><td>s</td><td>Second</td></tr>
-    <tr><td>m</td><td>Minute (note: lowercase!)</td></tr>
+    <tr><td>m</td><td>Minute (lowercase)</td></tr>
     <tr><td>h</td><td>Hour</td></tr>
-    <tr><td>d</td><td>Day</td></tr>
+    <tr><td>d</td><td>Day (lowercase)</td></tr>
     <tr><td>w</td><td>Week</td></tr>
-    <tr><td>M</td><td>Month (note: uppercase!)</td></tr>
+    <tr><td>M</td><td>Month (uppercase)</td></tr>
     <tr><td>q</td><td>Quarter (3 months)</td></tr>
     <tr><td>y</td><td>Year</td></tr>
-    <tr><td>D</td><td>Decade</td></tr>
+    <tr><td>D</td><td>Decade (uppercase)</td></tr>
     <tr><td>C</td><td>Century</td></tr>
 </table>
 
