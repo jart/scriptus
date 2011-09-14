@@ -1,5 +1,22 @@
 Scriptus is a way of programming interactions between people. What's new is that these interactions can be complicated and span days, weeks, months or years: elections, chess tournaments and games are all easy to create.
 
+A simple example:
+
+```javascript
+var task = ask("What to do?");
+
+sleep("1d");//1 day
+
+var response;
+
+do {
+
+  response = ask("did you do "+task+" yet?", {timeout:"1d"});
+
+} while( response != "STOP IT!" | "yes");
+```
+
+
 It's easy to get started. Scriptus programs interact with people via Twitter. (If this idea takes off, then other potential clients could include iPhone, Android, and SMS.)
 
 Scriptus creates a JavaScript environment for programming interactions between people and programs on Twitter. Scripts are run inside a simple UNIX-like process model.
