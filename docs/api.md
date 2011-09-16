@@ -1,6 +1,6 @@
 Scriptus programs are written in JavaScript and are wrapped in a function declaration before being executed - this is why `return` acts as expected. All the usual JavaScript objects such as Date and String are present and correct, as are top-level functions such as eval(). However, none of the methods associated with in-browser JavaScript such as alert() are present. 
 
-The scriptus API is very simple, and can be divided into two main sections, that of interaction and program control.
+The scriptus API is very simple, and can be divided into three main sections, that of interaction, program control, and networking.
 
 #Interaction
 
@@ -158,15 +158,23 @@ TODO pipe(arr);
 
 When multiple processes have been created via fork() you may want them to communicate with each other without terminating. This is what pipe() is for. As with UNIX, the method returns two "ids" at index 0 and 1 of the provided object 'arr', respresenting the start and end of the pipe respectively. The ids can then be used in the methods say() and listen() above in the 'person' parameter.
 
-TODO get(url);
+#Networking
+
+The idea behind these methods is to allow the programming environment interact with other services on the Internet. Right now the methods are very simple but adding more stuff in future is on the cards.
+
+##get()
+```javascript
+var response = get("http://www.google.com/robots.txt");
+var sslResponse = get("https://encrypted.google.com/robots.txt");
+```
 
 This command gets the result of an HTTP GET. In conjunction with eval() it can be used to import other scripts into your script. This can be used to setup libraries, such as parts of dojo for example.
 
 When choosing URLs to import, I recommend that you use URLs to sites that you trust and are highly unlikely to change - for example, a link to a specific revision in a source code repo such as GitHub, Google Code or SourceForge.
 
-At present, only HTTP URLs are supported. If this project takes off, SVN and Git URLs would be good to have too.
+At present, only HTTP and HTTPS URLs are supported. If this project takes off, SVN and Git URLs would be good to have too.
 
-TODO post(url)
+##TODO post(url)
 
 ##Note about eval()
 

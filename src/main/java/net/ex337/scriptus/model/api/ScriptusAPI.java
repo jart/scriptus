@@ -2,6 +2,8 @@ package net.ex337.scriptus.model.api;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,6 +21,7 @@ import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.functions.Ask;
 import net.ex337.scriptus.model.api.functions.Fork;
+import net.ex337.scriptus.model.api.functions.Get;
 import net.ex337.scriptus.model.api.functions.Listen;
 import net.ex337.scriptus.model.api.functions.Say;
 import net.ex337.scriptus.model.api.functions.Sleep;
@@ -79,6 +82,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 		globalScope.put("listen", globalScope, new FunctionObject("listen", this.getClass().getMethod("listen", NativeObject.class), globalScope));
 		globalScope.put("say", globalScope, new FunctionObject("say", this.getClass().getMethod("say", String.class, NativeObject.class), globalScope));
 		globalScope.put("ask", globalScope, new FunctionObject("ask", this.getClass().getMethod("ask", String.class, NativeObject.class), globalScope));
+		globalScope.put("get", globalScope, new FunctionObject("get", this.getClass().getMethod("get", String.class), globalScope));
 		globalScope.put("sleep", globalScope, new FunctionObject("sleep", this.getClass().getMethod("sleep", Object.class), globalScope));
 		globalScope.put("exit", globalScope, new FunctionObject("exit", this.getClass().getMethod("exit", Object.class), globalScope));
 
@@ -195,6 +199,30 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 		
 		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
 		pending.setApplicationState(new Sleep(until, rnd.nextLong()));
+		throw pending;
+	}
+
+
+	public String get(String url) {
+		
+		if(url == null) {
+			throw new ScriptusRuntimeException("no arg presented for sleep");
+		}
+		
+		URL u;
+		
+		try {
+			u = new URL(url);
+		} catch (MalformedURLException e) {
+			throw new ScriptusRuntimeException(e);
+		}
+		
+		if( ! "http".equals(u.getProtocol())  && ! "https".equals(u.getProtocol())) {
+			throw new ScriptusRuntimeException("only http and https supported right now");
+		}
+		
+		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
+		pending.setApplicationState(new Get(u));
 		throw pending;
 	}
 

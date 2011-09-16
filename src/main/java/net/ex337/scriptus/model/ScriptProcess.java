@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Resource;
-import javax.smartcardio.TerminalFactory;
 
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.config.ScriptusConfig;

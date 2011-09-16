@@ -12,6 +12,7 @@ import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.functions.Ask;
 import net.ex337.scriptus.model.api.functions.Fork;
+import net.ex337.scriptus.model.api.functions.Get;
 import net.ex337.scriptus.model.api.functions.Listen;
 import net.ex337.scriptus.model.api.functions.Say;
 import net.ex337.scriptus.model.api.functions.Sleep;
@@ -40,6 +41,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		put("fork.js", "var pid = scriptus.fork(); return pid;");
 		put("forkNoPrefix.js", "var pid = fork(); return pid;");
 		put("exit.js", "function foo() {scriptus.exit(\"result\");} foo(); return \"bad result\"");
+		put("getHttp.js", "var s = get(\"http://www.google.com/robots.txt\");");
+		put("getHttps.js", "var s = get(\"http://encrypted.google.com/robots.txt\");");
 		put("sleepHour.js", "scriptus.sleep(3);");
 		put("sleepDate.js", "scriptus.sleep(\"2012-9-11 10:00\");");
 		put("sleepDuration.js", "sleep(\"1y 2M 3d 4h\");");
@@ -202,6 +205,54 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		ScriptAction r = p.call();
 		
 		assertTrue("slept correctly", r instanceof Sleep);
+
+	}
+
+	public void test_getHttp() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "getHttp.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("slept correctly", r instanceof Get);
+
+		p.save();
+
+		Get g = (Get) r;
+		
+		g.visit(c, m, dao, p);
+		
+		p = dao.getProcess(p.getPid());
+		
+		assertTrue("got content", p.getState() instanceof String);
+		
+		String content = (String) p.getState();
+		
+		assertTrue("content ok", content.contains("User-agent: *"));
+		
+	}
+
+	public void test_getHttps() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "getHttps.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("slept correctly", r instanceof Get);
+
+		p.save();
+
+		Get g = (Get) r;
+		
+		g.visit(c, m, dao, p);
+		
+		p = dao.getProcess(p.getPid());
+		
+		assertTrue("got content", p.getState() instanceof String);
+		
+		String content = (String) p.getState();
+		
+		assertTrue("content ok", content.contains("User-agent: *"));
 
 	}
 

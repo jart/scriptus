@@ -15,6 +15,8 @@ X no, still a newbie		mefi projects?
 		guy asking about serialisable continuations
 
 	implement get(url)
+	 - test
+	 - docs
 
 	BUGS
 	Timeout on listen() should make one last check before returning null to program	
@@ -50,7 +52,8 @@ test?	 - wiki/documentation
 	API
 	- pipe(function(in, out){})?
 	  - say & listen to ids
-	- get(url) & post()? etc?
+	- post()? etc?
+	- get + post should expose response headers to script & allow headers to be specified.
 	view source principal for scripts (using snapshotted debugger info from rhino)
 	public or shared scripts in the admin interface
 	online REPL / dev environment?
