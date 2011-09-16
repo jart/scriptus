@@ -124,7 +124,7 @@ var waitedFor = wait(receiver);
 //waitedFor == pid;
 ```
 
-What's happened here is a bit more tricky. The fork() call was used to split the process in two as above. Then an empty variable was declared for the results of the child process. Then another variable, "receiver" was declared as a /function/ that takes the result of the child process.
+What's happened here is a bit more tricky. The fork() call was used to split the process in two as above. Then an empty variable was declared for the results of the child process. Then another variable, "receiver" was declared as a *function* that takes the result of the child process.
 
 The wait function itself returns the PID of the process it waited for. If you have forked() multiple processes and want to wait for one specific process, then you can select the process using it's pid:
 
@@ -154,9 +154,9 @@ The process will lie dormant for the specified amount of time, which as elsewher
 
 In many places it may be better to use (listen) so that a script can be woken up by prodding it if necessary.
 
-TODO pipe(arr);
+##TODO pipe(obj);
 
-When multiple processes have been created via fork() you may want them to communicate with each other without terminating. This is what pipe() is for. As with UNIX, the method returns two "ids" at index 0 and 1 of the provided object 'arr', respresenting the start and end of the pipe respectively. The ids can then be used in the methods say() and listen() above in the 'person' parameter.
+When multiple processes have been created via fork() you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array 'arr', respresenting the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.
 
 #Networking
 
@@ -174,6 +174,8 @@ When choosing URLs to import, I recommend that you use URLs to sites that you tr
 
 At present, only HTTP and HTTPS URLs are supported. If this project takes off, SVN and Git URLs would be good to have too.
 
+The HTTP GET is executed with a timeout of 60 seconds.
+
 ##TODO post(url)
 
 ##Note about eval()
@@ -184,10 +186,10 @@ Although eval() works, the scriptus API methods as listed above cannot be execut
 eval("scriptus.say('Where ARE my socks?')")
 ```
 
-Whereas this code would:
+Whereas this code should:
 
 ```javascript
-eval("function(){scriptus.say('Where are MY socks?';}")();
+eval("function(){scriptus.say('Where are MY socks?');}")();
 ```
 
 The reason for this is [documented here](http://mxr.mozilla.org/mozilla/source/js/rhino/testsrc/org/mozilla/javascript/tests/ContinuationsApiTest.java#203).

@@ -35,8 +35,7 @@ public class Get extends ScriptAction implements Serializable {
 		 */
 		try {
 			HttpURLConnection c = (HttpURLConnection) url.openConnection();
-			c.setConnectTimeout(50000);
-//			c.setDoInput(true);
+			c.setConnectTimeout(60000);
 			c.connect();
 			String content = IOUtils.toString(c.getInputStream(), c.getContentEncoding());
 			scheduler.updateProcessState(process.getPid(), content);
