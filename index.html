@@ -62,13 +62,13 @@ var task = ask("What to do?");
 
 sleep("1w");//1 week
 
-var message = "Did you "+task+" yet? Eh? Eh?"
+var nag = "Did you "+task+" yet? Eh?";
 
 var response;
 
 do {
 
-  response = ask(message, {timeout:"1d"});
+  response = ask(nag, {timeout:"1d"});
 
 } while( response != "STOP IT!" | "yes");</pre>
 </div>
