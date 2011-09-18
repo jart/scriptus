@@ -42,6 +42,7 @@ public class SettingsServlet extends HttpServlet {
 		
 		if( ! req.getRemoteAddr().equals("127.0.0.1")) {
 			resp.sendError(403);
+			return;
 		}
 		
 		req.setAttribute("config", ctx.getBean("config"));
@@ -56,6 +57,7 @@ public class SettingsServlet extends HttpServlet {
 		
 		if( ! req.getRemoteAddr().equals("127.0.0.1")) {
 			resp.sendError(403);
+			return;
 		}
 
 		ScriptusConfig cfg = (ScriptusConfig) ctx.getBean("config");

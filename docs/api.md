@@ -33,7 +33,7 @@ This method listens for messages. It returns the first message it receives as a 
 
 By default listen() waits for *24 hours* before returning to the program with `null` if no message has been received in that time.
 
-This can be changed using the "timeout" option, which can be used for a number, a date, or a duration. These options can be used wherever a time or duration is possible in Scriptus:
+This can be changed using the "timeout" option, which can be a number, a date, or a duration. These options can be used wherever a time or duration is possible in Scriptus:
 
 ```javascript
 //For Leo, a number of hours (4):
@@ -50,7 +50,7 @@ var heardFromCharles = listen({to:"charles", timeout:"2020-05-01 07:00"});
 var heardFromKahlil = listen({to:"kahlil", timeout:"4y, 1d"});
 ```
 
-In the above snippet, 'y' stands for years and 'd' stands for days. Any number off durations can be combined. The comma is optional, so "4y, 1d" is the same as "4y 1d". Other letters represent other things:
+In the above snippet, 'y' stands for years and 'd' stands for days. Any number of durations can be combined. The comma is optional, so "4y, 1d" is the same as "4y 1d". Other letters represent other things:
 
 <table>
     <tr>
@@ -96,7 +96,7 @@ if(pid == 0) {
 }
 ```
 
-The fork() method is used to split the current process into two separate processes. Each process then continues exectution. One of the processes is the 'child' and one of the processes is the 'parent'.
+The fork() method is used to split the current process into two separate processes. Each process then continues execution. One of the processes is the 'child' and one of the processes is the 'parent'.
 
 The child process will have `0` returned as the process identifier (or 'pid'), and the parent process will have returned the pid of the child.
 
@@ -160,7 +160,7 @@ When multiple processes have been created via fork() you may want them to commun
 
 #Networking
 
-The idea behind these methods is to allow the programming environment interact with other services on the Internet. Right now the methods are very simple but adding more stuff in future is on the cards.
+The idea behind these methods is to allow the programming environment to interact with other services on the Internet. Right now the methods are very simple but adding more stuff in future is on the cards.
 
 ##get()
 ```javascript

@@ -117,7 +117,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 		List<Long> lastMentions = dao.getTwitterLastMentions();
 		
 		for(Long l : lastMentions) {
-			System.out.println("lastm:"+snowflakeDate(getSecond(l)));
+			LOG.debug("lastm:"+snowflakeDate(getSecond(l)));
 		}
 		
 		List<Tweet> mentions = twitter.getMentions();
@@ -125,7 +125,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 		
 		long ageThreshold = getAgeThreshold(lastMentions);
 
-		System.out.println("ageThreshold:"+snowflakeDate(ageThreshold));
+		LOG.debug("ageThreshold:"+snowflakeDate(ageThreshold));
 
 		if(mentions.isEmpty()) {
 			return;
@@ -151,7 +151,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 			 */
 			long snAgeSecs = getSecond(s.getSnowflake());
 			
-			System.out.println("snAgeSecs:"+snowflakeDate(snAgeSecs));
+			LOG.debug("snAgeSecs:"+snowflakeDate(snAgeSecs));
 	
 			/*
 			 * we've passed last processed tweet
@@ -314,7 +314,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 		
 		long id = twitter.tweet("@"+to+" "+msg);
 		
-		System.out.println(id+" : "+"@"+to+" "+msg);
+		LOG.debug(id+" : "+"@"+to+" "+msg);
 			
 	}
 

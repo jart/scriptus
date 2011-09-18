@@ -7,7 +7,7 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 </head><body>
 <p>[<a href="<%=request.getContextPath()%>/">login</a> | <a href="<%=request.getContextPath()%>/scripts/list">list scripts</a> | <a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">settings (127.0.0.1 access only)</a> | <a href="<%=request.getContextPath()%>/?logout">logout</a>]</p>
 <h1>Scriptus - settings</h1>
-<%if(cfg.isClean()){%>
+<%if(cfg.isCleanInstall()){%>
 <div style="background-color:yellow">
 	<h2>Welcome!</h2>
 	

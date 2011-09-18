@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -71,7 +72,12 @@ public class ScriptusConfig implements AWSCredentials {
 	
 	private Dao dao;
 	
-	private boolean clean;
+	/**
+	 * Set to true during init() iff no config file exists
+	 * at specified (or default) location.
+	 */
+	private boolean cleanInstall;
+	
 	private String configLocation;
 	
 	private boolean disableOpenID;
@@ -85,14 +91,16 @@ public class ScriptusConfig implements AWSCredentials {
 		 */
 		File scriptusDir = new File(SCRIPTUS_DIR);
 		
-		if( ! scriptusDir.exists() && ! scriptusDir.mkdir()) {
-			throw new IOException("Unable to create directory "+SCRIPTUS_DIR);
-		}
+//		if( ! scriptusDir.exists() && ! scriptusDir.mkdir()) {
+//			throw new IOException("Unable to create directory "+SCRIPTUS_DIR);
+//		}
 		
 		
 		File localConfig;
 		
-		configLocation = SCRIPTUS_DIR+"/config.properties";
+		String defaultConfigLocation = SCRIPTUS_DIR+"/config.properties";
+		
+		configLocation = defaultConfigLocation;
 
 		if(System.getProperty("scriptus.config") != null) {
 
@@ -100,9 +108,31 @@ public class ScriptusConfig implements AWSCredentials {
 			
 			Properties props = new Properties();
 
-			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(configLocation));
+			/*
+			 * We need to figure out if we can load from this location,
+			 * because if we're running for the first time and the
+			 * config file doesn't exist then we might end up in a
+			 * sticky situation.
+			 */
+			
+			URL urlConfig = new URL(configLocation);
+			
+			boolean canLoadConfig = (urlConfig != null);
+			
+			if(urlConfig.getProtocol().equals("file") && urlConfig.getFile() != null) {
+				canLoadConfig = false;
+			}
+			
+			if(canLoadConfig) {
+				
+				props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(configLocation));
+				load(props);
+				
+			} else {
 
-			load(props);
+				cleanInstall = true;
+				
+			}
 			
 		} else if((localConfig = new File(configLocation)).exists()) {
 			
@@ -116,11 +146,27 @@ public class ScriptusConfig implements AWSCredentials {
 
 		} else {
 
+			cleanInstall = true;
+			
+		}
+		
+		if(cleanInstall) {
+
 			medium = Medium.CommandLine;
 			
 			dao = Dao.Memory;
-
-			clean = true;
+			
+		}
+		
+		/*
+		 * Try not to touch the local filesystem unless we know we're 
+		 * going to  need to.
+		 */
+		if(configLocation.equals(defaultConfigLocation) || dao == Dao.File) {
+			
+			if( ! scriptusDir.exists()) {
+				scriptusDir.mkdir();
+			}
 			
 		}
 		
@@ -159,16 +205,8 @@ public class ScriptusConfig implements AWSCredentials {
 		 *  - (b) dangerous! so has to be done manually
 		 */
 		//props.put("disableOpenID",				Boolean.toString(disableOpenID));
-		
-		
-		
-		File scriptusDir = new File(System.getProperty("user.home")+"/.scriptus");
-		
-		if( ! scriptusDir.exists()) {
-			scriptusDir.mkdir();
-		}
-		
-		FileOutputStream fout = new FileOutputStream(new File(scriptusDir, "config.properties"));
+
+		FileOutputStream fout = new FileOutputStream(new File(configLocation));
 		
 		props.store(fout, "Scriptus configuration file");
 		
@@ -255,8 +293,8 @@ public class ScriptusConfig implements AWSCredentials {
 		this.s3Bucket = s3Bucket;
 	}
 
-	public boolean isClean() {
-		return clean;
+	public boolean isCleanInstall() {
+		return cleanInstall;
 	}
 
 	public String getConfigLocation() {
