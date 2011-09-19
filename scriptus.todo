@@ -1,6 +1,12 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	
-	typos from Sander
+	Suggestions from Sander
+	 - change website foreground colour so it doesn't hurt the eyes
+	    - find a colour wheel and use it
+	 - email interaction medium
+	 - multiple transports per script: use transport option
+	 - import/export functionality for DAO
+	s/interaction medium/transport/g?
 
 	BUGS
 	Timeout on listen() should make one last check before returning null to program	
@@ -228,4 +234,6 @@ X !!	docs say "to", code says "who". Fix code!
 X	implement get(url)
 X	 - test
 X	 - docs
+X	typos from Sander
+X	fix test dependency in main :-( - thanks Sander
 
