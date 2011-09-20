@@ -11,15 +11,15 @@ At another level, it's better to allow people space to express their free will. 
 
 With this in mind, how can technology make the world a better place? Not through coercion, but maybe through affordances that make it easier for people to interact with each other however they choose.
 
-##Language: Javascript
+##Language: JavaScript
 
 With this in mind, my choice of language is one that is readily available & teachable to anyone with a web browser - JavaScript. The type of program is one that interacts directly with people, like an IRC bot. And the time-frame is not the typical immediacy of a computer interaction that is measured in terms of 'length of session in front of a screen', but over the more human durations days, weeks, or months.
 
-This means that program state must be captured and stored, since such long interactions cannot persist in memory. The best way to do this in modern languages is by serialising continuations. Javascript has just one implementation, Rhino, that permits serialisable continuations.
+This means that program state must be captured and stored, since such long interactions cannot persist in memory. The best way to do this in modern languages is by serialising continuations. JavaScript has just one implementation, Rhino, that permits serialisable continuations.
 
 ##Interaction medium: Twitter
 
-Conversations must involve both talking and listening, or sending and recieving, whereas the web is typically request-response and requires the users presence in front of a device.
+Conversations must involve both talking and listening, or sending and receiving, whereas the web is typically request-response and requires the users presence in front of a device.
 
 I considered four major, easily available, commonly used "push" technologies that enable two-way conversations and notifications: SMS, iPhone push, Android C2DM, and Twitter. Receiving SMS in online application requires paying for custom telephone numbers or integrating with proprietary services. iPhone push and Android C2DM are only available on one platform each. Twitter on the other hand, already has clients across multiple platforms, takes care of the push problem, and is relatively open, at the moment.
 

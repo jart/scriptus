@@ -1,6 +1,6 @@
 Scriptus programs are written in JavaScript and are wrapped in a function declaration before being executed - this is why `return` acts as expected. All the usual JavaScript objects such as Date and String are present and correct, as are top-level functions such as eval(). However, none of the methods associated with in-browser JavaScript such as alert() are present. 
 
-The scriptus API is very simple, and can be divided into three main sections, that of interaction, program control, and networking.
+The Scriptus API is very simple, and can be divided into three main sections, that of interaction, program control, and networking.
 
 #Interaction
 
@@ -15,7 +15,7 @@ say("this is a message to Tim", {to:"tim"});
 
 This method sends the message provided to the person specified.
 
-The second argument, providing additional parameters, is optional. "tim" above is an example Twitter screen name.
+The second argument, providing additional parameters, is optional. `tim` above is an example Twitter screen name.
 
 If no person is present, the message will be "said" to the script owner.
 
@@ -138,7 +138,7 @@ If no process was waited for, either because a bad pid was provided or no pid wa
 
 ##exit()
 ```javascript
-exit("persued by a bear");
+exit("pursued by a bear");
 ```
 
 Quits the current process with the supplied argument as the return value, or null if not specified. The value can be any primitive or object.
@@ -154,9 +154,9 @@ The process will lie dormant for the specified amount of time, which as elsewher
 
 In many places it may be better to use (listen) so that a script can be woken up by prodding it if necessary.
 
-##TODO pipe(obj);
+##TODO pipe();
 
-When multiple processes have been created via fork() you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array 'arr', respresenting the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.
+When multiple processes have been created via fork() you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array `arr`, representing the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.
 
 #Networking
 
@@ -168,7 +168,7 @@ var response = get("http://www.google.com/robots.txt");
 var sslResponse = get("https://encrypted.google.com/robots.txt");
 ```
 
-This command gets the result of an HTTP GET. In conjunction with eval() it can be used to import other scripts into your script. This can be used to setup libraries, such as parts of dojo for example.
+This command gets the result of an HTTP GET. In conjunction with eval() it can be used to import other scripts into your script. This can be used to setup libraries, such as parts of [dojo](http://www.dojotoolkit.org) or [jQuery](http://www.jQuery.com) for example.
 
 When choosing URLs to import, I recommend that you use URLs to sites that you trust and are highly unlikely to change - for example, a link to a specific revision in a source code repo such as GitHub, Google Code or SourceForge.
 
@@ -176,11 +176,11 @@ At present, only HTTP and HTTPS URLs are supported. If this project takes off, S
 
 The HTTP GET is executed with a timeout of 60 seconds.
 
-##TODO post(url)
+##TODO post()
 
 ##Note about eval()
 
-Although eval() works, the scriptus API methods as listed above cannot be executed within them. For example, this code wouldn't work:
+Although eval() works, the Scriptus API methods as listed above cannot be executed within them. For example, this code wouldn't work:
 
 ```javascript
 eval("scriptus.say('Where ARE my socks?')")

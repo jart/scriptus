@@ -16,5 +16,5 @@ Is not as reliable as the reply-ID above.
 
 #Twitter stops duplicate tweets
 
-This may be a problem if a user wants to send  an identical response to the same script that has been launched twice, e.g. during debugging. Responding to listen()s would have to be "unique-ised" using junk after the "//", where as ask() conveniently has the correlation IDs, see above. Solving a problem they weren't intended to.
+This may be a problem if a user wants to send  an identical response to the same script that has been launched twice, e.g. during debugging. Responding to listen()s would have to be made unique using junk after the "//", where as ask() conveniently has the correlation IDs, see above. Solving a problem they weren't intended to.
 

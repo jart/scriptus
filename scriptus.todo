@@ -1,8 +1,29 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
+	 cat docs/* | ispell -p misc/words.list -l | less
+
+#the below regexps remove
+# - HTML characters
+# - heading hashes
+# - code samples
+# - inline code
+# - URLs
+#from markdown-formatted code, as a prelude to spellchecking
+cat docs/*.md |
+sed -e 's/<[/]*[a-z]*>/ /g' \
+    -e 's/^[#]*//' \
+    -e '/```/,/```/ s/.*//' \
+    -e 's/`.*`//' \
+    -e 's/\[\([^]]*\)\]([^)]*)/\1/g' \
+      | ispell -p misc/words.list -l | less
+
+cat docs/* | grep '\[\([^]]*\)\]([^)]*)'
+
+
+
+
+sed '/```/,/```/ s/.*//' < docs/api.md | less
 	
 	Suggestions from Sander
-	 - change website foreground colour so it doesn't hurt the eyes
-	    - find a colour wheel and use it
 	 - email interaction medium
 	 - multiple transports per script: use transport option
 	 - import/export functionality for DAO
@@ -12,7 +33,7 @@
 	Timeout on listen() should make one last check before returning null to program	
 	TwitterCorrelation should be moved
 	remove listener registered on timeout
-	CID not per-user, too small a namespace for a big deployment (if that ever happens)...
+	CID not stored per-user, too small a namespace for a big deployment (if that ever happens)...
 	
 	document code
 	 - write a user guide!
@@ -236,4 +257,6 @@ X	 - test
 X	 - docs
 X	typos from Sander
 X	fix test dependency in main :-( - thanks Sander
+X	 - change website foreground colour so it doesn't hurt the eyes
+X	    - find a colour wheel and use it
 
