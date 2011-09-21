@@ -1,28 +1,8 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
-	 cat docs/* | ispell -p misc/words.list -l | less
 
-#the below regexps remove
-# - HTML characters
-# - heading hashes
-# - code samples
-# - inline code
-# - URLs
-#from markdown-formatted code, as a prelude to spellchecking
-cat docs/*.md |
-sed -e 's/<[/]*[a-z]*>/ /g' \
-    -e 's/^[#]*//' \
-    -e '/```/,/```/ s/.*//' \
-    -e 's/`.*`//' \
-    -e 's/\[\([^]]*\)\]([^)]*)/\1/g' \
-      | ispell -p misc/words.list -l | less
+	google group
+	changes blog
 
-cat docs/* | grep '\[\([^]]*\)\]([^)]*)'
-
-
-
-
-sed '/```/,/```/ s/.*//' < docs/api.md | less
-	
 	Suggestions from Sander
 	 - email interaction medium
 	 - multiple transports per script: use transport option
@@ -259,4 +239,6 @@ X	typos from Sander
 X	fix test dependency in main :-( - thanks Sander
 X	 - change website foreground colour so it doesn't hurt the eyes
 X	    - find a colour wheel and use it
+X	spellchecker for docs
+X	 cat docs/* | ispell -p misc/words.list -l | less
 
