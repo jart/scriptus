@@ -94,7 +94,7 @@ do {
 <p>Scriptus is a way of programming interactions between people. What's new is that these interactions can be complicated and span days, weeks, months or years: elections, chess tournaments and games are all easy to create.</p>
 
 {% for post in site.posts limit:1 %}
-<h3>(Latest news: <a href="{{ post.url }}">{{ post.title }}</a>)</h3>
+<h3>(Latest news: <a href="/scriptus{{ post.url }}">{{ post.title }}</a>)</h3>
 {% endfor %}
 
 <p>Scriptus creates a simple JavaScript environment for communicating via Twitter. Scripts are run inside a simple UNIX-like process model.</p>
