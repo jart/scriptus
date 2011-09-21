@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>Scriptus news</title>
+ <link href="http://ianso.github.com/scriptus/atom.xml" rel="self"/>
+ <link href="http://ianso.github.com/scriptus/"/>
+ <updated>2011-09-21T16:32:50+02:00</updated>
+ <id>http://ianso.github.com/scriptus/</id>
+ <author>
+   <name>Ian Sollars</name>
+   <email>ian.sollars@gmail.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Scriptus now does HTTP</title>
+   <link href="http://ianso.github.com/scriptus//2011/09/21/now-with-HTTP.html"/>
+   <updated>2011-09-21T00:00:00+02:00</updated>
+   <id>http://ianso.github.com/scriptus//2011/09/21/now-with-HTTP</id>
+   <content type="html">&lt;p&gt;I added a method to the Scriptus API to do HTTP GETs. You can now interact with web servers.&lt;/p&gt;</content>
+ </entry>
+ 
+ 
+</feed>
