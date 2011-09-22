@@ -17,7 +17,7 @@ do {
 ```
 
 
-It's easy to get started. Scriptus programs interact with people via Twitter. (If this idea takes off, then other potential clients could include iPhone, Android, and SMS.)
+It's easy to get started. Scriptus programs interact with people via Twitter. (If this idea takes off, then other potential clients could include email, iPhone, Android, and SMS.)
 
 Scriptus creates a JavaScript environment for programming interactions between people and programs on Twitter. Scripts are run inside a simple UNIX-like process model.
 
@@ -30,7 +30,7 @@ A Scriptus server can be stopped at any time. Programs will continue where they 
 
 (Scriptus uses Rhino and serialisable continuations to make long-term persistence of program state possible, and can uses either an in-memory, filesystem or AWS-backed datastore.)
 
-For more, see [the API documentation](https://github.com/ianso/scriptus/tree/master/docs/api.md).
+For more, see [the user guide for information on running Scriptus](https://github.com/ianso/scriptus/tree/master/docs/userguide.md), and [the API documentation](https://github.com/ianso/scriptus/tree/master/docs/api.md).
 
 You need JDK 6 or more recent, and [Maven 2.2+](http://maven.apache.org/) to build Scriptus. Once you've checked out the project, you need one command:
 

@@ -23,7 +23,6 @@
 	test twitter integration
 	   - listen
 	document code
-	 - write a user guide!
 test	 - better README + > md
 test?	 - wiki/documentation
 	examples
@@ -248,4 +247,5 @@ X	spellchecker for docs
 X	 cat docs/* | ispell -p misc/words.list -l | less
 X	changes blog
 X maybe	google group
+X	 - write a user guide!
 
