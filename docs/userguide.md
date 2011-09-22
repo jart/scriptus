@@ -72,7 +72,7 @@ On Twitter, people are asked questions using @mentions and questions are tracked
 1. @robotoscriptu tweets `@ianso #ef3hED electing HOW many presidents-for-life?!`
 2. @ianso tweets `@robotoscriptu #ef3hED 4 //but I can depose them whenever I want!`
 
-In the above exchange, the hashtag #ef3hED is used by Scriptus to match the reply from `ianso` to the question asked by `robotoscriptu`. `ianso` has replied "4".
+In the above exchange, the hashtag `#ef3hED` is used by Scriptus to match the reply from `ianso` to the question asked by `robotoscriptu`. `ianso` has replied "4".
 
 At present, Twitter prevents users from sending identical status updates within a certain time period. This can sometimes present a problem for Scriptus if a running program needs the same input twice. In this case, adding something random after a "//" will make the status update unique enough for Twitter.
 
