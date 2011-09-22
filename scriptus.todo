@@ -1,13 +1,14 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 
-	google group
-	changes blog
-
 	Suggestions from Sander
 	 - email interaction medium
 	 - multiple transports per script: use transport option
 	 - import/export functionality for DAO
-	s/interaction medium/transport/g?
+	 
+	 
+	terminology:
+	 - s/interaction medium/transport/g?
+	 - program / running program // script / process
 
 	BUGS
 	Timeout on listen() should make one last check before returning null to program	
@@ -15,11 +16,15 @@
 	remove listener registered on timeout
 	CID not stored per-user, too small a namespace for a big deployment (if that ever happens)...
 	
+	site
+	 - index.html & default layout re-use CSS & HTML
+	 - site doesn't work locally and on github due to "/scriptus" relocation
+
+	test twitter integration
+	   - listen
 	document code
 	 - write a user guide!
 test	 - better README + > md
-	test twitter integration
-	   - listen
 test?	 - wiki/documentation
 	examples
 	 - date reminder with stop command
@@ -241,4 +246,6 @@ X	 - change website foreground colour so it doesn't hurt the eyes
 X	    - find a colour wheel and use it
 X	spellchecker for docs
 X	 cat docs/* | ispell -p misc/words.list -l | less
+X	changes blog
+X maybe	google group
 

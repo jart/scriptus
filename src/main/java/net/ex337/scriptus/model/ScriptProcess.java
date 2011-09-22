@@ -424,6 +424,12 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 * deletes the script from DAO.
 	 */
 	public void delete() {
+		
+		/*
+		 * FIXME this should recursively delete child processes!!!
+		 * 
+		 */
+		
 		dao.deleteProcess(getPid());
 	}
 
