@@ -100,7 +100,7 @@ In writing the example programs for Scriptus there are one or two tips and trick
 
  *  **Run programs with the command-line interaction medium and in-memory storage first.** That way you can test out your program in private, without making a mess in your twitter feed or on your hard-drive.
  
- *  **Use `listen()` instead of `sleep()`. That way you can tell the running program "OK stop waiting and carry on".
+ *  **Use `listen()` instead of `sleep()`.** That way you can tell the running program "OK stop waiting and carry on".
 
  * **For durations, use constants. For dates, use arithmetic and isolate it in one place.** You can easily change these constants to smaller durations during testing and longer ones when running the program for real.
 

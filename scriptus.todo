@@ -1,10 +1,41 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 
+	examples
+	 - date reminder with stop command
+
+
+//see http://www.datejs.com/
+eval(get("date-en-US.js"));
+
+var who = ask("Who should I send reminders to?"); 
+
+if(who.toLowerCase() == "me") who = owner;
+
+var event = ask("What should I remind "+who+" about?");
+
+vat evtDate = Date.parse(ask("When is "+event+"? e.g. '5 Dec 2015'"));
+
+//1 day before, 1 week before, 1 month before, 6 months before, and each year before
+
+
+
+
+	 - game tournament
+	    - brush up on set theory
+	 - line diet
+	    - simple calculus
+	 - habit judo from metafilter
+	 
+	testcases for eval limitations
+	implement kill()
+
+
 	Suggestions from Sander
 	 - email interaction medium
+	    - pop3 or imap?
 	 - multiple transports per script: use transport option
 	 - import/export functionality for DAO
-	 
+	 - duration args should accept Javascript date objects ... of course :-/
 	 
 	terminology:
 	 - s/interaction medium/transport/g?
@@ -22,20 +53,12 @@
 
 	test twitter integration
 	   - listen
-	document code
-test	 - better README + > md
-test?	 - wiki/documentation
-	examples
-	 - date reminder with stop command
-	 - game tournament
-	 - line diet
-	 - habit ninja from metafilter
 	DAO API versioning... important for evolution!
 
 	promo
 		JS weekly
 		show HN
-X no, still a newbie?		mefi projects?
+still a newbie?		mefi projects?
 		demo on twitter 
 		 - install the iPhone client
 		   - upgrade firmware, finally
@@ -248,4 +271,7 @@ X	 cat docs/* | ispell -p misc/words.list -l | less
 X	changes blog
 X maybe	google group
 X	 - write a user guide!
+X test	 - better README + > md
+Xtest?	 - wiki/documentation
+X	document code
 

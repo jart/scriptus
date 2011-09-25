@@ -10,7 +10,6 @@ The Scriptus API is very simple, and can be divided into three main sections, th
 say("this is a message");
 
 say("this is a message to Tim", {to:"tim"});
-
 ```
 
 This method sends the message provided to the person specified.
@@ -27,13 +26,13 @@ var heard = listen();
 var heardFromHarper = listen({to:"harper"});
 ```
 
-This method listens for messages. It returns the first message it receives as a string. If the "to" option is missing, it listens to the owner.
+This method listens for messages. It returns the first message it receives as a string. If the `to` option is missing, it listens to the owner.
 
 ##Using durations in Scriptus
 
 By default listen() waits for *24 hours* before returning to the program with `null` if no message has been received in that time.
 
-This can be changed using the "timeout" option, which can be a number, a date, or a duration. These options can be used wherever a time or duration is possible in Scriptus:
+This can be changed using the `timeout` option, which can be a number, a date, or a duration. These options can be used wherever a time or duration is possible in Scriptus:
 
 ```javascript
 //For Leo, a number of hours (4):
@@ -50,7 +49,7 @@ var heardFromCharles = listen({to:"charles", timeout:"2020-05-01 07:00"});
 var heardFromKahlil = listen({to:"kahlil", timeout:"4y, 1d"});
 ```
 
-In the above snippet, 'y' stands for years and 'd' stands for days. Any number of durations can be combined. The comma is optional, so "4y, 1d" is the same as "4y 1d". Other letters represent other things:
+In the above snippet, `y` stands for years and `d` stands for days. Any number of durations can be combined. The comma is optional, so `4y, 1d` is the same as `4y 1d`. Other letters represent other things:
 
 <table>
     <tr>
@@ -79,7 +78,7 @@ var probablyNotDeep = ask("Dude! What does mine say?", {to:"chester"});
 var unlikely = ask("A short novel please", {to:"victor", timeout:"17y"});
 ```
 
-This method sends a message to a person in the style of `say`, and then awaits responses in the style of `listen`. The result, as with `listen`, is returned as a string, or null if the method times out.
+This method sends a message to a person in the style of `say`, and then awaits responses in the style of `listen`. The result, as with `listen`, is returned as a string, or `null` if the method times out.
 
 #Program control
 
@@ -96,7 +95,7 @@ if(pid == 0) {
 }
 ```
 
-The fork() method is used to split the current process into two separate processes. Each process then continues execution. One of the processes is the 'child' and one of the processes is the 'parent'.
+The `fork()` method is used to split the current process into two separate processes. Each process then continues execution. One of the processes is the 'child' and one of the processes is the 'parent'.
 
 The child process will have `0` returned as the process identifier (or 'pid'), and the parent process will have returned the pid of the child.
 
@@ -124,9 +123,9 @@ var waitedFor = wait(receiver);
 //waitedFor == pid;
 ```
 
-What's happened here is a bit more tricky. The fork() call was used to split the process in two as above. Then an empty variable was declared for the results of the child process. Then another variable, "receiver" was declared as a *function* that takes the result of the child process.
+What's happened here is a bit more tricky. The `fork()` call was used to split the process in two as above. Then an empty variable was declared for the results of the child process. Then another variable `receiver` was declared as a *function* that takes the result of the child process.
 
-The wait function itself returns the PID of the process it waited for. If you have forked() multiple processes and want to wait for one specific process, then you can select the process using it's pid:
+The wait function itself returns the pid of the process it waited for. If you have forked multiple processes and want to wait for one specific process, then you can select the process using its pid:
 
 ```javascript
 var waitedFor = wait(receiver, pid);
@@ -134,16 +133,16 @@ var waitedFor = wait(receiver, pid);
 
 If no pid is given, then the last process forked is waited for.
 
-If no process was waited for, either because a bad pid was provided or no pid was provided and the process has not yet forked, -1 is returned.
+If no process was waited for, either because a bad pid was provided or no pid was provided and the process has not yet forked, `-1` is returned.
 
 ##exit()
 ```javascript
 exit("pursued by a bear");
 ```
 
-Quits the current process with the supplied argument as the return value, or null if not specified. The value can be any primitive or object.
+Quits the current process with the supplied argument as the return value, or `null` if not specified. The value can be any primitive or object.
 
-This basically does the same as "return" in the top-level function but it can be called from anywhere in the process.
+This basically does the same as `return` in the top-level function but it can be called from anywhere in the process.
 
 ##sleep()
 ```javascript
@@ -152,11 +151,11 @@ sleep("8h");
 
 The process will lie dormant for the specified amount of time, which as elsewhere may be a number of hours, a date, or a duration.
 
-In many places it may be better to use (listen) so that a script can be woken up by prodding it if necessary.
+In many places it may be better to use `listen` so that a script can be woken up by prodding it if necessary.
 
-##TODO pipe();
+##TODO pipe()
 
-When multiple processes have been created via fork() you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array `arr`, representing the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.
+When multiple processes have been created via `fork()` you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array `arr`, representing the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.
 
 #Networking
 
@@ -176,20 +175,22 @@ At present, only HTTP and HTTPS URLs are supported. If this project takes off, S
 
 The HTTP GET is executed with a timeout of 60 seconds.
 
+TODO add the option to send & receive headers 
+
 ##TODO post()
 
-##Note about eval()
+##A note about eval()
 
 Although eval() works, the Scriptus API methods as listed above cannot be executed within them. For example, this code wouldn't work:
 
 ```javascript
-eval("scriptus.say('Where ARE my socks?')")
+eval("say('Where ARE my socks?')")
 ```
 
 Whereas this code should:
 
 ```javascript
-eval("function(){scriptus.say('Where are MY socks?');}")();
+eval("function(){say('Where are MY socks?');}")();
 ```
 
 The reason for this is [documented here](http://mxr.mozilla.org/mozilla/source/js/rhino/testsrc/org/mozilla/javascript/tests/ContinuationsApiTest.java#203).
