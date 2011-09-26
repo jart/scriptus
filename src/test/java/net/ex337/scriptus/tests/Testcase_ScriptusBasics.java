@@ -42,6 +42,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		put("forkNoPrefix.js", "var pid = fork(); return pid;");
 		put("exit.js", "function foo() {scriptus.exit(\"result\");} foo(); return \"bad result\"");
 		put("getHttp.js", "var s = get(\"http://www.google.com/robots.txt\");");
+		put("evalget.js", "var ss = get(\"https://raw.github.com/ianso/scriptus/master/scripts/lib/date-en-US.js\"); eval(ss); say(Date.today)");
+		put("evalgetBUG.js", "eval(get(\"https://raw.github.com/ianso/scriptus/master/scripts/lib/date-en-US.js\")); say(Date.today)");
 		put("getHttps.js", "var s = get(\"http://encrypted.google.com/robots.txt\");");
 		put("sleepHour.js", "scriptus.sleep(3);");
 		put("sleepDateObject.js", "scriptus.sleep(new Date());");
@@ -70,6 +72,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		put("defaultSay.js", "scriptus.say(\"message\"); if(foo == null) throw 1;");
 		put("listen.js", "var foo = scriptus.listen({to:\"foo\"}); if(foo == null) throw 1;");
 		put("defaultListen.js", "var foo = scriptus.listen(); if(foo == null) throw 1;");
+		put("evalBroken.js", "var foo = eval(\"scriptus.listen();\");");
 		put("eval.js", "var foo = eval(\"function() {scriptus.listen({to:\\\"foo\\\"});}\")(); if(foo == null) throw 1;");
 		put("breakSec.js", "java.lang.System.out.println(\"foo\");");
 		put("breakSec2.js", "var s = \"foo\"; s.getClass().forName(\"java.lang.System\")");
@@ -233,6 +236,59 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 	}
 
+
+	public void test_evalGet() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "evalget.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("slept correctly", r instanceof Get);
+
+		p.save();
+
+		Get g = (Get) r;
+		
+		g.visit(c, m, dao, p);
+		
+		p = dao.getProcess(p.getPid());
+		
+		assertTrue("got content", p.getState() instanceof String);
+		
+		r = p.call();
+		
+		assertTrue("said correctly", r instanceof Say);
+		
+		assertTrue("contains fn def", ((Say)r).getMsg().contains("return new Date().clearTime();"));
+	}
+
+
+	public void test_evalGetBug() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "evalgetBUG.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("slept correctly", r instanceof Get);
+
+		p.save();
+
+		Get g = (Get) r;
+		
+		g.visit(c, m, dao, p);
+		
+		p = dao.getProcess(p.getPid());
+		
+		assertTrue("got content", p.getState() instanceof String);
+		
+		r = p.call();
+		
+		assertTrue("said correctly", r instanceof Say);
+		
+		assertTrue("contains fn def", ((Say)r).getMsg().contains("return new Date().clearTime();"));
+	}
+
+	
 	public void test_getHttps() throws IOException {
 		
 		ScriptProcess p = dao.newProcess(TEST_USER, "getHttps.js", "", "owner");
@@ -446,6 +502,15 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		p.save();
 		
 		r.visit(c, m, dao, p);
+	}
+
+	public void test_evalBroken() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "evalBroken.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("Broken", r instanceof ErrorTermination);
 	}
 
 	public void test_eval() throws IOException {

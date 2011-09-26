@@ -1,20 +1,20 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 
+	add atom feed to site!
+
 	move outstanding stuff to github tasks
 	add knock knock as example
 
 	examples
 	 - date reminder with stop command
 	    - add kill()
-X tests	    - duration args should accept Javascript date objects ... of course :-/
 	 - game tournament
 	    - brush up on set theory
 	 - line diet
 	    - simple calculus
 	 - habit judo from metafilter
 	 
-	testcases for eval limitations
-	implement kill()
+	Rhino bug: eval(get("")) doesn't work, var s = get(""); eval(s); does.
 
 
 	Suggestions from Sander
@@ -263,4 +263,7 @@ X	 - write a user guide!
 X test	 - better README + > md
 Xtest?	 - wiki/documentation
 X	document code
+X test	    - duration args should accept Javascript date objects ... of course :-/
+X	testcases for eval limitations
+X	 - and for eval(get("")) as crude import
 
