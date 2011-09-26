@@ -124,6 +124,14 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 			long timeInSeconds = TimeUnit.SECONDS.convert(waitUnits, waitSleepUnit);
 
 			until.add(Calendar.SECOND, (int) timeInSeconds);
+
+		} else if(o instanceof ScriptableObject && "Date".equals(((ScriptableObject)o).getClassName())) {
+
+			foundDate = true;
+			
+			Date d = (Date) Context.jsToJava(o, Date.class);
+			
+			until.setTime(d);
 			
 		} else if(o instanceof String) {
 			

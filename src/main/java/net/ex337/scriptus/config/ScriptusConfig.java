@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -114,18 +115,23 @@ public class ScriptusConfig implements AWSCredentials {
 			 * config file doesn't exist then we might end up in a
 			 * sticky situation.
 			 */
+			InputStream configStream = null;
 			
-			URL urlConfig = new URL(configLocation);
-			
-			boolean canLoadConfig = (urlConfig != null);
-			
-			if(urlConfig.getProtocol().equals("file") && urlConfig.getFile() != null) {
-				canLoadConfig = false;
+			try {
+				
+				configStream = new URL(configLocation).openStream();
+				
+			} catch(MalformedURLException mfe) {
+				
+				configStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(configLocation);
+				
 			}
+			
+			boolean canLoadConfig = (configStream != null);
 			
 			if(canLoadConfig) {
 				
-				props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(configLocation));
+				props.load(configStream);
 				load(props);
 				
 			} else {

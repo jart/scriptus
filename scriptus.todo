@@ -1,25 +1,12 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 
+	move outstanding stuff to github tasks
+	add knock knock as example
+
 	examples
 	 - date reminder with stop command
-
-
-//see http://www.datejs.com/
-eval(get("date-en-US.js"));
-
-var who = ask("Who should I send reminders to?"); 
-
-if(who.toLowerCase() == "me") who = owner;
-
-var event = ask("What should I remind "+who+" about?");
-
-vat evtDate = Date.parse(ask("When is "+event+"? e.g. '5 Dec 2015'"));
-
-//1 day before, 1 week before, 1 month before, 6 months before, and each year before
-
-
-
-
+	    - add kill()
+X tests	    - duration args should accept Javascript date objects ... of course :-/
 	 - game tournament
 	    - brush up on set theory
 	 - line diet
@@ -35,7 +22,9 @@ vat evtDate = Date.parse(ask("When is "+event+"? e.g. '5 Dec 2015'"));
 	    - pop3 or imap?
 	 - multiple transports per script: use transport option
 	 - import/export functionality for DAO
-	 - duration args should accept Javascript date objects ... of course :-/
+	 - scheduler is imprecise. use paging
+	 - process table
+	 - user admin
 	 
 	terminology:
 	 - s/interaction medium/transport/g?

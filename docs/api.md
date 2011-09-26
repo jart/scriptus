@@ -32,7 +32,14 @@ This method listens for messages. It returns the first message it receives as a 
 
 By default listen() waits for *24 hours* before returning to the program with `null` if no message has been received in that time.
 
-This can be changed using the `timeout` option, which can be a number, a date, or a duration. These options can be used wherever a time or duration is possible in Scriptus:
+This can be changed using the `timeout` option, which can be one of four things:
+
+ * a number, 
+ * a date as a string,
+ * a JavaScript Date object,
+ * or a duration.
+ 
+These options can be used wherever a time or duration is possible in Scriptus:
 
 ```javascript
 //For Leo, a number of hours (4):
@@ -44,10 +51,17 @@ var heardFromLeo = listen({to:"leo", timeout:4});
 
 var heardFromCharles = listen({to:"charles", timeout:"2020-05-01 07:00"}); 
 
+//Buck Rogers gets a Date object:
+
+var twentyFifthCentury = new Date();
+twentyFifthCentury.setYear(2419);
+
+var heardFromBuck = listen({to:"buck", timeout:twentyFifthCentury});
+
 //For Kahlil, a duration - 4 years and a day:
 
 var heardFromKahlil = listen({to:"kahlil", timeout:"4y, 1d"});
-```
+```s
 
 In the above snippet, `y` stands for years and `d` stands for days. Any number of durations can be combined. The comma is optional, so `4y, 1d` is the same as `4y 1d`. Other letters represent other things:
 

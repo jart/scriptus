@@ -44,6 +44,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		put("getHttp.js", "var s = get(\"http://www.google.com/robots.txt\");");
 		put("getHttps.js", "var s = get(\"http://encrypted.google.com/robots.txt\");");
 		put("sleepHour.js", "scriptus.sleep(3);");
+		put("sleepDateObject.js", "scriptus.sleep(new Date());");
 		put("sleepDate.js", "scriptus.sleep(\"2012-9-11 10:00\");");
 		put("sleepDuration.js", "sleep(\"1y 2M 3d 4h\");");
 		put("sleepBadDuration.js", "sleep(\"1x\");");
@@ -259,6 +260,16 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	public void test_sleepDate() throws IOException {
 		
 		ScriptProcess p = dao.newProcess(TEST_USER, "sleepDate.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("slept correctly", r instanceof Sleep);
+
+	}
+
+	public void test_sleepDateObject() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "sleepDateObject.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
