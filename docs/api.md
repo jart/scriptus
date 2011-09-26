@@ -61,7 +61,7 @@ var heardFromBuck = listen({to:"buck", timeout:twentyFifthCentury});
 //For Kahlil, a duration - 4 years and a day:
 
 var heardFromKahlil = listen({to:"kahlil", timeout:"4y, 1d"});
-```s
+```
 
 In the above snippet, `y` stands for years and `d` stands for days. Any number of durations can be combined. The comma is optional, so `4y, 1d` is the same as `4y 1d`. Other letters represent other things:
 
