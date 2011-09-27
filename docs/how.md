@@ -1,4 +1,4 @@
-With the release of my new side-project, the first thought some friends may have is "He has a new-born daughter! And a job! How can he neglect his family so?!". The truth is that this project was mostly done in 20-minute increments on the tram, to and from work. Occasional longer stints were done while wife and child were napping, or while "off the clock" in the office. The original proof-of-concept was done in one Eurostar trip from Brussels to London, more than a year ago.
+With the release of my new side-project, the first thought some friends may have is "He has a new-born daughter! And a job! How can he neglect his family so?!". The truth is that this project was mostly done in 20-minute increments on the tram, to and from work, over the last nine months. Occasional longer stints were done while wife and child were napping, or while "off the clock" in the office. The original proof-of-concept was done in one Eurostar trip from Brussels to London, more than a year ago.
 
 Why have I chosen as my main 'hobby' something I also do at work? Fred Brooks put it best in his classic, "The Mythical Man-Month", in 1972:
 

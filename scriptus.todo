@@ -3,9 +3,11 @@
 	add atom feed to site!
 
 	move outstanding stuff to github tasks
-	add knock knock as example
+	
+X	doc index
 
 	examples
+	 - document these 
 	 - date reminder with stop command
 	    - add kill()
 	 - game tournament
@@ -14,7 +16,16 @@
 	    - simple calculus
 	 - habit judo from metafilter
 	 
-	Rhino bug: eval(get("")) doesn't work, var s = get(""); eval(s); does.
+
+	BUGS
+docd	on root process termination, 
+docd	 - child processes should be re-parented, 
+docd	     - and when they terminate, what happens if their output has not been waited upon?
+docd	Rhino bug: eval(get("")) doesn't work, var s = get(""); eval(s); does.
+docd	Timeout on listen() should make one last check before returning null to program	
+docd	remove listener registered on timeout
+docd	CID not stored per-user, too small a namespace for a big deployment (if that ever happens)...
+docd	scheduler is imprecise. use paging
 
 
 	Suggestions from Sander
@@ -22,19 +33,15 @@
 	    - pop3 or imap?
 	 - multiple transports per script: use transport option
 	 - import/export functionality for DAO
-	 - scheduler is imprecise. use paging
 	 - process table
 	 - user admin
 	 
 	terminology:
 	 - s/interaction medium/transport/g?
 	 - program / running program // script / process
+	 - s/DAO/datastore/g
 
-	BUGS
-	Timeout on listen() should make one last check before returning null to program	
 	TwitterCorrelation should be moved
-	remove listener registered on timeout
-	CID not stored per-user, too small a namespace for a big deployment (if that ever happens)...
 	
 	site
 	 - index.html & default layout re-use CSS & HTML
@@ -63,9 +70,6 @@ still a newbie?		mefi projects?
 	 		 	
 **running track of compromises & known bugs
 	script bodies wrapped with (new function(){...})() at compile time
-	on root process termination, 
-	 - child processes should be re-parented, 
-	     - and when they terminate, what happens if their output has not been waited upon?
 	two concepts of identity: one via openId, one via twitter. Unify?
 	 scriptus AWS DAO should store process state separately - it's updated by itself all the time
 	 nonce should be extended to all continuations?
@@ -266,4 +270,5 @@ X	document code
 X test	    - duration args should accept Javascript date objects ... of course :-/
 X	testcases for eval limitations
 X	 - and for eval(get("")) as crude import
+X	add knock knock as example
 
