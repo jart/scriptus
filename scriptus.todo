@@ -1,10 +1,6 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 
-	add atom feed to site!
-
 	move outstanding stuff to github tasks
-	
-X	doc index
 
 	examples
 	 - document these 
@@ -271,4 +267,6 @@ X test	    - duration args should accept Javascript date objects ... of course :
 X	testcases for eval limitations
 X	 - and for eval(get("")) as crude import
 X	add knock knock as example
+X	add atom feed to site!
+X	doc index
 
