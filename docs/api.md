@@ -167,6 +167,25 @@ The process will lie dormant for the specified amount of time, which as elsewher
 
 In many places it may be better to use `listen` so that a script can be woken up by prodding it if necessary.
 
+##kill()
+```javascript
+var pid = fork();
+
+if(pid == 0) {
+	//child
+	sleep("2w");
+	say("This will never happen!");
+	return;
+}
+
+//parent
+kill(pid);
+```
+
+Stops the process specified by the `pid` argument. If the specified process is sleeping or waiting, the process will simply be deleted.
+
+If the process is currently executing, a best-effort is made to stop it from going any further. (I'm not completely sure it's working perfectly.)
+
 ##TODO pipe()
 
 When multiple processes have been created via `fork()` you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array `arr`, representing the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.

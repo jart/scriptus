@@ -1,17 +1,9 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 
 	move outstanding stuff to github tasks
-	
-X	TwitterCorrelation should be moved
-X rabbithole	kill()
-X 	 - test
-X 	    - clean up system.outs,
-X 	    - add assert to orders of wait & wait2 & kill tests
-X	 - runWithLock ought to be in process scheduler...
-X enfin	 - testcase for sleeping & running process
-X	 - wait and kill tests aren't really correct until we can visit Fork with custom controller delegate
-X	    - (means interface for scheduler, ...)
-X	       - move package, change refs
+
+	kill	
+	 - site update
 	examples
 	 - document these 
 	 - date reminder with stop command
@@ -278,4 +270,15 @@ X	 - and for eval(get("")) as crude import
 X	add knock knock as example
 X	add atom feed to site!
 X	doc index
+X	TwitterCorrelation should be moved
+X rabbithole	kill()
+X 	 - test
+X 	    - clean up system.outs,
+X 	    - add assert to orders of wait & wait2 & kill tests
+X	 - runWithLock ought to be in process scheduler...
+X enfin	 - testcase for sleeping & running process
+X	 - wait and kill tests aren't really correct until we can visit Fork with custom controller delegate
+X	    - (means interface for scheduler, ...)
+X	       - move package, change refs
+X	 - documentation
 
