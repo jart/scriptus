@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 
 public class Wait extends ScriptAction implements Serializable {
 	
-	
 	private static final Log LOG = LogFactory.getLog(Wait.class);
 	
 	private static final long serialVersionUID = 1102173119822912878L;
@@ -39,7 +38,7 @@ public class Wait extends ScriptAction implements Serializable {
 
 		try {
 			
-			dao.runWithLock(childPid, new Runnable() {
+			scheduler.runWithLock(childPid, new Runnable() {
 
 				@Override
 				public void run() {

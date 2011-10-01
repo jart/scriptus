@@ -38,7 +38,7 @@ public class Wake extends ScheduledScriptAction {
 			//and that nothing's changed in the mean time.
 			if(((HasTimeout)process.getState()).getNonce() == nonce) {
 				//return null
-				dao.updateProcessState(process.getPid(), null);
+				scheduler.updateProcessState(process.getPid(), null);
 				scheduler.execute(pid);
 			}
 		}

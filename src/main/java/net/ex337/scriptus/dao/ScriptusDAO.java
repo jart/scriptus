@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 /**
@@ -18,11 +19,6 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
  */
 public interface ScriptusDAO {
 
-	/**
-	 * under a lock for the given pid, update the process
-	 * state object.
-	 */
-	public void updateProcessState(UUID pid, Object o);
 	/**
 	 * Create a new {@link ScriptProcess} using the supplied parameters
 	 * 
@@ -57,17 +53,6 @@ public interface ScriptusDAO {
 	 * @see #writeProcess(UUID, byte[])
 	 */
 	public void deleteProcess(UUID pid);
-
-	/**
-	 * Calls {@link Runnable#run()} on the supplied runnable
-	 * with a lock on the supplied pid, ensuring that no other
-	 * thread may synchronously execute  provided that the
-	 * other thread also uses runWithLock, which it should.
-	 * 
-	 * @param pid
-	 * @param r
-	 */
-	public void runWithLock(UUID pid, Runnable r);
 
 
 	//dao methods for admin

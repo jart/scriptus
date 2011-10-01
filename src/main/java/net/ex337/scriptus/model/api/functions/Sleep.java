@@ -28,7 +28,7 @@ public class Sleep extends ScriptAction implements Serializable, HasTimeout {
 		
 		scheduler.scheduleTask(until, new Wake(process.getPid(), nonce));
 		
-		dao.updateProcessState(process.getPid(), this);
+		scheduler.updateProcessState(process.getPid(), this);
 		
 	}
 

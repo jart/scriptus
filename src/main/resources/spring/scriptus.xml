@@ -38,6 +38,6 @@
 
 	<bean id="dao" class="net.ex337.scriptus.dao.ScriptusDAOSwitch" />
 
-    <bean id="scheduler" class="net.ex337.scriptus.ProcessScheduler" />
+    <bean id="scheduler" class="net.ex337.scriptus.ProcessSchedulerImpl" />
 
 </beans>

@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.Dao;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 /**
@@ -84,24 +85,12 @@ public class ScriptusDAOSwitch implements ScriptusDAO {
 		activeImpl.deleteProcess(pid);
 	}
 
-	public void updateProcessState(UUID pid, Object o) {
-		activeImpl.updateProcessState(pid, o);
-	}
-
 	public ScriptProcess newProcess(String userId, String source, String args, String owner) {
 		return activeImpl.newProcess(userId, source, args, owner);
 	}
 
 	public ScriptProcess getProcess(UUID uuid) {
 		return activeImpl.getProcess(uuid);
-	}
-
-	// public <T> T runWithLock(UUID pid, Callable<T> c) throws Exception {
-	// return activeImpl.runWithLock(pid, c);
-	// }
-
-	public void runWithLock(UUID pid, Runnable r) {
-		activeImpl.runWithLock(pid, r);
 	}
 
 	public List<ScheduledScriptAction> getScheduledTasks(Calendar dueDate) {

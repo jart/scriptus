@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.Dao;
 import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.dao.TwitterCorrelation;
+import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 import org.apache.commons.logging.Log;

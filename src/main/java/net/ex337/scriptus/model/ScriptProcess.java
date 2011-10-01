@@ -70,6 +70,8 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	private transient Object continuation;
 	private transient Scriptable globalScope;
 	
+	private boolean isKilled;
+	
 	@Resource(name="dao")
 	private transient ScriptusDAO dao;
 
@@ -108,7 +110,13 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 			@Override
 			public void call(Context cx) throws Exception {
-				InputStream bais = new ByteArrayInputStream(dao.loadProcess(pid));
+				byte[] process = dao.loadProcess(pid);
+				
+				if(process == null) {
+					throw new ScriptusRuntimeException("Process not found "+pid);
+				}
+				
+				InputStream bais = new ByteArrayInputStream(process);
 
 				ScriptableInputStream in = new ScriptableInputStream(bais, globalScope);
 
@@ -299,10 +307,25 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		
 		ScriptAction result = this.call();
 		
-		this.save();
+		if(isKilled) {
+			return;
+			
+		}
 
+		this.save();
+		
 		result.visit(scheduler, interaction, dao, this);
 		
+		
+	}
+	
+	/**
+	 * If the process is running when kill() is called,
+	 * this method stops the next continuation from
+	 * executing.
+	 */
+	public void kill() {
+		isKilled = true;
 	}
 
 	public String getSource() {
@@ -426,7 +449,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	public void delete() {
 		
 		/*
-		 * FIXME this should recursively delete child processes!!!
+		 * TODO should this recursively delete child processes?
 		 * 
 		 */
 		

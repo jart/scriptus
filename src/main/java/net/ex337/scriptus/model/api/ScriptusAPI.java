@@ -22,6 +22,7 @@ import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.functions.Ask;
 import net.ex337.scriptus.model.api.functions.Fork;
 import net.ex337.scriptus.model.api.functions.Get;
+import net.ex337.scriptus.model.api.functions.Kill;
 import net.ex337.scriptus.model.api.functions.Listen;
 import net.ex337.scriptus.model.api.functions.Say;
 import net.ex337.scriptus.model.api.functions.Sleep;
@@ -79,6 +80,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 		Scriptable globalScope = cx.initStandardObjects(this);
 
 		globalScope.put("fork", globalScope, new FunctionObject("fork", this.getClass().getMethod("fork"), globalScope));
+		globalScope.put("kill", globalScope, new FunctionObject("kill", this.getClass().getMethod("kill", String.class), globalScope));
 		globalScope.put("listen", globalScope, new FunctionObject("listen", this.getClass().getMethod("listen", NativeObject.class), globalScope));
 		globalScope.put("say", globalScope, new FunctionObject("say", this.getClass().getMethod("say", String.class, NativeObject.class), globalScope));
 		globalScope.put("ask", globalScope, new FunctionObject("ask", this.getClass().getMethod("ask", String.class, NativeObject.class), globalScope));
@@ -187,6 +189,12 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 	public Object fork() {
 		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
 		pending.setApplicationState(new Fork());
+		throw pending;
+	}
+
+	public Object kill(String pid) {
+		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
+		pending.setApplicationState(new Kill(UUID.fromString(pid)));
 		throw pending;
 	}
 

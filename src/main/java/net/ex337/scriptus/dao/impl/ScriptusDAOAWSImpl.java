@@ -20,8 +20,8 @@ import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.Dao;
 import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.dao.TwitterCorrelation;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
+import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 import org.apache.commons.io.IOUtils;

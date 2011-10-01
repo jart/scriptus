@@ -21,8 +21,8 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.Medium;
 import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.dao.TwitterCorrelation;
 import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.api.Message;
 
 import org.apache.commons.lang.StringUtils;

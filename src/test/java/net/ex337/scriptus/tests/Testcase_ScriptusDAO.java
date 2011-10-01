@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.dao.TwitterCorrelation;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 

@@ -5,8 +5,8 @@ import java.io.Serializable;
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.dao.ScriptusDAO;
 import net.ex337.scriptus.interaction.InteractionMedium;
-import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.ScriptAction;
+import net.ex337.scriptus.model.ScriptProcess;
 
 public class Say extends ScriptAction implements Serializable {
 

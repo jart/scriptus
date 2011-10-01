@@ -47,10 +47,9 @@ public abstract class ContextCall implements Callable<Object>, Serializable {
 		
 		Context cx = Context.enter();
 		cx.setClassShutter(new ScriptusClassShutter());
+		cx.setOptimizationLevel(-1); // must use interpreter mode
 		
 		try {
-
-			cx.setOptimizationLevel(-1); // must use interpreter mode
 
 			if(createScope) {
 				
@@ -63,6 +62,8 @@ public abstract class ContextCall implements Callable<Object>, Serializable {
 			
 			call(cx);
 
+		} catch (ScriptusRuntimeException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ScriptusRuntimeException(e);
 		} finally {

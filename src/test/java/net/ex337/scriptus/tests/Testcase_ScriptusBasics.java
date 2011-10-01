@@ -3,21 +3,27 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.interaction.impl.DummyInteractionMedium;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.api.Termination;
 import net.ex337.scriptus.model.api.functions.Ask;
 import net.ex337.scriptus.model.api.functions.Fork;
 import net.ex337.scriptus.model.api.functions.Get;
+import net.ex337.scriptus.model.api.functions.Kill;
 import net.ex337.scriptus.model.api.functions.Listen;
 import net.ex337.scriptus.model.api.functions.Say;
 import net.ex337.scriptus.model.api.functions.Sleep;
+import net.ex337.scriptus.model.api.functions.Wait;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
+import net.ex337.scriptus.tests.support.ProcessSchedulerDelegate;
 
 /**
  * Tests the Scriptus API calls.
@@ -54,17 +60,26 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		put("wait.js", 
 				"var pid = scriptus.fork(); " +
 				"if(pid == 0) {" +
-				"	return \"waited\"" +
+				"	return \"waited\";" +
 				"} " +
-				"return scriptus.wait(function(arg){return arg+\"foo\"});"
+				"var result; var waited = scriptus.wait(function(arg){result = arg+\"foo\";});" +
+				"return result+waited;"
 			);
 		put("wait2.js", 
 				"var pid = scriptus.fork(); " +
 				"if(pid == 0) {" +
-				"	return \"waited\"" +
+				"	sleep('1d');" +
+				"	return \"waited\";" +
 				"} " +
-				"return scriptus.wait(function() {});");
-
+				"var result; var waited = scriptus.wait(function(arg){result = arg+\"fooslept\";});" +
+				"return result+waited;"
+			);
+		put("kill.js", 
+				"var pid = scriptus.fork(); " +
+				"if(pid == 0) {" +
+				"	sleep('1d');" +
+				"} " +
+				"kill(pid);");
 		put("ask.js", "var f = scriptus.ask(\"give me your number\", {to:\"foo\"}); if(f != \"response\") throw 1;");
 		put("askTimeout.js", "var f = scriptus.ask(\"give me your number\", {to:\"foo\", timeout:3}); if(f != \"response\") throw 1;");
 		put("defaultAsk.js", "var f = scriptus.ask(\"give me your number\"); if(f != \"response\") throw 1;");
@@ -379,30 +394,288 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	}
 
+	/**
+	 * tests for when child process finished before wait() is called
+	 */
 	public void test_wait() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "wait.js", "", "owner");
+		final ScriptProcess p = dao.newProcess(TEST_USER, "wait.js", "", "owner");
+		
+		p.save();
 		
 		ScriptAction r = p.call();
 
 		assertTrue("Forked correctly", r instanceof Fork);
+		
+		final ThreadLocal<Boolean> executedParentPostFork = new ThreadLocal<Boolean>();
+		final ThreadLocal<Boolean> executedParentPostWait = new ThreadLocal<Boolean>();
+		final ThreadLocal<Boolean> executedChild = new ThreadLocal<Boolean>();
+		
+		ProcessScheduler testScheduler = new ProcessSchedulerDelegate(c) {
+			
+			private UUID childPid;
 
-		r.visit(c, m, dao, p);
+			@Override
+			public void execute(UUID pid) {
+				
+				if( ! pid.equals(p.getPid())) {
+					
+					executedChild.set(Boolean.TRUE);
+					
+					childPid = pid;
+					
+					super.execute(pid);
+
+					return;
+				}
+				
+				if(pid.equals(p.getPid())) {
+
+					if(Boolean.TRUE.equals(executedParentPostFork.get())) {
+						
+						executedParentPostWait.set(Boolean.TRUE);
+						
+						ScriptAction enfin = dao.getProcess(pid).call();
+						
+						assertTrue("script finished", enfin instanceof Termination);
+						assertEquals("script result OK", "waitedfoo"+childPid, ((Termination)enfin).getResult());
+						
+					} else {
+
+						executedParentPostFork.set(Boolean.TRUE);
+						
+						ScriptProcess p2 = dao.getProcess(pid);
+						
+						ScriptAction r2 = p2.call();
+						
+						p2.save();
+
+						assertTrue("Waited correctly", r2 instanceof Wait);
+
+						//pause thread until child has termination
+						
+						r2.visit(this, m, dao, p2);
+
+					}
+
+				}
+				
+			}
+			
+		};
+		
+		r.visit(testScheduler, m, dao, p);
+		
+		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
+		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());
+		assertEquals("Executed parent (post-wait)", Boolean.TRUE, executedParentPostWait.get());
 		
 	}
 
+	/**
+	 * tests for when child process finished after wait() is called
+	 */
 	public void test_wait2() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "wait2.js", "", "owner");
+		final ScriptProcess p = dao.newProcess(TEST_USER, "wait2.js", "", "owner");
+		
+		p.save();
 		
 		ScriptAction r = p.call();
-		
+
 		assertTrue("Forked correctly", r instanceof Fork);
 		
-		r.visit(c, m, dao, p);
-		//process and then
-//				assertTrue("Waited correctly", r instanceof Wait);
+		final ThreadLocal<Boolean> executedParentPostFork = new ThreadLocal<Boolean>();
+		final ThreadLocal<Boolean> executedParentPostWait = new ThreadLocal<Boolean>();
+		final ThreadLocal<Boolean> executedChild = new ThreadLocal<Boolean>();
+		final ThreadLocal<Boolean> executedChildPostSleep = new ThreadLocal<Boolean>();
+
+		ProcessScheduler testScheduler = new ProcessSchedulerDelegate(c) {
+			
+			private UUID childPid;
+
+			@Override
+			public void execute(UUID pid) {
+				
+				if( ! pid.equals(p.getPid())) {
+					//executing child
+
+					if(Boolean.TRUE.equals(executedChild.get())) {
+						
+						executedChildPostSleep.set(Boolean.TRUE);
+						
+						ScriptProcess p2 = dao.getProcess(pid);
+						
+						ScriptAction r2 = p2.call();
+
+						assertTrue("in child termination", r2 instanceof Termination);
+						
+						p2.save();
+						
+						r2.visit(this, m, dao, p2);
+
+					} else {
+						
+						executedChild.set(Boolean.TRUE);
+						
+						childPid = pid;
+						
+						ScriptProcess p2 = dao.getProcess(pid);
+						
+						ScriptAction r2 = p2.call();
+
+						p2.save();
+						
+						assertTrue("in child sleep", r2 instanceof Sleep);
+						
+
+					}
+					
+					return;
+				}
+				
+				if(pid.equals(p.getPid())) {
+
+					if(Boolean.TRUE.equals(executedParentPostFork.get())) {
+						
+						executedParentPostWait.set(Boolean.TRUE);
+						
+						ScriptAction enfin = dao.getProcess(pid).call();
+						
+						assertTrue("script finished", enfin instanceof Termination);
+						assertEquals("script result OK", "waitedfooslept"+childPid, ((Termination)enfin).getResult());
+						
+					} else {
+						
+						executedParentPostFork.set(Boolean.TRUE);
+						
+						ScriptProcess p2 = dao.getProcess(pid);
+						
+						ScriptAction r2 = p2.call();
+						
+						p2.save();
+
+						assertTrue("Waited correctly", r2 instanceof Wait);
+
+						//pause thread until child has termination
+						
+						r2.visit(this, m, dao, p2);
+						
+						//assert parent is still waiting
+						//wake child and execute
+						execute(childPid);
+
+					}
+
+				}
+				
+			}
+			
+		};
+		
+		r.visit(testScheduler, m, dao, p);
+		
+		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
+		assertEquals("Executed child post-sleep", Boolean.TRUE, executedChildPostSleep.get());
+		
+		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());
+		assertEquals("Executed parent (post-wait)", Boolean.TRUE, executedParentPostWait.get());
+		
 	}
+
+	public void test_kill() throws IOException {
+
+		final ScriptProcess p = dao.newProcess(TEST_USER, "kill.js", "", "owner");
+		
+		p.save();
+		
+		ScriptAction r = p.call();
+
+		assertTrue("Forked correctly", r instanceof Fork);
+		
+		final ThreadLocal<Boolean> executedParentPostFork = new ThreadLocal<Boolean>();
+		final ThreadLocal<Boolean> executedParentPostKill = new ThreadLocal<Boolean>();
+		final ThreadLocal<Boolean> executedChild = new ThreadLocal<Boolean>();
+		
+		System.out.println("pid="+p.getPid());
+		
+		ProcessScheduler testScheduler = new ProcessSchedulerDelegate(c) {
+			
+			private UUID childPid;
+			
+			@Override
+			public void execute(UUID pid) {
+				
+				if( ! pid.equals(p.getPid())) {
+					//executing child
+					
+					executedChild.set(Boolean.TRUE);
+					
+					childPid = pid;
+					
+					super.execute(pid);
+
+					return;
+				}
+				
+				if(pid.equals(p.getPid())) {
+
+					//executing parent
+					
+					if(Boolean.TRUE.equals(executedParentPostFork.get())) {
+						
+						//post-kill
+						
+						executedParentPostKill.set(Boolean.TRUE);
+
+					} else {
+						
+						//post-fork, pre-kill, pid
+
+						executedParentPostFork.set(Boolean.TRUE);
+						
+						ScriptProcess p2 = dao.getProcess(pid);
+						
+						ScriptAction r2 = p2.call();
+						
+						p2.save();
+
+						assertTrue("Killed correctly", r2 instanceof Kill);
+						
+						r2.visit(this, m, dao, p2);
+
+						boolean caughtNotFoundExcepton = false;
+						
+						try {
+							dao.getProcess(childPid);
+						} catch(ScriptusRuntimeException sre) {
+							if(sre.getMessage().toUpperCase().contains("NOT FOUND")) {
+								caughtNotFoundExcepton = true;
+							}
+						}
+						
+						assertTrue("process doesn't exist", caughtNotFoundExcepton);
+						
+						
+						
+					}
+
+				}
+				
+			}
+			
+		};
+		
+		assertTrue("forking correctly", r instanceof Fork);
+		
+		r.visit(testScheduler, m, dao, p);
+		
+		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
+		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());
+		assertEquals("Executed parent (post-kill)", Boolean.TRUE, executedParentPostKill.get());
+		
+	}
+
 
 	public void test_ask() throws IOException {
 

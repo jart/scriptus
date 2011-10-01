@@ -1,4 +1,4 @@
-package net.ex337.scriptus.dao;
+package net.ex337.scriptus.model;
 
 import java.io.Serializable;
 import java.util.UUID;

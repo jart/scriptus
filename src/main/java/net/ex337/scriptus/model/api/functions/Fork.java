@@ -6,8 +6,8 @@ import java.util.UUID;
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.dao.ScriptusDAO;
 import net.ex337.scriptus.interaction.InteractionMedium;
-import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.ScriptAction;
+import net.ex337.scriptus.model.ScriptProcess;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,11 +18,11 @@ public class Fork extends ScriptAction implements Serializable {
 
 	private static final Log LOG = LogFactory.getLog(Fork.class);
 
-	public void visit(ProcessScheduler controller, InteractionMedium medium, ScriptusDAO dao, final ScriptProcess parent) {
+	public void visit(ProcessScheduler scheduler, InteractionMedium medium, ScriptusDAO dao, final ScriptProcess parent) {
 		
 		final UUID childPid = UUID.randomUUID();
 		
-		dao.runWithLock(childPid, new Runnable() {
+		scheduler.runWithLock(childPid, new Runnable() {
 
 			@Override
 			public void run() {
@@ -46,8 +46,8 @@ public class Fork extends ScriptAction implements Serializable {
 		
 		child.save();
 		
-		controller.execute(parent.getPid());
-		controller.execute(child.getPid());
+		scheduler.execute(child.getPid());
+		scheduler.execute(parent.getPid());
 		
 	}
 
