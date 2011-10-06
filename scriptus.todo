@@ -1,13 +1,48 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
+	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 
 	move outstanding stuff to github tasks
+	
+	pids should be URNs: "pid:12345";
+	
+	docs: easy to write annoying, difficult to be considerate...
+	
+	add exec(script, owner, args)
+	Amazon AMI for playing with Scriptus
 
-	kill	
-	 - site update
+globalScope(ScriptusAPI)
+slots"Number"
+  value(IdFunctionObject)
+    prototypeProperty(NativeNumber)
+     slots
+       name	"faargh" (id=2363)	
+
+##`reminder.js`
+
+This program sets up a series of reminders to a given user for an event in the future. In contrast to a calendar reminder, it will send multiple warnings: one day before, one week before, one month before, six months before, and once a year until your event takes place.
+
+Notable features include:
+
+ * A combination of `get()` and `eval()` is used to effectively create an "import" statement. This could be done on one line at the beginning of the file, but for the Rhino bugs documented on [the known problems page](knownproblems.md).
+
+ * One process is used for creating each of the reminders. For an event 100 years from now this would mean 100 processes, but this has no impact on Scriptus except the storage costs of each process until it wakes. The reminders can be cancelled at any time, at which point the reminder processes are killed.
+
+
+
 	examples
-	 - document these 
-	 - date reminder with stop command
-	    - add kill()
+X	 - add page to docs 
+test	 - date reminder with stop command
+X	    - log() method, sheesh
+X	       - docs, guidelines
+	       - blog post
+X	    - line 32 Cannot find function days in object 1.
+Xok	    - test with rejigged import
+	    - blog post
+	    - BUG extensions to normal prototypes disappear on reloading continuation
+X rabbithole   - NOT OK to kill non-existent / finished processes!!
+	   - needs time-machine to test properly...
+	   
+	   
 	 - game tournament
 	    - brush up on set theory
 	 - line diet
@@ -24,6 +59,11 @@ docd	Timeout on listen() should make one last check before returning null to pro
 docd	remove listener registered on timeout
 docd	CID not stored per-user, too small a namespace for a big deployment (if that ever happens)...
 docd	scheduler is imprecise. use paging
+docd	kill - fix problem with running processes
+	      - children list should be managed separately (SDB?)
+	         - might as well separate state out too...
+	         - add status column
+	      - processes not deleted properly on wait / termination
 
 
 	Suggestions from Sander
@@ -62,7 +102,7 @@ still a newbie?		mefi projects?
 		buzz/G+
 		ask friends for feedback
 		feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com
-		guy asking about serialisable continuations
+		Weaver mailing list post
 
 	 		 	
 **running track of compromises & known bugs
@@ -78,7 +118,9 @@ still a newbie?		mefi projects?
 	  - say & listen to ids
 	- post()? etc?
 	- get + post should expose response headers to script & allow headers to be specified.
-	view source principal for scripts (using snapshotted debugger info from rhino)
+	view source principle for scripts (using snapshotted debugger info from rhino)
+	testbed should include "time-machine"
+	 - centralise clock
 	public or shared scripts in the admin interface
 	online REPL / dev environment?
 	 - problem is doing fork & wait in browser JS, where there is no thread model (maybe with narcissus + cloning for fork)
@@ -281,4 +323,6 @@ X	 - wait and kill tests aren't really correct until we can visit Fork with cust
 X	    - (means interface for scheduler, ...)
 X	       - move package, change refs
 X	 - documentation
+X	 - site update
+X	    - add kill()
 

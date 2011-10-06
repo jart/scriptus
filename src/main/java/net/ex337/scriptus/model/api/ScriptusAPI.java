@@ -30,6 +30,7 @@ import net.ex337.scriptus.model.api.functions.Wait;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Function;
@@ -79,6 +80,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 	public Scriptable createScope(Context cx) throws SecurityException, NoSuchMethodException {
 		Scriptable globalScope = cx.initStandardObjects(this);
 
+		globalScope.put("log", globalScope, new FunctionObject("log", this.getClass().getMethod("log", Object.class), globalScope));
 		globalScope.put("fork", globalScope, new FunctionObject("fork", this.getClass().getMethod("fork"), globalScope));
 		globalScope.put("kill", globalScope, new FunctionObject("kill", this.getClass().getMethod("kill", String.class), globalScope));
 		globalScope.put("listen", globalScope, new FunctionObject("listen", this.getClass().getMethod("listen", NativeObject.class), globalScope));
@@ -184,6 +186,10 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 
 		return until;
 		
+	}
+	
+	public void log(Object o) {
+		LogFactory.getLog("SCRIPTUS_PROGRAMS").info(o);
 	}
 
 	public Object fork() {

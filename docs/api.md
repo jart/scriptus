@@ -1,6 +1,6 @@
 Scriptus programs are written in JavaScript and are wrapped in a function declaration before being executed - this is why `return` acts as expected. All the usual JavaScript objects such as Date and String are present and correct, as are top-level functions such as eval(). However, none of the methods associated with in-browser JavaScript such as alert() are present. 
 
-The Scriptus API is very simple, and can be divided into three main sections, that of interaction, program control, and networking.
+The Scriptus API is very simple, and can be divided into the sections of that of interaction, program control, networking, and logging.
 
 #Interaction
 
@@ -149,24 +149,6 @@ If no pid is given, then the last process forked is waited for.
 
 If no process was waited for, either because a bad pid was provided or no pid was provided and the process has not yet forked, `-1` is returned.
 
-##exit()
-```javascript
-exit("pursued by a bear");
-```
-
-Quits the current process with the supplied argument as the return value, or `null` if not specified. The value can be any primitive or object.
-
-This basically does the same as `return` in the top-level function but it can be called from anywhere in the process.
-
-##sleep()
-```javascript
-sleep("8h");
-```
-
-The process will lie dormant for the specified amount of time, which as elsewhere may be a number of hours, a date, or a duration.
-
-In many places it may be better to use `listen` so that a script can be woken up by prodding it if necessary.
-
 ##kill()
 ```javascript
 var pid = fork();
@@ -185,6 +167,24 @@ kill(pid);
 Stops the process specified by the `pid` argument. If the specified process is sleeping or waiting, the process will simply be deleted.
 
 If the process is currently executing, a best-effort is made to stop it from going any further. (I'm not completely sure it's working perfectly.)
+
+##exit()
+```javascript
+exit("pursued by a bear");
+```
+
+Quits the current process with the supplied argument as the return value, or `null` if not specified. The value can be any primitive or object.
+
+This basically does the same as `return` in the top-level function but it can be called from anywhere in the process.
+
+##sleep()
+```javascript
+sleep("8h");
+```
+
+The process will lie dormant for the specified amount of time, which as elsewhere may be a number of hours, a date, or a duration.
+
+In many places it may be better to use `listen` so that a script can be woken up by prodding it if necessary.
 
 ##TODO pipe()
 
@@ -211,6 +211,16 @@ The HTTP GET is executed with a timeout of 60 seconds.
 TODO add the option to send & receive headers 
 
 ##TODO post()
+
+#Logging
+
+##log()
+```javascript
+log("Captain's log, Startdate 45240.1 To cross the Neutral Zone, I will require a cloaked ship...");
+log(new Date());
+```
+
+The `log` method accepts one argument and then writes that argument's string respresentation to the log file `scriptus_programs.txt` under `logs/`. The log message will automatically prepend a timestamp, so you don't need to include one yourself.
 
 ##A note about eval()
 

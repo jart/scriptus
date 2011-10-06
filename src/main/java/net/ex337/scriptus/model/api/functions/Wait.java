@@ -48,6 +48,7 @@ public class Wait extends ScriptAction implements Serializable {
 					//already terminated
 					if(child.getState() instanceof Termination) {
 
+						//FIXME we should delete child & remove from list of children
 						scheduler.updateProcessState(process.getPid(), ((Termination)child.getState()).getResult());
 
 						scheduler.execute(process.getPid());

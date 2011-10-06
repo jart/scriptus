@@ -2,12 +2,16 @@
 var pid = scriptus.fork();
 
 if(pid == 0) {
-	return scriptus.ask("foo", "give me your number");
+	return scriptus.ask("give me a number", {to:"adam"});
 }
 
-var second = scriptus.ask("bar", "give me second number");
+var second = scriptus.ask("give me a number", {to:"bart"});
 
-var first = scriptus.wait();
+var first;
 
-scriptus.say("foo", "foo and bar="+(first + second));
+scriptus.wait(function(result) {first=result;});
+
+//this is string concatenation!
+
+scriptus.say("both numbers="+(first + second), {to:"carole"});
 

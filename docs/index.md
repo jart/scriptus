@@ -6,6 +6,7 @@ This page lists all of the documentation of the Scriptus application.
 
  * [The user guide](userguide.md) is a general introduction to running Scriptus.
  * [The API documentation](api.md) is the master reference for the API used by Scriptus programs.
+ * [The examples](examples.md) are intended to give a clearer example of the capabilities of Scriptus.
  * [Known problems](knownproblems.md) lists the currently known problems with Scriptus.
  
 #Scriptus internals

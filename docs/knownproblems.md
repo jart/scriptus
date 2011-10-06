@@ -3,17 +3,25 @@
 
 Scriptus does generally work as expected, however there are some quirks, bugs and niggles that are good to know about. Below are listed all such problems of which I'm currently aware. This page will be updated to reflect the status of the latest build.
 
-##Scheduler timing
+##Rhino continuations and native object prototype properties
 
-The scheduler currently polls the storage for tasks to execute every minute, on the minute. This means that timeouts and durations of a minute or less will take up to a minute plus the time to next poll. e.g. a `sleep()` of 1 minute at 04:34:40 will wake the process at roughly 04:36:00.
+This code should work but doesn't:
 
-##CID namespace size
+```javascript
+Number.prototype.faargh = function(){
+	return 'foo'
+};
 
-The correlation ID used in ask() is a number between 0 and 0xFFFFFF, rendered base 62 using 0-9, A-Z and a-z as the alphabet.
+say('foo');
 
-This CID should be stored on a per-user basis, as the namespace is too small to guarantee uniqueness over a big deployment.
+//faargh is stripped from Number prototype by continuation.
 
-As there are no big deployments right now this is very theoretical.
+return new Number().faargh();
+```
+
+This means that if you use a library, for example [Datejs](http://www.datejs.com) that adds functions to primitive object prototypes, you will encounter unexpected problems.
+
+The ghastly workaround to this is to `get` the library and then `eval()` it after every continuation following which you need to use that library's functionality. This is needless to say intolerable and I will try and get this fixed soon.
 
 ##Rhino continuations & nested function calls
 
@@ -27,6 +35,18 @@ eval(code);
 //this doesn't work:
 eval(ask("What should I try and execute?");
 ```
+
+##Scheduler timing
+
+The scheduler currently polls the storage for tasks to execute every minute, on the minute. This means that timeouts and durations of a minute or less will take up to a minute plus the time to next poll. e.g. a `sleep()` of 1 minute at 04:34:40 will wake the process at roughly 04:36:00.
+
+##CID namespace size
+
+The correlation ID used in ask() is a number between 0 and 0xFFFFFF, rendered base 62 using 0-9, A-Z and a-z as the alphabet.
+
+This CID should be stored on a per-user basis, as the namespace is too small to guarantee uniqueness over a big deployment.
+
+As there are no big deployments right now this is very theoretical.
 
 ##Listen timeout
 
@@ -42,3 +62,10 @@ In UNIX, when a root process terminates its children if any are 're-parented' to
 
 This could balloon storage over time, which would cost money if AWS is being used as the datastore. Good hygiene and tidiness is not yet completely enforced.
 
+##kill() during process execution
+
+If a process is killed during its execution, a flag is set on the `ScriptProcess` to avoid saving the process or executing any resultant `ScriptAction`. However, this check is by no means watertight, and there are several conceivable race conditions between `ProcessExecutor.run` and `ProcessSchedulerImpl.markAsKilledIfRunning` under which a nominally killed process is not present to receive the `kill` flag, but executes and persists anyway.
+ 
+##kill, wait and deleting processes
+
+The implementation of kill is pretty ugly because the management of child processes itself is ugly - see above, but also the child processes aren't deleted when they should be, removed from the list of children, etc. None of this prevents Scriptus from functioning correctly, but leaves it looking pretty hairy around the edges.

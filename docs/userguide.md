@@ -103,6 +103,10 @@ In writing the example programs for Scriptus there are one or two tips and trick
  *  **Use `listen()` instead of `sleep()`.** That way you can tell the running program "OK stop waiting and carry on".
 
  * **For durations, use constants. For dates, use arithmetic and isolate it in one place.** You can easily change these constants to smaller durations during testing and longer ones when running the program for real.
+ 
+ * **Processes are (relatively) cheap, so use them liberally if it simplifies your code.** In a normal program, too many processes leads to CPU contention and resource exhaustion. In Scriptus, a sleeping or waiting process uses no memory or CPU, only storage space, generally kilobytes per process. With this in mind, I think it's fine if you want to launch 100 processes to run a questionnaire for 100 different users, for example.
+ 
+ * **Use `log()` statements.** Without them, since there is not currently a debugger, it's very difficult to tell what your program is doing. See [this Stack Overflow question on logging best practices](http://stackoverflow.com/questions/270651/what-guidelines-do-you-adhere-to-for-writing-good-logging-statements).
 
 That's all for now. If you have more, please send them in, so we can all benefit from the wisdom of collective experience :-)
 

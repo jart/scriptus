@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
+import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.interaction.impl.DummyInteractionMedium;
 import net.ex337.scriptus.model.ScriptAction;
@@ -40,6 +40,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	private static final Map<String,String> testSources = new HashMap<String,String>() {{
 		put("return.js", "return \"result\";");
+		put("log.js", "log(\"this is a log statement\"); return \"result\";");
+		put("prototypes.js", "Number.prototype.faargh = function(){return 'foo'}; say('foo');return new Number().faargh();");
 		put("syntaxError.js", "return nonexitent()");
 		put("throw.js", "try {throw \"this is an error\"} catch(e) {throw (typeof e);}");
 		put("fiddle.js", "scriptus.fork = function() {return \"not forking\";};return scriptus.fork()");
@@ -137,6 +139,52 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		r.visit(c, m, dao, p); //sould say
 
 		assertEquals("Correct result", "result", n.getResult());
+		
+	}
+
+	public void test_log() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "log.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("Correct result", r instanceof NormalTermination);
+		
+		NormalTermination n = (NormalTermination) r;
+
+		r.visit(c, m, dao, p); //sould say
+
+		assertEquals("Correct result", "result", n.getResult());
+		
+	}
+
+	/**
+	 * Illustrates the problems of scripts breaking
+	 * because of prototypes.
+	 * 
+	 * 
+	 * @throws IOException
+	 */
+	public void test_prototypes() throws IOException {
+		
+		ScriptProcess p = dao.newProcess(TEST_USER, "prototypes.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		assertTrue("Correct result", r instanceof Say);
+		
+		p.save();
+
+		r.visit(new ProcessSchedulerDelegate(c) {
+
+			@Override
+			public void execute(UUID pid) {
+				ScriptProcess pp = dao.getProcess(pid);
+				ScriptAction rr = pp.call();
+				assertEquals("final result", NormalTermination.class, rr.getClass());
+			}
+			
+		}, m, dao, p); //sould say
 		
 
 	}
@@ -648,10 +696,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						try {
 							dao.getProcess(childPid);
-						} catch(ScriptusRuntimeException sre) {
-							if(sre.getMessage().toUpperCase().contains("NOT FOUND")) {
-								caughtNotFoundExcepton = true;
-							}
+						} catch(ProcessNotFoundException sre) {
+							caughtNotFoundExcepton = true;
 						}
 						
 						assertTrue("process doesn't exist", caughtNotFoundExcepton);

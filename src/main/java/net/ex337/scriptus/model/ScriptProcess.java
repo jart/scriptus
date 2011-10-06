@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.model.api.Termination;
@@ -113,7 +114,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 				byte[] process = dao.loadProcess(pid);
 				
 				if(process == null) {
-					throw new ScriptusRuntimeException("Process not found "+pid);
+					throw new ProcessNotFoundException(pid.toString());
 				}
 				
 				InputStream bais = new ByteArrayInputStream(process);
@@ -206,7 +207,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 			public void call(Context cx) throws Exception {
 				ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				ScriptableOutputStream out = new ScriptableOutputStream(bout, getGlobalScope());
-				out.addExcludedName("scriptus");
+//				out.addExcludedName("scriptus");
 				out.writeObject(ScriptProcess.this);
 				out.writeObject(getGlobalScope());
 				out.writeObject(getContinuation());
