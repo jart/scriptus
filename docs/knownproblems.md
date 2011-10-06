@@ -3,7 +3,7 @@
 
 Scriptus does generally work as expected, however there are some quirks, bugs and niggles that are good to know about. Below are listed all such problems of which I'm currently aware. This page will be updated to reflect the status of the latest build.
 
-##Rhino continuations and native object prototype properties
+##Continuations in Scriptus and native object prototype properties
 
 This code should work but doesn't:
 
