@@ -21,7 +21,7 @@ return new Number().faargh();
 
 This means that if you use a library, for example [Datejs](http://www.datejs.com) that adds functions to primitive object prototypes, you will encounter unexpected problems.
 
-The ghastly workaround to this is to `get` the library and then `eval()` it after every continuation following which you need to use that library's functionality. This is needless to say intolerable and I will try and get this fixed soon.
+The ghastly workaround to this is to `get` the library and then `eval()` it after every continuation following which you need to use that library's functionality. This is needless to say intolerable and I will try and get this fixed soon. It's a bug in Scriptus, not in Rhino.
 
 ##Rhino continuations & nested function calls
 
