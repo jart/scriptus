@@ -63,7 +63,6 @@ docd	kill - fix problem with running processes
 	         - add status column
 	      - processes not deleted properly on wait / termination
 
-
 	Suggestions from Sander
 	 - email interaction medium
 	    - pop3 or imap?
@@ -71,6 +70,11 @@ docd	kill - fix problem with running processes
 	 - import/export functionality for DAO
 	 - process table
 	 - user admin
+	
+	Suggestions from Jenya
+	 - how to integrate with existing services & web-applications?
+	 - i.e. use it as workflow engine or store state of process
+	   --> investigate how pipes & stdin/out works in UNIX
 	 
 	terminology:
 	 - s/interaction medium/transport/g?
@@ -93,11 +97,8 @@ still a newbie?		mefi projects?
 		demo on twitter 
 		 - install the iPhone client
 		   - upgrade firmware, finally
-		facebook apologia
 		blog posts
-		 - introducing project
 		 - idea of 'slow code'		 
-		buzz/G+
 		ask friends for feedback
 		feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com		
 		Weaver mailing list post
@@ -330,4 +331,7 @@ X	       - blog post
 X	    - line 32 Cannot find function days in object 1.
 Xok	    - test with rejigged import
 X	    - blog post
+X		facebook apologia
+X		 - introducing project
+X		buzz/G+
 

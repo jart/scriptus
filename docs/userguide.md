@@ -30,17 +30,17 @@ The OpenID identification can be disabled by putting `disableOpenID=true` in the
 
 #Configuring Scriptus
 
-When you are running Scriptus, the first thing you will probably want to do is go to the settings page and configure Scriptus. If you've run Scriptus using maven, this will be at [http://127.0.0.1:8080/settings](http://127.0.0.1:8080/settings). This page provides a very simple page for editing the Scriptus configuration file.
+When you are running Scriptus, the first thing you will probably want to do is go to the settings page and configure Scriptus. If you've run Scriptus using Maven, this will be at [http://127.0.0.1:8080/settings](http://127.0.0.1:8080/settings). This page provides a very simple interface for editing the Scriptus configuration file.
 
 This file is by default stored in `~/.scriptus/config.properties`. If you want to keep it somewhere else, then you can provide a `scriptus.config` system property to specify the location:
 
 `mvn jetty:run -Dscriptus.config=/etc/scriptus.conf`
 
-All off the options in the configuration file can be edited via this interface except for the `disableOpenID` property above.
+All of the options in the configuration file can be edited via this interface except for the `disableOpenID` property descrived in the previous section.
 
 The two major configurations for Scriptus are choosing where to store your data, and how to interact with people (the 'interaction medium').
 
-##Choosing a data store
+##Choosing a datastore
 
 The datastore is responsible for persisting saved programs and running program state. There are three implementations and they all have their uses.
 
