@@ -20,6 +20,7 @@ import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.functions.Ask;
+import net.ex337.scriptus.model.api.functions.Exec;
 import net.ex337.scriptus.model.api.functions.Fork;
 import net.ex337.scriptus.model.api.functions.Get;
 import net.ex337.scriptus.model.api.functions.Kill;
@@ -83,6 +84,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 		globalScope.put("log", globalScope, new FunctionObject("log", this.getClass().getMethod("log", Object.class), globalScope));
 		globalScope.put("fork", globalScope, new FunctionObject("fork", this.getClass().getMethod("fork"), globalScope));
 		globalScope.put("kill", globalScope, new FunctionObject("kill", this.getClass().getMethod("kill", String.class), globalScope));
+		globalScope.put("exec", globalScope, new FunctionObject("exec", this.getClass().getMethod("exec", String.class, String.class), globalScope));
 		globalScope.put("listen", globalScope, new FunctionObject("listen", this.getClass().getMethod("listen", NativeObject.class), globalScope));
 		globalScope.put("say", globalScope, new FunctionObject("say", this.getClass().getMethod("say", String.class, NativeObject.class), globalScope));
 		globalScope.put("ask", globalScope, new FunctionObject("ask", this.getClass().getMethod("ask", String.class, NativeObject.class), globalScope));
@@ -201,6 +203,12 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 	public Object kill(String pid) {
 		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
 		pending.setApplicationState(new Kill(UUID.fromString(pid)));
+		throw pending;
+	}
+
+	public Object exec(String program, String args) {
+		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
+		pending.setApplicationState(new Exec(program, args));
 		throw pending;
 	}
 

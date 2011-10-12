@@ -16,10 +16,10 @@ import net.ex337.scriptus.dao.ScriptusDAO;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.model.api.ScriptusAPI;
 import net.ex337.scriptus.model.api.Termination;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
-import net.ex337.scriptus.model.support.ContextCall;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -57,6 +57,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	private UUID pid;
 	private UUID waiterPid;
+	private String userId;
 	private String source;
 	private String sourceName;
 	private String args;
@@ -65,7 +66,6 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	private int version;
 	private List<UUID> children = new ArrayList<UUID>();
 	private Function compiled;
-	private String userId;
 	private boolean isRoot;
 	
 	private transient Object continuation;
@@ -105,48 +105,53 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 		LOG.debug("loading " + pid.toString().substring(30));
 
-		new ContextCall(config, this, true) {
+		Context cx = Context.enter();
+		cx.setClassShutter(new ScriptusClassShutter());
+		cx.setOptimizationLevel(-1); // must use interpreter mode
+		
+		try {
 
-			private static final long serialVersionUID = 9102537169856280554L;
-
-			@Override
-			public void call(Context cx) throws Exception {
-				byte[] process = dao.loadProcess(pid);
-				
-				if(process == null) {
-					throw new ProcessNotFoundException(pid.toString());
-				}
-				
-				InputStream bais = new ByteArrayInputStream(process);
-
-				ScriptableInputStream in = new ScriptableInputStream(bais, globalScope);
-
-				ScriptProcess p = (ScriptProcess) in.readObject();
-				
-				ScriptProcess me = ScriptProcess.this;
-				
-				me.pid = p.pid;
-				me.waiterPid = p.waiterPid;
-				me.source = p.source;
-				me.sourceName = p.sourceName;
-				me.args = p.args;
-				me.state = p.state;
-				me.children = p.children;
-				me.compiled = p.compiled;
-				me.userId = p.userId;
-				me.owner = p.owner;
-				me.isRoot = p.isRoot;
-				me.version = p.version;
-				
-				p = null;
-
-				me.setGlobalScope((ScriptableObject) in.readObject());
-				me.setContinuation(in.readObject());
-
-				in.close();
+			byte[] process = dao.loadProcess(pid);
+			
+			if(process == null) {
+				throw new ProcessNotFoundException(pid.toString());
 			}
 			
-		};
+			InputStream bais = new ByteArrayInputStream(process);
+
+			ScriptusAPI tmpScriptusApi = new ScriptusAPI(config);
+			Scriptable tmpGlobalScope = tmpScriptusApi.createScope(cx);
+
+			ScriptableInputStream in = new ScriptableInputStream(bais, tmpGlobalScope);
+
+			ScriptProcess p = (ScriptProcess) in.readObject();
+			
+			this.pid = p.pid;
+			this.waiterPid = p.waiterPid;
+			this.source = p.source;
+			this.sourceName = p.sourceName;
+			this.userId = p.userId;
+			this.args = p.args;
+			this.state = p.state;
+			this.children = p.children;
+			this.compiled = p.compiled;
+			this.owner = p.owner;
+			this.isRoot = p.isRoot;
+			this.version = p.version;
+			
+			p = null;
+
+			this.setGlobalScope((ScriptableObject) in.readObject());
+			this.setContinuation(in.readObject());
+
+			in.close();
+		} catch (ScriptusRuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ScriptusRuntimeException(e);
+		} finally {
+			Context.exit();
+		}
 		
 
 	}
@@ -173,17 +178,27 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		this.isRoot = true;
 		this.version = 0;
 
-		new ContextCall(config, this, true) {
+		Context cx = Context.enter();
+		cx.setClassShutter(new ScriptusClassShutter());
+		cx.setOptimizationLevel(-1); // must use interpreter mode
+		
+		try {
 
-			private static final long serialVersionUID = 7592490313480551981L;
+			ScriptusAPI scriptusApi = new ScriptusAPI(config);
 
-			@Override
-			public void call(Context cx) throws Exception {
+			Scriptable globalScope = scriptusApi.createScope(cx);
+			
+			setGlobalScope(globalScope);
+			
+			compiled = cx.compileFunction(globalScope, "function ___scriptus___ () {"+source+"}", sourceName, 0, null);
 
-				compiled = cx.compileFunction(globalScope, "function ___scriptus___ () {"+source+"}", sourceName, 0, null);
-			}
-		};
-
+		} catch (ScriptusRuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ScriptusRuntimeException(e);
+		} finally {
+			Context.exit();
+		}
 
 	}
 
@@ -199,24 +214,28 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 		LOG.debug("saving " + getPid().toString().substring(30));
 
-		new ContextCall(config, this, false) {
-
-			private static final long serialVersionUID = 4640396013044598210L;
-
-			@Override
-			public void call(Context cx) throws Exception {
-				ByteArrayOutputStream bout = new ByteArrayOutputStream();
-				ScriptableOutputStream out = new ScriptableOutputStream(bout, getGlobalScope());
+		Context cx = Context.enter();
+		cx.setClassShutter(new ScriptusClassShutter());
+		cx.setOptimizationLevel(-1); // must use interpreter mode
+		
+		try {
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			ScriptableOutputStream out = new ScriptableOutputStream(bout, getGlobalScope());
 //				out.addExcludedName("scriptus");
-				out.writeObject(ScriptProcess.this);
-				out.writeObject(getGlobalScope());
-				out.writeObject(getContinuation());
-				out.close();
+			out.writeObject(this);
+			out.writeObject(getGlobalScope());
+			out.writeObject(getContinuation());
+			out.close();
 
-				dao.writeProcess(getPid(), bout.toByteArray());
+			dao.writeProcess(getPid(), bout.toByteArray());
 				
-			}
-		};
+		} catch (ScriptusRuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ScriptusRuntimeException(e);
+		} finally {
+			Context.exit();
+		}
 
 	}
 
@@ -329,6 +348,55 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		isKilled = true;
 	}
 
+	/**
+	 * Copies the process, used in fork()ing.
+	 * Not a complete clone, the differences are:
+	 *  - isRoot is false
+	 *  - version is 0
+	 *  - pid & waiterPid is null
+	 *  - children is empty
+	 * 
+	 */
+	public ScriptProcess clone() {
+		ScriptProcess r = new ScriptProcess();
+		r.args = this.args;
+		r.compiled = this.compiled;
+		r.continuation = this.continuation;
+		r.globalScope = this.globalScope;
+		r.source = this.source;
+		r.sourceName = this.sourceName;
+		r.state = this.state;
+		r.userId = this.userId;
+		r.dao = this.dao;
+		r.scheduler = this.scheduler;
+		r.interaction = this.interaction;
+		r.config = this.config;
+		r.owner = this.owner;
+		// ?
+		r.isRoot = false;
+		r.version = 0;
+		r.pid = null;
+		r.waiterPid = null;
+		r.children = new ArrayList<UUID>();
+
+		return r;
+
+	}
+
+	/**
+	 * deletes the script from DAO.
+	 */
+	public void delete() {
+		
+		/*
+		 * TODO should this recursively delete child processes?
+		 * 
+		 */
+		
+		dao.deleteProcess(getPid());
+	}
+
+	
 	public String getSource() {
 		return source;
 	}
@@ -409,53 +477,6 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	
 
-	/**
-	 * Copies the process, used in fork()ing.
-	 * Not a complete clone, the differences are:
-	 *  - isRoot is false
-	 *  - version is 0
-	 *  - pid & waiterPid is null
-	 *  - children is empty
-	 * 
-	 */
-	public ScriptProcess clone() {
-		ScriptProcess r = new ScriptProcess();
-		r.args = this.args;
-		r.compiled = this.compiled;
-		r.continuation = this.continuation;
-		r.globalScope = this.globalScope;
-		r.source = this.source;
-		r.sourceName = this.sourceName;
-		r.state = this.state;
-		r.userId = this.userId;
-		r.dao = this.dao;
-		r.scheduler = this.scheduler;
-		r.interaction = this.interaction;
-		r.config = this.config;
-		r.owner = this.owner;
-		// ?
-		r.isRoot = false;
-		r.version = 0;
-		r.pid = null;
-		r.waiterPid = null;
-		r.children = new ArrayList<UUID>();
-
-		return r;
-
-	}
-
-	/**
-	 * deletes the script from DAO.
-	 */
-	public void delete() {
-		
-		/*
-		 * TODO should this recursively delete child processes?
-		 * 
-		 */
-		
-		dao.deleteProcess(getPid());
-	}
 
 	public boolean isRoot() {
 		return isRoot;
@@ -463,6 +484,14 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	public void setRoot(boolean isRoot) {
 		this.isRoot = isRoot;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public String getSourceName() {
+		return sourceName;
 	}
 
 }

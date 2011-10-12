@@ -14,6 +14,7 @@ import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.Termination;
 import net.ex337.scriptus.model.api.functions.Ask;
+import net.ex337.scriptus.model.api.functions.Exec;
 import net.ex337.scriptus.model.api.functions.Fork;
 import net.ex337.scriptus.model.api.functions.Get;
 import net.ex337.scriptus.model.api.functions.Kill;
@@ -48,6 +49,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		put("fiddle2.js", "scriptus = {}; return scriptus.fork()");
 		put("fork.js", "var pid = scriptus.fork(); return pid;");
 		put("forkNoPrefix.js", "var pid = fork(); return pid;");
+		put("exec.js", "exec('returnArg.js', 'arg1 arg2'); throw 'bad result';");
+		put("returnArg.js", "return \"result\"+args;");
 		put("exit.js", "function foo() {scriptus.exit(\"result\");} foo(); return \"bad result\"");
 		put("getHttp.js", "var s = get(\"http://www.google.com/robots.txt\");");
 		put("evalget.js", "var ss = get(\"https://raw.github.com/ianso/scriptus/master/scripts/lib/date-en-US.js\"); eval(ss); say(Date.today)");
@@ -263,6 +266,38 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		assertTrue("Exited correctly", r instanceof NormalTermination);
 		assertTrue("correct exit", ((NormalTermination)r).getResult().equals("result"));
 
+	}
+
+	public void test_exec() throws IOException {
+		
+		final ScriptProcess p = dao.newProcess(TEST_USER, "exec.js", "", "owner");
+		
+		ScriptAction r = p.call();
+		
+		p.save();
+		
+		assertTrue("Exec correctly", r instanceof Exec);
+		assertEquals("Exec good program", "returnArg.js", ((Exec)r).getScript());
+		assertEquals("Exec good args", "arg1 arg2", ((Exec)r).getArgs());
+		
+		r.visit(new ProcessSchedulerDelegate(c) {
+
+			@Override
+			public void execute(UUID pid) {
+
+				ScriptProcess pp = dao.getProcess(pid);
+				
+				assertEquals("good pid", p.getPid(), pid);
+				assertEquals("good source", "returnArg.js", pp.getSourceName());
+				assertEquals("good args", "arg1 arg2", pp.getArgs());
+				
+				ScriptAction aa = pp.call();
+				
+				assertEquals("good class result", NormalTermination.class, aa.getClass());
+				assertEquals("goood result", "resultarg1 arg2", ((NormalTermination)aa).getResult());
+			}
+			
+		}, m, dao, p);
 	}
 
 	public void test_sleepHour() throws IOException {

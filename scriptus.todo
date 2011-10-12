@@ -1,32 +1,14 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-
-	move outstanding stuff to github tasks
-	
-	pids should be URNs: "pid:12345";
-	
-	docs: easy to write annoying, difficult to be considerate...
 	
 	test datejs (12).months().before(new Date())
+	 --> doesn't work, fix bug in eric's version
 	
-	add exec(script, owner, args)
-	Amazon AMI for playing with Scriptus
-
 	examples
 test	 - date reminder with stop command
-	    - BUG extensions to normal prototypes disappear on reloading continuation
-
-globalScope(ScriptusAPI)
-slots"Number"
-  value(IdFunctionObject)
-    prototypeProperty(NativeNumber)
-     slots
-       name	"faargh" (id=2363)	
 
 X rabbithole   - NOT OK to kill non-existent / finished processes!!
 	   - needs time-machine to test properly...
-
-
 
 ##`reminder.js`
 
@@ -41,14 +23,24 @@ Notable features include:
 
 	   
 	   
-	 - game tournament
-	    - brush up on set theory
 	 - line diet
 	    - simple calculus
 	 - habit judo from metafilter
-	 - adventure game from Nathanael	 
+	 - game tournament
+	    - brush up on set theory
+	 - adventure game from Nathanael
 
-	BUGS
+medium	
+X test	add exec(script, owner, args)
+X test	 --without owner?
+	 -- blog post
+	Amazon AMI for playing with Scriptus
+low
+	pids should be URNs: "pid:12345";
+	docs: easy to write annoying, difficult to be considerate...
+	move outstanding stuff to github tasks
+
+	*************BUGS
 docd	on root process termination, 
 docd	 - child processes should be re-parented, 
 docd	     - and when they terminate, what happens if their output has not been waited upon?
@@ -62,6 +54,14 @@ docd	kill - fix problem with running processes
 	         - might as well separate state out too...
 	         - add status column
 	      - processes not deleted properly on wait / termination
+asked for help	    - BUG extensions to normal prototypes disappear on reloading continuation
+	    where it's stored in object hierarchy:
+		globalScope(ScriptusAPI)
+		slots"Number"
+		  value(IdFunctionObject)
+		    prototypeProperty(NativeNumber)
+		     slots
+		       name	"faargh" (id=2363)	
 
 	Suggestions from Sander
 	 - email interaction medium
@@ -101,7 +101,6 @@ still a newbie?		mefi projects?
 		 - idea of 'slow code'		 
 		ask friends for feedback
 		feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com		
-		Weaver mailing list post
 
 	 		 	
 **running track of compromises & known bugs
@@ -334,4 +333,5 @@ X	    - blog post
 X		facebook apologia
 X		 - introducing project
 X		buzz/G+
+X		Weaver mailing list post
 

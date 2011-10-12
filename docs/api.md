@@ -168,6 +168,19 @@ Stops the process specified by the `pid` argument. If the specified process is s
 
 If the process is currently executing, a best-effort is made to stop it from going any further. (I'm not completely sure it's working perfectly.)
 
+##exec()
+
+```javascript
+var program = ask("C:\>_");
+
+var pid = fork();
+if(pid == 0) {
+	exec(program, "arg1 arg2 arg3");
+}
+```
+
+As in UNIX, the `exec()` call replaces the current process with a new process that is specified and executed with the arguments passed to the call. This call does not return. (To do: unless there is an error, in which case an exception will be thrown).
+
 ##exit()
 ```javascript
 exit("pursued by a bear");
@@ -224,7 +237,7 @@ The `log` method accepts one argument and then writes that argument's string res
 
 ##A note about eval()
 
-Although eval() works, the Scriptus API methods as listed above cannot be executed within them. For example, this code wouldn't work:
+Although `eval()` works, the Scriptus API methods as listed above cannot be executed within them. For example, this code wouldn't work:
 
 ```javascript
 eval("say('Where ARE my socks?')")

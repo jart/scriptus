@@ -36,7 +36,7 @@ This file is by default stored in `~/.scriptus/config.properties`. If you want t
 
 `mvn jetty:run -Dscriptus.config=/etc/scriptus.conf`
 
-All of the options in the configuration file can be edited via this interface except for the `disableOpenID` property descrived in the previous section.
+All of the options in the configuration file can be edited via this interface except for the `disableOpenID` property described in the previous section.
 
 The two major configurations for Scriptus are choosing where to store your data, and how to interact with people (the 'interaction medium').
 
