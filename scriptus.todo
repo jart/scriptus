@@ -1,6 +1,24 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-	
+
+asked for help	    - BUG extensions to normal prototypes disappear on reloading continuation
+	    where it's stored in object hierarchy:
+		globalScope(ScriptusAPI)
+		slots"Number"
+		  value(IdFunctionObject)
+		    prototypeProperty(NativeNumber)
+		     slots
+		       name	"faargh" (id=2363)	
+--> eclipse logical structures ("return this") to escape
+	only because of this 
+	        if (!f.hasTag(NUMBER_TAG)) {
+		    return super.execIdCall(f, cx, scope, thisObj, args);
+		}
+	-->readObject has to retrieve local NativeX impl, replace, 
+	   then copy slots that aren't 
+	   -->override readObject, check how many times called?
+	     ->standardReadObject
+
 	test datejs (12).months().before(new Date())
 	 --> doesn't work, fix bug in eric's version
 	
@@ -54,14 +72,6 @@ docd	kill - fix problem with running processes
 	         - might as well separate state out too...
 	         - add status column
 	      - processes not deleted properly on wait / termination
-asked for help	    - BUG extensions to normal prototypes disappear on reloading continuation
-	    where it's stored in object hierarchy:
-		globalScope(ScriptusAPI)
-		slots"Number"
-		  value(IdFunctionObject)
-		    prototypeProperty(NativeNumber)
-		     slots
-		       name	"faargh" (id=2363)	
 
 	Suggestions from Sander
 	 - email interaction medium
