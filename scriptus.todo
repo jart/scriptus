@@ -1,31 +1,17 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
+	
+	custom repo for our version of Rhino(until it's in master)
+	 - add note to build instructions etc.
+	 - upload jar to GitHub :-/
 
-asked for help	    - BUG extensions to normal prototypes disappear on reloading continuation
-	    where it's stored in object hierarchy:
-		globalScope(ScriptusAPI)
-		slots"Number"
-		  value(IdFunctionObject)
-		    prototypeProperty(NativeNumber)
-		     slots
-		       name	"faargh" (id=2363)	
---> eclipse logical structures ("return this") to escape
-	only because of this 
-	        if (!f.hasTag(NUMBER_TAG)) {
-		    return super.execIdCall(f, cx, scope, thisObj, args);
-		}
-	-->readObject has to retrieve local NativeX impl, replace, 
-	   then copy slots that aren't 
-	   -->override readObject, check how many times called?
-	     ->standardReadObject
 
 	test datejs (12).months().before(new Date())
 	 --> doesn't work, fix bug in eric's version
-	
+
 	examples
 test	 - date reminder with stop command
 
-X rabbithole   - NOT OK to kill non-existent / finished processes!!
 	   - needs time-machine to test properly...
 
 ##`reminder.js`
@@ -49,9 +35,6 @@ Notable features include:
 	 - adventure game from Nathanael
 
 medium	
-X test	add exec(script, owner, args)
-X test	 --without owner?
-	 -- blog post
 	Amazon AMI for playing with Scriptus
 low
 	pids should be URNs: "pid:12345";
@@ -72,6 +55,15 @@ docd	kill - fix problem with running processes
 	         - might as well separate state out too...
 	         - add status column
 	      - processes not deleted properly on wait / termination
+	      
+	Future directions inspired by UNIX
+	 - filesystem, read/write/open
+	 -> what gets mounted and how?
+	  /proc for admin, /bin with standard tools?
+	->keep view source principal: tools are scripts
+	->REPL : pipe commands, e.g.
+	$ poll "Are widgets splunkable?" yes no
+	$ elect 2 "widget experts" | debate "Should widgets be splunked?"
 
 	Suggestions from Sander
 	 - email interaction medium
@@ -79,17 +71,20 @@ docd	kill - fix problem with running processes
 	 - multiple transports per script: use transport option
 	 - import/export functionality for DAO
 	 - process table
+	    -> via procfs?
 	 - user admin
 	
 	Suggestions from Jenya
 	 - how to integrate with existing services & web-applications?
 	 - i.e. use it as workflow engine or store state of process
 	   --> investigate how pipes & stdin/out works in UNIX
+	    --> read() and write()
 	 
 	terminology:
 	 - s/interaction medium/transport/g?
 	 - program / running program // script / process
 	 - s/DAO/datastore/g
+	
 
 	
 	site
@@ -344,4 +339,44 @@ X		facebook apologia
 X		 - introducing project
 X		buzz/G+
 X		Weaver mailing list post
+X test	add exec(script, owner, args)
+X test	 --without owner?
+X	 -- blog post
+X rabbithole   - NOT OK to kill non-existent / finished processes!!
+X	ask for help
+X	post to mailing list
+X	    where it's stored in object hierarchy:
+X		globalScope(ScriptusAPI)
+X		slots"Number"
+X		  value(IdFunctionObject)
+X		    prototypeProperty(NativeNumber)
+X		     slots
+X		       name	"faargh" (id=2363)	
+X-> eclipse logical structures ("return this") to escape
+Xpatch		+JavaAdapter, NativeJavaTopPackage not serialisable
+X no	   then copy slots that aren't 
+X no	   -->override readObject, check how many times called?
+X no	     ->standardReadObject
+X	BUG extensions to normal prototypes disappear on reloading continuation
+X	   only because of this 
+X	        if (!f.hasTag(NUMBER_TAG)) {
+X		    return super.execIdCall(f, cx, scope, thisObj, args);
+X		}
+X		+ similar logic in 3rd testcase prevents eval(get()) from working
+X		+ not the same as stopping eval("cont()");
+X		--> stripping all hasTag() breaks things badly. So where to stop?
+X run tests...	  --understand the tag. Well into yak-shaving territory.
+X no		  --email Igor? Norris?
+X no		 ?-->readObject has to retrieve local NativeX impl, replace, 
+X		cvs -d :pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co mozilla/js/tests
+X		 - then ln -s ~/tests mozilla/js/tests
+X		 - then unlink because it times out...
+X		 tests on my branch:
+X		  - moztestsuite fails 38/5546, 1433.407s
+X		 tests on mozilla branch:
+X		  - moztestsite fails 38/5546?! 1422.210s
+X		 changing == to .equals() works fine...
+X		  -> submit patch with 2 testcases included
+X		  -> add null checks!
+X		  -> run benchmarks first
 

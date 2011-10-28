@@ -9,6 +9,7 @@
 	<url>http://maven.apache.org</url>
 	
 	
+	
 	<build>
 		<finalName>scriptus</finalName>
 		<resources>
@@ -269,6 +270,13 @@
 		</dependency>
 	</dependencies>
 
+	<!--repo for temporarily patched libraries, like Rhino-->
+	<repositories>
+		<repository>
+			<id>ianso-github</id>
+			<url>https://raw.github.com/ianso/scriptus/m2repo</url>
+		</repository>
+	</repositories>
 
 	<profiles>
 
