@@ -192,11 +192,17 @@
 			<version>1.0.4</version>
 		</dependency>
 		<dependency>
+			<groupId>net.ex337.scriptus.rhino</groupId>
+			<artifactId>js</artifactId>
+			<version>1.7R3-patched</version>
+		</dependency>
+<!--
+		<dependency>
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
 			<version>1.7R2</version>
 		</dependency>
-<!-- 		<dependency>
+ 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 			<version>1.4</version>
