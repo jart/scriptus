@@ -275,7 +275,7 @@
 	<repositories>
 		<repository>
 			<id>ianso-github</id>
-			<url>https://github.com/ianso/scriptus/raw/m2repo</url>
+			<url>http://ianso.github.com/scriptus/m2repo</url>
 		</repository>
 	</repositories>
 
