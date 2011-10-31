@@ -184,7 +184,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 			public void execute(UUID pid) {
 				ScriptProcess pp = dao.getProcess(pid);
 				ScriptAction rr = pp.call();
-				assertEquals("final result", NormalTermination.class, rr.getClass());
+                assertEquals("final result", NormalTermination.class, rr.getClass());
+                assertEquals("final result value OK", "foo", ((NormalTermination)rr).getResult());
 			}
 			
 		}, m, dao, p); //sould say

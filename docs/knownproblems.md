@@ -3,39 +3,6 @@
 
 Scriptus does generally work as expected, however there are some quirks, bugs and niggles that are good to know about. Below are listed all such problems of which I'm currently aware. This page will be updated to reflect the status of the latest build.
 
-##Continuations in Scriptus and native object prototype properties
-
-This code should work but doesn't:
-
-```javascript
-Number.prototype.faargh = function(){
-	return 'foo'
-};
-
-say('foo');
-
-//faargh is stripped from Number prototype by continuation.
-
-return new Number().faargh();
-```
-
-This means that if you use a library, for example [Datejs](http://www.datejs.com) that adds functions to primitive object prototypes, you will encounter unexpected problems.
-
-The ghastly workaround to this is to `get` the library and then `eval()` it after every continuation following which you need to use that library's functionality. This is needless to say intolerable and I will try and get this fixed soon.
-
-##Rhino continuations & nested function calls
-
-Because of the way Rhino captures continuations, nested function calls around continuations can fail unexpectedly. The following example is very unsafe but illustrates the problem:
-
-```javascript
-//this works no problem:
-var code = ask("What should I execute?");
-eval(code); 
-
-//this doesn't work:
-eval(ask("What should I try and execute?");
-```
-
 ##Scheduler timing
 
 The scheduler currently polls the storage for tasks to execute every minute, on the minute. This means that timeouts and durations of a minute or less will take up to a minute plus the time to next poll. e.g. a `sleep()` of 1 minute at 04:34:40 will wake the process at roughly 04:36:00.

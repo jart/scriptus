@@ -1,11 +1,6 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 	
-	custom repo for our version of Rhino(until it's in master)
-	 - add note to build instructions etc.
-	 - upload jar to GitHub :-/
-
-
 	test datejs (12).months().before(new Date())
 	 --> doesn't work, fix bug in eric's version
 
@@ -379,4 +374,7 @@ X		 changing == to .equals() works fine...
 X		  -> submit patch with 2 testcases included
 X		  -> add null checks!
 X		  -> run benchmarks first
+X	custom repo for our version of Rhino(until it's in master)
+X	 - add note to build instructions etc.
+X	 - upload jar to GitHub :-/
 

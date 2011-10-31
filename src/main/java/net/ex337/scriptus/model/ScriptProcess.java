@@ -2,6 +2,8 @@ package net.ex337.scriptus.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +34,6 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.serialize.ScriptableInputStream;
-import org.mozilla.javascript.serialize.ScriptableOutputStream;
 
 /**
  * Represents one script process. The source of the process
@@ -119,10 +119,10 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 			
 			InputStream bais = new ByteArrayInputStream(process);
 
-			ScriptusAPI tmpScriptusApi = new ScriptusAPI(config);
-			Scriptable tmpGlobalScope = tmpScriptusApi.createScope(cx);
+//			ScriptusAPI tmpScriptusApi = new ScriptusAPI(config);
+//			Scriptable tmpGlobalScope = tmpScriptusApi.createScope(cx);
 
-			ScriptableInputStream in = new ScriptableInputStream(bais, tmpGlobalScope);
+			ObjectInputStream in = new ObjectInputStream(bais);
 
 			ScriptProcess p = (ScriptProcess) in.readObject();
 			
@@ -220,8 +220,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		
 		try {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			ScriptableOutputStream out = new ScriptableOutputStream(bout, getGlobalScope());
-//				out.addExcludedName("scriptus");
+			ObjectOutputStream out = new ObjectOutputStream(bout);
 			out.writeObject(this);
 			out.writeObject(getGlobalScope());
 			out.writeObject(getContinuation());
