@@ -1,12 +1,18 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 	
-	test datejs (12).months().before(new Date())
-	 --> doesn't work, fix bug in eric's version
-
 	examples
 test	 - date reminder with stop command
 
+[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
+org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
+        at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
+  
+  
+Caused by: java.io.NotSerializableException: org.mozilla.javascript.ConsString
+        at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1180)
+        at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1528)
+     
 	   - needs time-machine to test properly...
 
 ##`reminder.js`
@@ -377,4 +383,6 @@ X		  -> run benchmarks first
 X	custom repo for our version of Rhino(until it's in master)
 X	 - add note to build instructions etc.
 X	 - upload jar to GitHub :-/
+X	test datejs (12).months().before(new Date())
+X	 --> doesn't work, fix bug in eric's version
 

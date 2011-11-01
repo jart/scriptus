@@ -1,3 +1,6 @@
+//import date library, see http://www.datejs.com/
+eval(get("https://raw.github.com/ianso/scriptus/master/scripts/lib/date-en-US.js"));
+
 /*
  * Set up initial variables: who to remind, what to remind about, and what date it is.
  * 
@@ -11,15 +14,7 @@ if(who.toLowerCase() == "me") who = owner;
 
 var event = ask("What should I remind "+who+" about?");
 
-var evtDateStr = ask("When is "+event+"? e.g. '5 Dec 2015'");
-
-//import date library, see http://www.datejs.com/
-var datejs = get("https://raw.github.com/ianso/scriptus/master/scripts/lib/date-en-US.js");
-eval(datejs);
-
-//can't do this due to Rhino bug
-//var evtDate = Date.parse(ask("When is "+event+"? e.g. 'Dec 5, 2015'"));
-var evtDate = new Date(evtDateStr);
+var evtDate = new Date(ask("When is "+event+"? e.g. '5 Dec 2015'"));
 
 /*
  * Reminders are said:
@@ -38,8 +33,6 @@ var remDates = [
 var yearsBeforeEvent = (12).months().before(evtDate);
 
 var numYearsBefore = 1;
-
-exit("there's a bug in this loop somewhere");
 
 //we do an arbitrary number of years
 while(yearsBeforeEvent.isAfter(now)) { 
@@ -73,6 +66,7 @@ for(var reminder in remDates) {
 	var p = fork();
 	
 	if(p == 0) {
+		log("sleeping until "+reminder.time);
 		sleep(reminder.time);
 		say(reminder.msg+" before "+event, {to:who});
 		return;
