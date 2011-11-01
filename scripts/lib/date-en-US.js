@@ -62,7 +62,7 @@ if(this._same){this._same=this._is=false;var o1=this.toObject(),o2=(arguments[0]
 if(k==v){break;}}
 return true;}
 if(j.substring(j.length-1)!="s"){j+="s";}
-return this["add"+j](this._orient);};};var nf=function(n){return function(){this._dateElement=n;return this;};};for(var k=0;k<px.length;k++){de=px[k].toLowerCase();$P[de]=$P[de+"s"]=ef(de+"s");$N[de]=$N[de+"s"]=nf(de);}
+return this["add"+j](this._orient);};};var nf=function(n){return function(){this._dateElement=n;return this;};};for(var k=0;k<px.length;k++){de=px[k].toLowerCase();$P[de]=$P[de+"s"]=ef(de);$N[de]=$N[de+"s"]=nf(de+"s");}
 $P._ss=ef("Second");var nthfn=function(n){return function(dayOfWeek){if(this._same){return this._ss(arguments[0]);}
 if(dayOfWeek||dayOfWeek===0){return this.moveToNthOccurrence(dayOfWeek,n);}
 this._nth=n;if(n===2&&(dayOfWeek===undefined||dayOfWeek===null)){this._isSecond=true;return this.addSeconds(this._orient);}
