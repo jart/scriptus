@@ -28,11 +28,13 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 		put("evalget.js", 
 				"var ss = get(\"https://raw.github.com/ianso/scriptus/master/scripts/lib/date-en-US.js\");" +
 				"eval(ss);" +
-				"var s = (12).months(); s._dateElement='months';" +
-//				"say((12).months().ago());");
-//				"say((12).months()._dateElement);");
-				"say(s + ' ' + s._dateElement + ' ' + s.before(new Date()));");
-//				"say((12).month().before(new Date()));");
+              "say((12).months().ago());"+
+//		        "say((12).months()._dateElement);"+
+//				"var s = (12).months();" +
+//				"s._dateElement='months';" +
+//				"say(s + ' ' + s._dateElement + ' ' + s.before(new Date()));"+
+//				"say((12).month().before(new Date()));"+
+				"");
 	}};
 
 	@Override
