@@ -1,19 +1,19 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-	
+
+	- update microrepo with new jars...
+
+
 	examples
 test	 - date reminder with stop command
 
-[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
-org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
-        at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
+???	[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
+strange...	org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
+		at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
+ 
   
-  
-Caused by: java.io.NotSerializableException: org.mozilla.javascript.ConsString
-        at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1180)
-        at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1528)
-     
 	   - needs time-machine to test properly...
+
 
 ##`reminder.js`
 
@@ -21,11 +21,17 @@ This program sets up a series of reminders to a given user for an event in the f
 
 Notable features include:
 
- * A combination of `get()` and `eval()` is used to effectively create an "import" statement. This could be done on one line at the beginning of the file, but for the Rhino bugs documented on [the known problems page](knownproblems.md).
+ * A combination of `get()` and `eval()` is used to effectively create an "import" statement.
 
  * One process is used for creating each of the reminders. For an event 100 years from now this would mean 100 processes, but this has no impact on Scriptus except the storage costs of each process until it wakes. The reminders can be cancelled at any time, at which point the reminder processes are killed.
 
 
+	terminology:
+	 - s/interaction medium/transport/g?
+	 - program / running program // script / process
+	 - s/DAO/datastore/g
+	 - add glossary to documentation
+	
 	   
 	   
 	 - line diet
@@ -81,10 +87,6 @@ docd	kill - fix problem with running processes
 	   --> investigate how pipes & stdin/out works in UNIX
 	    --> read() and write()
 	 
-	terminology:
-	 - s/interaction medium/transport/g?
-	 - program / running program // script / process
-	 - s/DAO/datastore/g
 	
 
 	
@@ -385,4 +387,10 @@ X	 - add note to build instructions etc.
 X	 - upload jar to GitHub :-/
 X	test datejs (12).months().before(new Date())
 X	 --> doesn't work, fix bug in eric's version
+X test	Caused by: java.io.NotSerializableException: org.mozilla.javascript.ConsString
+X test		at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1180)
+X test		at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1528)
+X	write testcase
+Xno	-> add serialised to BoundFunction as well   
+X	-> one more error like this and we will CHECK ALL THE THINGS!...
 
