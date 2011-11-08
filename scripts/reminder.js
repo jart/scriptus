@@ -57,7 +57,9 @@ while(yearsBeforeEvent.isAfter(now)) {
  */
 var children = [];
 
-for(var reminder in remDates) {
+for(var i = 0; i != remDates.length; i++) {
+
+	var reminder = remDates[i];
 
 	if(reminder.time.isBefore(now)) {
 		break;

@@ -1,18 +1,19 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 
-	- update microrepo with new jars...
-
-
 	examples
 test	 - date reminder with stop command
 
-???	[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
-strange...	org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
-		at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
+test	[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
+test strange...	org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
+test		at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
  
   
 	   - needs time-machine to test properly...
+	    - Context.setSystemTimeDelta(long millis) {
+	          - add from NativeDate, boolean flag for optimizing
+	    	}
+		 - centralise clock in system + scheduler
 
 
 ##`reminder.js`
@@ -77,6 +78,10 @@ docd	kill - fix problem with running processes
 	    - pop3 or imap?
 	 - multiple transports per script: use transport option
 	 - import/export functionality for DAO
+	    - separate DAO from ScriptProcess
+	    - versioning
+		DAO API versioning... important for evolution!
+		- how do we deal with blobs?
 	 - process table
 	    -> via procfs?
 	 - user admin
@@ -96,7 +101,6 @@ docd	kill - fix problem with running processes
 
 	test twitter integration
 	   - listen
-	DAO API versioning... important for evolution!
 
 	promo
 		JS weekly
@@ -125,9 +129,7 @@ still a newbie?		mefi projects?
 	- post()? etc?
 	- get + post should expose response headers to script & allow headers to be specified.
 	view source principle for scripts (using snapshotted debugger info from rhino)
-	testbed should include "time-machine"
-	 - centralise clock
-	public or shared scripts in the admin interface
+	 - would be via filesystem
 	online REPL / dev environment?
 	 - problem is doing fork & wait in browser JS, where there is no thread model (maybe with narcissus + cloning for fork)
 	regexp based responses in dummy
@@ -393,4 +395,11 @@ X test		at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java
 X	write testcase
 Xno	-> add serialised to BoundFunction as well   
 X	-> one more error like this and we will CHECK ALL THE THINGS!...
+X no	public or shared scripts in the admin interface
+X	serializable patch
+X	 - propose
+X	 - submit
+X	- update microrepo with new jars... && push
+X	  - not making a new version this time...
+X	  mvn eclipse:eclipse & retry reminders
 
