@@ -1,4 +1,5 @@
 //import date library, see http://www.datejs.com/
+//forked and bugfixed, see https://github.com/ianso/datejs
 eval(get("https://raw.github.com/ianso/scriptus/master/scripts/lib/date-en-US.js"));
 
 /*
@@ -83,7 +84,7 @@ for(var i = 0; i != remDates.length; i++) {
  */
 say("Say 'cancel' to stop reminders for "+event, {to:who});
 
-while(Date.now().isBefore(evtDate)) {
+while(new Date().isBefore(evtDate)) {
 	var ctrlMsg = listen({to:who, timeout:evtDate});
 	
 	if(ctrlMsg == null) {
@@ -92,8 +93,8 @@ while(Date.now().isBefore(evtDate)) {
 	}
 
 	if(ctrlMsg.toUpperCase() == "CANCEL") {
-		for(var pid in children) {
-			kill(pid);
+		for(var i = 0; i != children.length; i++) {
+			kill(children[i]);
 		}
 	}
 }

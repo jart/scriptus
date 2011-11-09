@@ -16,3 +16,13 @@ At the risk of ruining the joke, I think it works on multiple levels: first of a
 
 Of course, running this program on someone who's not in on the joke would probably not be funny to them.
 
+##`reminder.js`
+
+This program sets up a series of reminders to a given user for an event in the future. In contrast to a calendar reminder, it will send multiple warnings: one day before, one week before, one month before, six months before, and once a year until your event takes place.
+
+Notable features include:
+
+ * A combination of `get()` and `eval()` is used to effectively create an "import" statement. This means the script has to run with web access, which may be a problem e.g. during testing.
+
+ * One process is used for creating each of the reminders. For an event 100 years from now this would mean 100 processes, but this has no impact on Scriptus except the storage costs of each process until it wakes. The reminders can be cancelled at any time, at which point the reminder processes are killed.
+

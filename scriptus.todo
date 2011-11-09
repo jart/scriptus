@@ -1,12 +1,10 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 
-	examples
-test	 - date reminder with stop command
+	lessons learnt from reminder:
+	 eval(get) means your script has to run onlne 
+	 -> good reason to have a filesystem 
 
-test	[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
-test strange...	org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
-test		at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
  
   
 	   - needs time-machine to test properly...
@@ -22,7 +20,7 @@ This program sets up a series of reminders to a given user for an event in the f
 
 Notable features include:
 
- * A combination of `get()` and `eval()` is used to effectively create an "import" statement.
+ * A combination of `get()` and `eval()` is used to effectively create an "import" statement. This means the script has to run with web access, which may be a problem e.g. during testing.
 
  * One process is used for creating each of the reminders. For an event 100 years from now this would mean 100 processes, but this has no impact on Scriptus except the storage costs of each process until it wakes. The reminders can be cancelled at any time, at which point the reminder processes are killed.
 
@@ -66,6 +64,14 @@ docd	kill - fix problem with running processes
 	      
 	Future directions inspired by UNIX
 	 - filesystem, read/write/open
+	 var contents = read(path);
+	 var files = list(path);
+	 file-at-once
+		 write(path, contents);
+		 read(path, function(block) {});
+	 functional, block-oriented
+		 function getBlock() {}//use yield?
+		 write(path, getBlock);
 	 -> what gets mounted and how?
 	  /proc for admin, /bin with standard tools?
 	->keep view source principal: tools are scripts
@@ -85,6 +91,7 @@ docd	kill - fix problem with running processes
 	 - process table
 	    -> via procfs?
 	 - user admin
+
 	
 	Suggestions from Jenya
 	 - how to integrate with existing services & web-applications?
@@ -113,6 +120,29 @@ still a newbie?		mefi projects?
 		 - idea of 'slow code'		 
 		ask friends for feedback
 		feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com		
+
+A SLOW CODE MANIFESTO
+
+Computers run faster and faster. But in the real world, anything important takes time and effort to achieve. If our goal is to make a difference, to make the world a better place, to *improve things*, then we need to learn to code on a world-changing scale.
+
+Programs that change the world will run for years or decades. They will upgrade themselves. And their input and output will be our thoughts and actions.
+
+
+
+Everyone knows how an election works. Why can't we write a program that anyone can run, and that will let anyone run an election?
+
+Everybody knows how a debate works. Where is debate software? Chess tournament software?
+
+Why can't a single program run for months, or years? Why do we let computer
+
+Change takes time. Self-improvement such as losing weight takes time. Big changes, like the civil rights movement, takes time.
+
+
+
+How many important changes were encapsulated in a computer program? In the past, none of them were. In the future, 
+
+f
+
 
 	 		 	
 **running track of compromises & known bugs
@@ -402,4 +432,11 @@ X	 - submit
 X	- update microrepo with new jars... && push
 X	  - not making a new version this time...
 X	  mvn eclipse:eclipse & retry reminders
+X	examples
+X test	 - date reminder with stop command
+X	lessons learnt:
+X	 - for(var x in y) doesn't worka s expected
+X test	[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
+X test strange...	org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
+X test		at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
 
