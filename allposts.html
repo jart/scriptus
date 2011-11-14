@@ -8,7 +8,7 @@ layout: default
 	<em>{{ post.date | date_to_long_string }}</em>
 	<h2><a href="/scriptus{{ post.url }}">{{ post.title }}</a></h3>
 	
-	{{content}}
+	{{post.content}}
 	
 	{% endfor %}
 
