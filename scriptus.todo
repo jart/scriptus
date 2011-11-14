@@ -1,26 +1,13 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 
-	lessons learnt from reminders.js:
-	 eval(get) means your script has to run onlne 
-	 -> good reason to have a filesystem 
-
-	   - needs time-machine to test properly...
-	    - Context.setSystemTimeDelta(long millis) {
-		  - add from NativeDate, boolean flag for optimizing
-	    	}
-		 - centralise clock in system + scheduler
-
-	terminology:
-	 - s/interaction medium/transport/g?
-	 - program / running program // script / process
-	 - s/DAO/datastore/g
-	 - add glossary to documentation
 	
-	   
-	   
 	 - line diet
 	    - simple calculus
+	  desired weight is healthy,
+	  desired rate of weight loss is medically safe (ask for age maybe?)
+	    
+	    
 	 - habit judo from metafilter
 	 - game tournament
 	    - brush up on set theory
@@ -87,6 +74,49 @@ docd	kill - fix problem with running processes
 	 
 	
 
+	lessons learnt from reminders.js:
+	 eval(get) means your script has to run onlne 
+	 -> good reason to have a filesystem 
+
+	   - needs time-machine to test properly...
+	    - Context.setSystemTimeDelta(long millis) {
+		  - add from NativeDate, boolean flag for optimizing
+	    	}
+		 - centralise clock in system + scheduler
+		 - test-bed with time-machine built in. How? should be mirror-image of script.
+		
+		 expect(api), respond([result]), result = continue([substArgs]), setClock(time)
+		 
+		 test_reminders.js:
+		 	expect(get); continue();
+		 	expect(ask); respond("FRED");
+		 	expect(ask); respond ("THE EVENT");
+		 	expect(ask); respond ("3 Dec 2015");
+		 
+		 	for(1...5) {
+		 		expect(fork);
+		 		var result = continue();
+		 		if(result == 0) {//child
+		 			expect(sleep);
+		 			setClock("5 Dec 2015");
+		 			expect(say);
+		 			return;
+		 		}
+		 	}
+	 		expect(say);
+	 		expect(ask);
+	 		respond("cancel");
+	 		for(1..5) {
+		 		expect(kill); continue();
+		 	}
+
+			or maybe just the input & output should be logged?
+			
+
+	terminology:
+	 - s/interaction medium/transport/g?
+	 - program / running program // script / process?
+	 - s/DAO/datastore/g?
 	
 	site
 	 - index.html & default layout re-use CSS & HTML
@@ -97,7 +127,7 @@ docd	kill - fix problem with running processes
 
 	promo
 		JS weekly
-		show HN
+		show HN: Script long-running interactions on Twitter in JavaScript
 still a newbie?		mefi projects?
 		demo on twitter 
 		 - install the iPhone client
@@ -113,8 +143,6 @@ Computers run faster and faster. But in the real world, anything important takes
 
 Programs that change the world will run for years or decades. They will upgrade themselves. And their input and output will be our thoughts and actions.
 
-
-
 Everyone knows how an election works. Why can't we write a program that anyone can run, and that will let anyone run an election?
 
 Everybody knows how a debate works. Where is debate software? Chess tournament software?
@@ -123,16 +151,11 @@ Why can't a single program run for months, or years? Why do we let computer
 
 Change takes time. Self-improvement such as losing weight takes time. Big changes, like the civil rights movement, takes time.
 
-
-
 How many important changes were encapsulated in a computer program? In the past, none of them were. In the future, 
-
-f
-
 
 	 		 	
 **running track of compromises & known bugs
-	script bodies wrapped with (new function(){...})() at compile time
+	script bodies wrapped with (new function(){...})() at compile time - should include arguments or change?
 	two concepts of identity: one via openId, one via twitter. Unify?
 	 scriptus AWS DAO should store process state separately - it's updated by itself all the time
 	 nonce should be extended to all continuations?
@@ -144,6 +167,9 @@ f
 	  - say & listen to ids
 	- post()? etc?
 	- get + post should expose response headers to script & allow headers to be specified.
+	- location & multimedia APIs
+	  look(); //photo upload
+	  where(); / at(); / near(); //location: coordinates
 	view source principle for scripts (using snapshotted debugger info from rhino)
 	 - would be via filesystem
 	online REPL / dev environment?
@@ -425,4 +451,5 @@ X	 - for(var x in y) doesn't worka s expected
 X test	[2011/11/01 20:52:44,376][ERROR][pool-2-thread-2] ScriptProcess.call() - script error
 X test strange...	org.mozilla.javascript.EcmaError: TypeError: Cannot call method "isBefore" of undefined (reminder#66)
 X test		at org.mozilla.javascript.ScriptRuntime.constructError(ScriptRuntime.java:3763)
-
+X	 - add glossary to documentation
+X link to google groups

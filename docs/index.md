@@ -18,6 +18,7 @@ This page lists all of the documentation of the Scriptus application.
  
 #Meta
 
+ * [The glossary](glossary.md) collates in one place all the terminology used in the documentation.
  * [Credits](credits.md)
  * [What motivated the creation of Scriptus](why.md).
  * [How Scriptus was written](how.md).

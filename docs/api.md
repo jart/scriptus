@@ -1,4 +1,4 @@
-Scriptus programs are written in JavaScript and are wrapped in a function declaration before being executed - this is why `return` acts as expected. All the usual JavaScript objects such as Date and String are present and correct, as are top-level functions such as eval(). However, none of the methods associated with in-browser JavaScript such as alert() are present. 
+Scriptus programs are written in JavaScript and are wrapped in a function declaration before being executed - this is why `return` acts as expected. All the usual JavaScript objects such as `Date` and `String` are present and correct, as are top-level functions such as `eval()`. However, none of the methods associated with in-browser JavaScript such as `alert()` are present. 
 
 The Scriptus API is very simple, and can be divided into sections for interaction, program control, networking, and logging.
 
