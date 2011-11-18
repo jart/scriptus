@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Dao;
-import net.ex337.scriptus.config.ScriptusConfig.Medium;
+import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -69,8 +69,8 @@ public class SettingsServlet extends HttpServlet {
 		cfg.setTwitterAccessTokenSecret(req.getParameter("twitterAccessTokenSecret"));
 		cfg.setTwitterConsumerKey(req.getParameter("twitterConsumerKey"));
 		cfg.setTwitterConsumerSecret(req.getParameter("twitterConsumerSecret"));
-		cfg.setDao(Dao.valueOf(req.getParameter("dao")));
-		cfg.setMedium(Medium.valueOf(req.getParameter("medium")));
+		cfg.setDatastoreType(DatastoreType.valueOf(req.getParameter("datastore")));
+		cfg.setTransportType(TransportType.valueOf(req.getParameter("transport")));
 		
 		cfg.save();
 		

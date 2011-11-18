@@ -17,7 +17,7 @@ As there are no big deployments right now this is very theoretical.
 
 ##Listen timeout
 
-The `listen()` call works by registering a process as a listener inside the Twitter interaction medium. We then poll Twitter every minute for mentions by the user being listened to.
+The `listen()` call works by registering a process as a listener inside the Twitter transport. We then poll Twitter every minute for mentions by the user being listened to.
 
 However, if the user 'speaks' after the last poll but before the timeout, then this tweet is not picked up before the process is woken and null is returned to the program.
 

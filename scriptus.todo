@@ -1,25 +1,23 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 
+	
 	test twitter integration
 	   - listen
 
-	terminology:
-	 - s/interaction medium/transport/g?
-	 - program / running program // script / process?
-	 - s/DAO/datastore/g?
-	
-
-	
 	 - line diet
 	    - simple calculus
 	  desired weight is healthy,
 	  desired rate of weight loss is medically safe (ask for age maybe?)
 	  - need to reverse-engineer curves
-	    
 	 - habit judo from metafilter
 	    -> see detials in script habitJudo.js
-
+	 - multi-user scripts:
+	   - auction
+	   - election
+	   - rota
+	   - poll
+	   - secret santa!
 	 - game tournament
 	    - brush up on set theory
 	 - adventure game from Nathanael
@@ -97,6 +95,20 @@ docd	kill - fix problem with running processes
 	   --> investigate how pipes & stdin/out works in UNIX
 	    --> read() and write()
 	 
+	** features that would be nice
+	API
+	- pipe(function(in, out){})?
+	  - say & listen to ids
+	- post()? etc?
+	- get + post should expose response headers to script & allow headers to be specified.
+	- location & multimedia APIs
+	  look(); //photo upload
+	  where(); / at(); / near(); //location: coordinates
+	view source principle for scripts (using snapshotted debugger info from rhino)
+	 - would be via filesystem
+	online REPL / dev environment?
+	 - problem is doing fork & wait in browser JS, where there is no thread model (maybe with narcissus + cloning for fork)
+	regexp based responses in dummy
 	
 
 	lessons learnt from reminders.js:
@@ -180,20 +192,6 @@ I believe the challenge	is this: write programs for the long term. Write long pr
 	 nonce should be extended to all continuations?
 	  - avoid double-acting? or if the server is shut down mid-execution, allows recoverability?
 	 
-** features that would be nice
-	API
-	- pipe(function(in, out){})?
-	  - say & listen to ids
-	- post()? etc?
-	- get + post should expose response headers to script & allow headers to be specified.
-	- location & multimedia APIs
-	  look(); //photo upload
-	  where(); / at(); / near(); //location: coordinates
-	view source principle for scripts (using snapshotted debugger info from rhino)
-	 - would be via filesystem
-	online REPL / dev environment?
-	 - problem is doing fork & wait in browser JS, where there is no thread model (maybe with narcissus + cloning for fork)
-	regexp based responses in dummy
 	 
 X no 	Wait capital W
 X	bound at "scriptus" not as globals - a good thing?
@@ -474,4 +472,12 @@ X	 - add glossary to documentation
 X link to google groups
 X docd	Rhino bug: eval(get("")) doesn't work, var s = get(""); eval(s); does.
 X	test links once gh-pages pushed
+X	terminology:
+X	 - s/interaction medium/transport/g?
+X test	  - code
+X	  - docs
+X	 - s/DAO/datastore/g?
+X test	  - code
+X	  - docs
+X no	 - program / running program // script / process?
 

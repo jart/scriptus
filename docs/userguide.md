@@ -38,7 +38,7 @@ This file is by default stored in `~/.scriptus/config.properties`. If you want t
 
 All of the options in the configuration file can be edited via this interface except for the `disableOpenID` property described in the previous section.
 
-The two major configurations for Scriptus are choosing where to store your data, and how to interact with people (the 'interaction medium').
+The two major configurations for Scriptus are choosing where to store your data, and how to interact with people (the 'transport').
 
 ##Choosing a datastore
 
@@ -53,9 +53,9 @@ This can also be fine for testing, but is also fine if you're running Scriptus o
  *   **Amazon AWS** storage saves everything in the online services Amazon S3 and Amazon SDB, which have the advantage of being scalable and highly redundant without you having to do anything about it. On the other hand, it's a for-pay service, although Scriptus stores only a few kilobytes of data per script and per running process, so it should be very cheap.
 Using AWS also means that programs cannot be run offline, for obvious reasons. 
 
-##Choosing an interaction medium
+##Choosing a transport
 
-The clunkily-named interaction medium is the means via which Scriptus programs interact with their users. There are three mediums and they all have their uses.
+The transport is the means via which Scriptus programs interact with their users. There are three mediums and they all have their uses.
 
  *   **Dummy response** just responds with "response" to every `ask()` and not at all to a `listen()`.
 It can be useful for testing simple scripts. In future a more flexible dummy will be put in place to allow for better automated testing of scripts.
@@ -98,7 +98,7 @@ In writing the example programs for Scriptus there are one or two tips and trick
 
  *  **Write your programs in a text editor and use SCM.** Scriptus doesn't do version control and only offers primitive syntax highlighting in its built-in editor, ACE. So treat yourself to a decent text editor when writing Scriptus programs, and upload the finished version when you're ready to test.
 
- *  **Run programs with the command-line interaction medium and in-memory storage first.** That way you can test out your program in private, without making a mess in your twitter feed or on your hard-drive.
+ *  **Run programs with the command-line transport and in-memory storage first.** That way you can test out your program in private, without making a mess in your twitter feed or on your hard-drive.
  
  *  **Use `listen()` instead of `sleep()`.** That way you can tell the running program "OK stop waiting and carry on".
 

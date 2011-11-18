@@ -1,4 +1,4 @@
-package net.ex337.scriptus.interaction;
+package net.ex337.scriptus.transport;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import net.ex337.scriptus.model.api.ScriptusAPI;
  * @author ian
  *
  */
-public interface InteractionMedium {
+public interface Transport {
 	
 	/**
 	 * Say a message to a user.
@@ -45,7 +45,7 @@ public interface InteractionMedium {
 	
 	/**
 	 * Registers the given receiver as being the endpoint
-	 * for all incoming messages for this interaction medium.
+	 * for all incoming messages for this transport.
 	 * 
 	 * There should normally only be one registration per instance.
 	 * 
@@ -56,7 +56,7 @@ public interface InteractionMedium {
 	/**
 	 * 
 	 * The interface for code wishing to receive messages from
-	 * this interaction medium, see above.
+	 * this transport, see above.
 	 * 
 	 * @author ian
 	 *

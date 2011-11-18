@@ -1,4 +1,4 @@
-package net.ex337.scriptus.dao.impl;
+package net.ex337.scriptus.datastore.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Dao;
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
@@ -32,9 +32,9 @@ import org.apache.commons.logging.LogFactory;
  * @author ian
  *
  */
-public abstract class ScriptusDAOMemoryImpl extends BaseScriptusDAO implements ScriptusDAO {
+public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore implements ScriptusDatastore {
 
-	private static final Log LOG = LogFactory.getLog(ScriptusDAOMemoryImpl.class);
+	private static final Log LOG = LogFactory.getLog(ScriptusDatastoreMemoryImpl.class);
 	
 	private final Map<UUID,byte[]> processes = new HashMap<UUID,byte[]>();
 
@@ -53,7 +53,7 @@ public abstract class ScriptusDAOMemoryImpl extends BaseScriptusDAO implements S
 	
 	public void init() throws IOException {
 		
-		if(config.getDao() != Dao.Memory) {
+		if(config.getDatastoreType() != DatastoreType.Memory) {
 			return;
 		}
 		

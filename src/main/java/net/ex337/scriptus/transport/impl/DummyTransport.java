@@ -1,25 +1,25 @@
 
-package net.ex337.scriptus.interaction.impl;
+package net.ex337.scriptus.transport.impl;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.model.api.Message;
+import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Dummy interaction mediul. Never responds to listen()s, and
+ * Dummy transport. Never responds to listen()s, and
  * always responds to ask()s with the supplied response.
  * 
  * The one response configured in the Spring configuration file.
  * TODO A regexp-based matching might be a good idea to make testing script branches easier.
  */
-public class DummyInteractionMedium implements InteractionMedium {
+public class DummyTransport implements Transport {
 
-	private static final Log LOG = LogFactory.getLog(DummyInteractionMedium.class);
+	private static final Log LOG = LogFactory.getLog(DummyTransport.class);
 
 	private MessageReceiver receiver;
 	

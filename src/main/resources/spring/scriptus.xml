@@ -19,24 +19,24 @@
 
     <bean id="config" class="net.ex337.scriptus.config.ScriptusConfig" />
 
-    <bean id="dummyInteraction" class="net.ex337.scriptus.interaction.impl.DummyInteractionMedium" 
+    <bean id="dummyTransport" class="net.ex337.scriptus.transport.impl.DummyTransport" 
     	p:response="response"/>
-    <bean id="cmdLineInteraction" class="net.ex337.scriptus.interaction.impl.CommandLineInteractionMedium" />
-    <bean id="twitterInteraction" class="net.ex337.scriptus.interaction.twitter.TwitterInteractionMedium" />
+    <bean id="cmdLineTransport" class="net.ex337.scriptus.transport.impl.CommandLineTransport" />
+    <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl" />
 
-    <bean id="interaction" class="net.ex337.scriptus.interaction.InteractionMediumSwitch" />
+    <bean id="transport" class="net.ex337.scriptus.transport.TransportSwitch" />
 
 	<bean scope="prototype" id="scriptProcess" class="net.ex337.scriptus.model.ScriptProcess"/>
 
-    <bean id="baseDAO" abstract="true" >
+    <bean id="baseDatastore" abstract="true" >
 		<lookup-method name="createScriptProcess" bean="scriptProcess"/>
     </bean>
 
-     <bean id="memoryDAO" parent="baseDAO" class="net.ex337.scriptus.dao.impl.ScriptusDAOMemoryImpl" />
-     <bean id="fileDAO" parent="baseDAO" class="net.ex337.scriptus.dao.impl.ScriptusDAOFileImpl" />
-	 <bean id="awsDAO" parent="baseDAO" class="net.ex337.scriptus.dao.impl.ScriptusDAOAWSImpl" />
+     <bean id="memoryDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.ScriptusDatastoreMemoryImpl" />
+     <bean id="fileDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.ScriptusDatastoreFileImpl" />
+	 <bean id="awsDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.ScriptusDatastoreAWSImpl" />
 
-	<bean id="dao" class="net.ex337.scriptus.dao.ScriptusDAOSwitch" />
+	<bean id="datastore" class="net.ex337.scriptus.datastore.ScriptusDatastoreSwitch" />
 
     <bean id="scheduler" class="net.ex337.scriptus.ProcessSchedulerImpl" />
 

@@ -2,8 +2,8 @@
 package net.ex337.scriptus.tests;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Dao;
-import net.ex337.scriptus.config.ScriptusConfig.Medium;
+import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;

@@ -18,14 +18,14 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.interaction.InteractionMedium;
-import net.ex337.scriptus.interaction.InteractionMedium.MessageReceiver;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
+import net.ex337.scriptus.transport.Transport;
+import net.ex337.scriptus.transport.Transport.MessageReceiver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,10 +59,10 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	private static final int MAX_CONCURRENT_PROCESSES = 10;
 
 	@Resource
-	private InteractionMedium interaction;
+	private Transport transport;
 	
 	@Resource
-	private ScriptusDAO dao;
+	private ScriptusDatastore datastore;
 	
 	@Resource
 	private ScriptusConfig config;
@@ -90,7 +90,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 			.concurrencyLevel(MAX_CONCURRENT_PROCESSES)
 			.makeMap();
 		
-		interaction.registerReceiver(this);
+		transport.registerReceiver(this);
 
 		scheduledTasksChecker = new ScheduledThreadPoolExecutor(2);
 		processExecutor = new ThreadPoolExecutor(2, MAX_CONCURRENT_PROCESSES, MAX_CONCURRENT_PROCESSES, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(10000));
@@ -128,7 +128,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	 */
 	@Override
 	public void newProcess(String userId, String sourceName, String args, String owner) {
-		ScriptProcess p = dao.newProcess(userId, sourceName, args, owner);
+		ScriptProcess p = datastore.newProcess(userId, sourceName, args, owner);
 		p.save();
 		execute(p.getPid());
 	}
@@ -160,11 +160,11 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 			runWithLock(pid, new Runnable() {
 				@Override
 				public void run() {
-					ScriptProcess p = dao.getProcess(pid);
+					ScriptProcess p = datastore.getProcess(pid);
 
 					if(p.getState() instanceof HasTimeout) {
 						//delete wake if it exists, should fail silently
-						dao.deleteScheduledTask(new Wake(pid, ((HasTimeout)p.getState()).getNonce()));
+						datastore.deleteScheduledTask(new Wake(pid, ((HasTimeout)p.getState()).getNonce()));
 					}
 
 					updateProcessState(pid, m);
@@ -177,21 +177,21 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 
 	protected void checkForScheduledTasks() {
 		
-		List<ScheduledScriptAction> tasks = dao.getScheduledTasks(Calendar.getInstance());
+		List<ScheduledScriptAction> tasks = datastore.getScheduledTasks(Calendar.getInstance());
 		
 		for(final ScheduledScriptAction t : tasks) {
 			runWithLock(t.getPid(), new Runnable() {
 				@Override
 				public void run() {
 					try {
-						t.visit(ProcessSchedulerImpl.this, interaction, dao, dao.getProcess(t.getPid()));
+						t.visit(ProcessSchedulerImpl.this, transport, datastore, datastore.getProcess(t.getPid()));
 					} catch(Exception e) {
 						//FIXME should set state of task as "error" (and add != clause to query)
 						LOG.error("Exception when executing scheduled task", e);
 					} finally {
 						//no retry
 						//FIXME move this to after visit above
-						dao.deleteScheduledTask(t);
+						datastore.deleteScheduledTask(t);
 					}
 				}
 			});
@@ -207,7 +207,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 		runWithLock(pid, new Runnable() {
 			@Override
 			public void run() {
-				ScriptProcess script = dao.getProcess(pid);
+				ScriptProcess script = datastore.getProcess(pid);
 				script.setState(o);
 				script.save();
 			}
@@ -220,7 +220,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	 */
 	@Override
 	public void scheduleTask(Calendar until, ScheduledScriptAction task) {
-		dao.scheduleTask(until, task);
+		datastore.scheduleTask(until, task);
 	}
 	
 	private final class ProcessExecutor implements Runnable {
@@ -239,7 +239,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 					@Override
 					public void run() {
 						try {
-							final ScriptProcess p = dao.getProcess(pid);
+							final ScriptProcess p = datastore.getProcess(pid);
 							runningProcesses.put(pid, p);
 							p.run();
 						} finally {

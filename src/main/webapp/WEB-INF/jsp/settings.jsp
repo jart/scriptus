@@ -1,6 +1,6 @@
 <html>
 <head><title>Scriptus - settings</title>
-<%@page import="net.ex337.scriptus.config.ScriptusConfig, net.ex337.scriptus.config.ScriptusConfig.Dao, net.ex337.scriptus.config.ScriptusConfig.Medium"%>
+<%@page import="net.ex337.scriptus.config.ScriptusConfig, net.ex337.scriptus.config.ScriptusConfig.DatastoreType, net.ex337.scriptus.config.ScriptusConfig.TransportType"%>
 <%
 ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 %>
@@ -28,20 +28,20 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 <p>Enter or modify settings here. Secret tokens are not presented and must be re-filled each time.</p>
 
 <p>
-	<label for="dao">Data storage:</label>
-	<select id="dao" name="dao">
-		<option <%=cfg.getDao() == Dao.Aws? "selected=\"selected\"" : "" %> value="Aws">Amazon AWS (S3+SDB)</option>
-		<option <%=cfg.getDao() == Dao.File? "selected=\"selected\"" : "" %> value="File">Local file-system (under home directory)</option>
-		<option <%=cfg.getDao() == Dao.Memory? "selected=\"selected\"" : "" %> value="Memory">In memory (transient)</option>
+	<label for="datastore">Data storage:</label>
+	<select id="datastore" name="datastore">
+		<option <%=cfg.getDatastoreType() == DatastoreType.Aws? "selected=\"selected\"" : "" %> value="Aws">Amazon AWS (S3+SDB)</option>
+		<option <%=cfg.getDatastoreType() == DatastoreType.File? "selected=\"selected\"" : "" %> value="File">Local file-system (under home directory)</option>
+		<option <%=cfg.getDatastoreType() == DatastoreType.Memory? "selected=\"selected\"" : "" %> value="Memory">In memory (transient)</option>
 	</select>
 </p>
 
 <p>
-<label for="medium">Interaction medium:</label>
-	<select id="medium" name="medium">
-		<option <%=cfg.getMedium() == Medium.Twitter? "selected=\"selected\"" : "" %> value="Twitter">Twitter</option>
-		<option <%=cfg.getMedium() == Medium.CommandLine? "selected=\"selected\"" : "" %> value="CommandLine">Command prompt</option>
-		<option <%=cfg.getMedium() == Medium.Dummy? "selected=\"selected\"" : "" %> value="Dummy">Dummy response</option>
+<label for="transport">Transport:</label>
+	<select id="transport" name="transport">
+		<option <%=cfg.getTransportType() == TransportType.Twitter? "selected=\"selected\"" : "" %> value="Twitter">Twitter</option>
+		<option <%=cfg.getTransportType() == TransportType.CommandLine? "selected=\"selected\"" : "" %> value="CommandLine">Command prompt</option>
+		<option <%=cfg.getTransportType() == TransportType.Dummy? "selected=\"selected\"" : "" %> value="Dummy">Dummy response</option>
 	</select>
 </p>
 

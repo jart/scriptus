@@ -14,15 +14,15 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
-import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.model.api.ScriptusAPI;
 import net.ex337.scriptus.model.api.Termination;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
+import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -73,14 +73,14 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	
 	private boolean isKilled;
 	
-	@Resource(name="dao")
-	private transient ScriptusDAO dao;
+	@Resource(name="datastore")
+	private transient ScriptusDatastore datastore;
 
 	@Resource
 	private transient ProcessScheduler scheduler;
 
-	@Resource(name="interaction")
-	private transient InteractionMedium interaction;
+	@Resource(name="transport")
+	private transient Transport transport;
 
 	@Resource
 	private transient ScriptusConfig config;
@@ -97,7 +97,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 */
 	public void load(final UUID pid) {
 
-//		this.dao = dao;// not set when deserialising below
+//		this.datastore = datastore;// not set when deserialising below
 
 		if (pid == null) {
 			throw new ScriptusRuntimeException("Cannot load null pid");
@@ -111,7 +111,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		
 		try {
 
-			byte[] process = dao.loadProcess(pid);
+			byte[] process = datastore.loadProcess(pid);
 			
 			if(process == null) {
 				throw new ProcessNotFoundException(pid.toString());
@@ -169,12 +169,12 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 		LOG.debug("ctor, source=" + sourceName);
 
-//		this.dao = dao;
+//		this.datastore = datastore;
 		this.userId = userId;
 		this.sourceName = sourceName;
 		this.args = args;
 		this.owner = owner;
-		this.source = dao.loadScriptSource(userId, sourceName);
+		this.source = datastore.loadScriptSource(userId, sourceName);
 		this.isRoot = true;
 		this.version = 0;
 
@@ -226,7 +226,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 			out.writeObject(getContinuation());
 			out.close();
 
-			dao.writeProcess(getPid(), bout.toByteArray());
+			datastore.writeProcess(getPid(), bout.toByteArray());
 				
 		} catch (ScriptusRuntimeException e) {
 			throw e;
@@ -333,7 +333,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 		this.save();
 		
-		result.visit(scheduler, interaction, dao, this);
+		result.visit(scheduler, transport, datastore, this);
 		
 		
 	}
@@ -366,9 +366,9 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		r.sourceName = this.sourceName;
 		r.state = this.state;
 		r.userId = this.userId;
-		r.dao = this.dao;
+		r.datastore = this.datastore;
 		r.scheduler = this.scheduler;
-		r.interaction = this.interaction;
+		r.transport = this.transport;
 		r.config = this.config;
 		r.owner = this.owner;
 		// ?
@@ -392,7 +392,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		 * 
 		 */
 		
-		dao.deleteProcess(getPid());
+		datastore.deleteProcess(getPid());
 	}
 
 	

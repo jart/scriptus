@@ -1,4 +1,4 @@
-package net.ex337.scriptus.dao.impl;
+package net.ex337.scriptus.datastore.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,8 +18,8 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Dao;
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -67,9 +67,9 @@ import com.amazonaws.services.simpledb.model.SelectResult;
  * @author ian
  *
  */
-public abstract class ScriptusDAOAWSImpl extends BaseScriptusDAO implements ScriptusDAO {
+public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore implements ScriptusDatastore {
 	
-	private static final Log LOG = LogFactory.getLog(ScriptusDAOAWSImpl.class);
+	private static final Log LOG = LogFactory.getLog(ScriptusDatastoreAWSImpl.class);
 	
 	private static final String CORRELATION_IDS = "scriptus-correlation-ids";
 	private static final String SCHEDULED_TASKS = "scriptus-scheduled-tasks";
@@ -94,7 +94,7 @@ public abstract class ScriptusDAOAWSImpl extends BaseScriptusDAO implements Scri
 	@PostConstruct
 	public void init() throws IOException {
 		
-		if(config.getDao() != Dao.Aws) {
+		if(config.getDatastoreType() != DatastoreType.Aws) {
 			return;
 		}
 		

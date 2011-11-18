@@ -1,4 +1,4 @@
-package net.ex337.scriptus.interaction;
+package net.ex337.scriptus.transport;
 
 import java.util.UUID;
 
@@ -6,10 +6,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Medium;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 
 /**
- * An interaction medium implementation that does 
+ * A transport implementation that does 
  * nothing  but proxy to whatever implementation has been 
  * configured in {@link ScriptusConfig}.
  * 
@@ -19,33 +19,33 @@ import net.ex337.scriptus.config.ScriptusConfig.Medium;
  * via the web interface.
  * 
  */
-public class InteractionMediumSwitch implements InteractionMedium {
+public class TransportSwitch implements Transport {
 	
-	@Resource(name="twitterInteraction")
-	private InteractionMedium twitter;
+	@Resource(name="twitterTransport")
+	private Transport twitter;
 	
-	@Resource(name="cmdLineInteraction")
-	private InteractionMedium cmdLine;
+	@Resource(name="cmdLineTransport")
+	private Transport cmdLine;
 
-	@Resource(name="dummyInteraction")
-	private InteractionMedium dummy;
+	@Resource(name="dummyTransport")
+	private Transport dummy;
 
-	private InteractionMedium activeImpl;
+	private Transport activeImpl;
 	
 	@Resource
 	private ScriptusConfig config;
 	
 	@PostConstruct
 	public void init() {
-		switchMedium(config.getMedium());
+		switchMedium(config.getTransportType());
 	}
 
-	public void switchMedium(Medium medium) {
-		if(medium == Medium.Twitter) {
+	public void switchMedium(TransportType transportType) {
+		if(transportType == TransportType.Twitter) {
 			activeImpl = twitter;
-		} else if(medium == Medium.CommandLine) {
+		} else if(transportType == TransportType.CommandLine) {
 			activeImpl = cmdLine;
-		} else if(medium == Medium.Dummy) {
+		} else if(transportType == TransportType.Dummy) {
 			activeImpl = dummy;
 		}			
 	}

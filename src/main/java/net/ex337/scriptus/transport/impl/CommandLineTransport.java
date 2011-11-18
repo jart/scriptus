@@ -1,5 +1,5 @@
 
-package net.ex337.scriptus.interaction.impl;
+package net.ex337.scriptus.transport.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,8 +9,8 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
-import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.model.api.Message;
+import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * 
- * An interaction medium that takesresponses to ask()s
+ * An transport that takes responses to ask()s
  * and listen()s from the command-line. Synchronised to 
  * allow multi-threading. If you want to not respond to
  * an ask or listen, just hit enter (reply "").
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
  * @author ian
  *
  */
-public class CommandLineInteractionMedium implements InteractionMedium {
+public class CommandLineTransport implements Transport {
 
-	private static final Log LOG = LogFactory.getLog(CommandLineInteractionMedium.class);
+	private static final Log LOG = LogFactory.getLog(CommandLineTransport.class);
 
 	private MessageReceiver receiver;
 

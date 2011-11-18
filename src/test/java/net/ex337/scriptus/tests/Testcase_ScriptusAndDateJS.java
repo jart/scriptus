@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.functions.Get;
 import net.ex337.scriptus.model.api.functions.Say;
+import net.ex337.scriptus.transport.Transport;
 
 /**
  * Tests the Scriptus API calls.
@@ -21,8 +21,8 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 
 	private static final String TEST_USER = "test";
 	private ProcessScheduler c;
-	private ScriptusDAO dao;
-	private InteractionMedium m;
+	private ScriptusDatastore datastore;
+	private Transport m;
 	
 	private static final Map<String,String> testSources = new HashMap<String,String>() {{
 		put("evalget.js", 
@@ -44,17 +44,17 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 		
 		super.setUp();
 		
-		m = (InteractionMedium) appContext.getBean("interaction");
+		m = (Transport) appContext.getBean("transport");
 		
 		c = (ProcessScheduler) appContext.getBean("scheduler");
 		
-		dao = (ScriptusDAO) appContext.getBean("dao");
+		datastore = (ScriptusDatastore) appContext.getBean("datastore");
 		
 		for(Map.Entry<String,String> e : testSources.entrySet()) {
-			dao.saveScriptSource(TEST_USER, e.getKey(), e.getValue());
+			datastore.saveScriptSource(TEST_USER, e.getKey(), e.getValue());
 		}
 		
-		//((DummyInteractionMedium)m).response = "response";
+		//((DummyTransport)m).response = "response";
 		
 	}
 	
@@ -66,7 +66,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 	
 	public void test_evalGet() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "evalget.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -76,9 +76,9 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, dao, p);
+		g.visit(c, m, datastore, p);
 		
-		p = dao.getProcess(p.getPid());
+		p = datastore.getProcess(p.getPid());
 		
 		assertTrue("got content", p.getState() instanceof String);
 		
@@ -98,7 +98,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 //	 */
 //	public void test_wait() throws IOException {
 //
-//		final ScriptProcess p = dao.newProcess(TEST_USER, "wait.js", "", "owner");
+//		final ScriptProcess p = datastore.newProcess(TEST_USER, "wait.js", "", "owner");
 //		
 //		p.save();
 //		
@@ -134,7 +134,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 //						
 //						executedParentPostWait.set(Boolean.TRUE);
 //						
-//						ScriptAction enfin = dao.getProcess(pid).call();
+//						ScriptAction enfin = datastore.getProcess(pid).call();
 //						
 //						assertTrue("script finished", enfin instanceof Termination);
 //						assertEquals("script result OK", "waitedfoo"+childPid, ((Termination)enfin).getResult());
@@ -143,7 +143,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 //
 //						executedParentPostFork.set(Boolean.TRUE);
 //						
-//						ScriptProcess p2 = dao.getProcess(pid);
+//						ScriptProcess p2 = datastore.getProcess(pid);
 //						
 //						ScriptAction r2 = p2.call();
 //						
@@ -153,7 +153,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 //
 //						//pause thread until child has termination
 //						
-//						r2.visit(this, m, dao, p2);
+//						r2.visit(this, m, datastore, p2);
 //
 //					}
 //
@@ -163,7 +163,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 //			
 //		};
 //		
-//		r.visit(testScheduler, m, dao, p);
+//		r.visit(testScheduler, m, datastore, p);
 //		
 //		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
 //		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());

@@ -1,4 +1,4 @@
-package net.ex337.scriptus.interaction.twitter;
+package net.ex337.scriptus.transport.twitter;
 
 import java.util.ArrayList;
 import java.util.List;

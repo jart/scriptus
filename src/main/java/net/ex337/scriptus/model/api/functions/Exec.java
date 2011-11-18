@@ -3,10 +3,10 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.transport.Transport;
 
 /**
  * Executes a new script belonging to the same openId user
@@ -33,10 +33,10 @@ public class Exec extends ScriptAction implements Serializable {
 
 
 	@Override
-	public void visit(ProcessScheduler scheduler, InteractionMedium medium, ScriptusDAO dao, ScriptProcess process) {
+	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
 
 		//TODO add script not found exception
-		ScriptProcess p = dao.newProcess(process.getUserId(), script, args, process.getOwner());
+		ScriptProcess p = datastore.newProcess(process.getUserId(), script, args, process.getOwner());
 		
 		p.setPid(process.getPid());
 		

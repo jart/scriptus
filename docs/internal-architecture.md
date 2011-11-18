@@ -3,13 +3,13 @@
 
 The Scriptus codebase can be divided into several sections.
 
-The goal of the architecture is to run script processes, persisting them during API calls, and allowing them to interact with users via an interaction medium.
+The goal of the architecture is to run script processes, persisting them during API calls, and allowing them to interact with users via a transport.
 
-The DAO (data access object) is responsible for any short- or long-term persistence of Script processes.
+The datastore object is responsible for any short- or long-term persistence of Script processes.
 
-The interaction medium object is used by the script process (via the API) to interact with users.
+The transport object is used by the script process (via the API) to interact with users.
 
-The interaction medium and DAO have three separate implementations each, and which one is used at runtime is configured in `ScriptusConfig`
+The transport and datastore have three separate implementations each, and which one is used at runtime is configured in `ScriptusConfig`
  and the property file backing it. Scriptus is reloaded when the settings are changed via the admin interface.
 
 The process scheduler is responsible for executing script processes, and administering the task scheduler used for waking sleeping processes and managing timeouts.

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -14,7 +14,7 @@ import net.ex337.scriptus.model.scheduler.Wake;
 
 /**
  * 
- * Tests the basics of the {@link ScriptusDAO} interface contract.
+ * Tests the basics of the {@link ScriptusDatastore} interface contract.
  * If this test passes for the implementation, it's probably OK 
  * - if it doesn't, it's definitely not.
  * 
@@ -23,7 +23,7 @@ import net.ex337.scriptus.model.scheduler.Wake;
  */
 public class Testcase_ScriptusDAO extends BaseTestCase {
 	
-	private ScriptusDAO dao;
+	private ScriptusDatastore datastore;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -33,19 +33,19 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		super.setUp();
 		
-		dao = (ScriptusDAO) appContext.getBean("dao");
+		datastore = (ScriptusDatastore) appContext.getBean("datastore");
 		
-		dao.createTestSources();
+		datastore.createTestSources();
 		
 	}
 
 	public void test_lifecycle() throws IOException {
-		ScriptProcess newp = dao.newProcess("test", "addTwoNumbers.js", "", "");
+		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", "", "");
 		newp.setArgs("foo bar");
 		
 		newp.save();
 		
-		ScriptProcess saved = dao.getProcess(newp.getPid());
+		ScriptProcess saved = datastore.getProcess(newp.getPid());
 		
 		assertEquals("pid same", newp.getPid(), saved.getPid());
 		
@@ -76,32 +76,32 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		String cid = "cid"+postfix;
 		
-		dao.registerTwitterCorrelation(new TwitterCorrelation(pid, "user", cid, 123));
+		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, "user", cid, 123));
 
-		assertEquals("correct pid returned", pid, dao.getTwitterCorrelationByID(cid).getPid());
+		assertEquals("correct pid returned", pid, datastore.getTwitterCorrelationByID(cid).getPid());
 		
-		dao.unregisterTwitterCorrelation(cid);
+		datastore.unregisterTwitterCorrelation(cid);
 		
-		assertEquals(null, dao.getTwitterCorrelationByID(cid));
+		assertEquals(null, datastore.getTwitterCorrelationByID(cid));
 
 	}
 
 	public void test_scheduleTask() throws IOException {
 		
-		ScriptusDAO dao = (ScriptusDAO) appContext.getBean("dao");
+		ScriptusDatastore datastore = (ScriptusDatastore) appContext.getBean("datastore");
 		
 		Calendar then = Calendar.getInstance();
 		then.add(Calendar.HOUR, 3);
 		
 		Wake w = new Wake(UUID.randomUUID(), 1234);
 		
-		dao.scheduleTask(then, w);
+		datastore.scheduleTask(then, w);
 		
-		List<ScheduledScriptAction> actions = dao.getScheduledTasks(Calendar.getInstance());
+		List<ScheduledScriptAction> actions = datastore.getScheduledTasks(Calendar.getInstance());
 		
 		assertTrue("no actions in list", actions.isEmpty());
 		
-		actions = dao.getScheduledTasks(then);
+		actions = datastore.getScheduledTasks(then);
 		
 		assertTrue("list not empty",  ! actions.isEmpty());
 		
@@ -121,7 +121,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		then.add(Calendar.HOUR, 1);
 		
-		actions = dao.getScheduledTasks(then);
+		actions = datastore.getScheduledTasks(then);
 		
 		assertTrue("list not empty",  ! actions.isEmpty());
 		
@@ -134,9 +134,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 			}
 		}
 		
-		dao.deleteScheduledTask(neww);
+		datastore.deleteScheduledTask(neww);
 
-		actions = dao.getScheduledTasks(then);
+		actions = datastore.getScheduledTasks(then);
 		
 		found = false;
 		
@@ -156,9 +156,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		List<Long> ll = new ArrayList<Long>();
 		ll.add(12345L);
 		
-		dao.updateTwitterLastMentions(ll);
+		datastore.updateTwitterLastMentions(ll);
 		
-		List<Long> l = dao.getTwitterLastMentions();
+		List<Long> l = datastore.getTwitterLastMentions();
 		
 		assertEquals("correct length", 1, l.size());
 		assertEquals("contents", 12345L, ((Long)l.get(0)).longValue());
@@ -166,9 +166,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		ll = new ArrayList<Long>();
 		ll.add(54321L);
 
-		dao.updateTwitterLastMentions(ll);
+		datastore.updateTwitterLastMentions(ll);
 
-		l = dao.getTwitterLastMentions();
+		l = datastore.getTwitterLastMentions();
 		
 		assertEquals("correct length", 1, l.size());
 		assertEquals("contents", 54321L, ((Long)l.get(0)).longValue());
@@ -179,21 +179,21 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		UUID r = UUID.randomUUID();
 		
-		dao.registerTwitterListener(r, "foo");
+		datastore.registerTwitterListener(r, "foo");
 		
 		Thread.sleep(200);
 		
 		UUID s = UUID.randomUUID();
 		
-		dao.registerTwitterListener(s, "foo");
+		datastore.registerTwitterListener(s, "foo");
 		
-		UUID g = dao.getMostRecentTwitterListener("foo");
+		UUID g = datastore.getMostRecentTwitterListener("foo");
 		
 		assertEquals("correct uuid returned", g, s);
 		
-		dao.unregisterTwitterListener(g, "foo");
+		datastore.unregisterTwitterListener(g, "foo");
 
-		g = dao.getMostRecentTwitterListener("foo");
+		g = datastore.getMostRecentTwitterListener("foo");
 		
 		assertEquals("correct uuid returned", g, r);
 

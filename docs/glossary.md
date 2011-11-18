@@ -2,7 +2,7 @@
 
 Every project inevitably creates its own terminology, and this page is an attempt to collate it in one location and explain it.
 
-##interaction medium/transport
+##transport, previously "interaction medium"
 
 A means through which Scriptus communicates with its users.
 
@@ -22,7 +22,7 @@ Each process is identified by a Process IDentifier, which right now is a v4 UUID
 
 When running a script, you can can have its owner. By default, ask(), say() and listen() revert to this user.
 
-##DAO / datastore
+##datastore, previously "DAO"
 
 This is where Scriptus stores all data. There are several different types of datastore, as discussed in the internal architecture page. 
 

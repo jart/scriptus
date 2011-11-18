@@ -3,10 +3,10 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.transport.Transport;
 
 public class Say extends ScriptAction implements Serializable {
 
@@ -33,9 +33,9 @@ public class Say extends ScriptAction implements Serializable {
 	}
 
 	@Override
-	public void visit(ProcessScheduler scheduler, InteractionMedium medium, ScriptusDAO dao, ScriptProcess process) {
+	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
 
-		medium.say(who, msg);
+		transport.say(who, msg);
 		
 		scheduler.updateProcessState(process.getPid(), null);
 

@@ -23,10 +23,10 @@ import com.amazonaws.auth.AWSCredentials;
  * is taken as a URL (file-system, relative or absolute, or HTTP etc.)
  * from which to load the properties file.
  * 
- * The configuration includes what datastore and interaction medium to use.
+ * The configuration includes what datastore and transport to use.
  * 
  * If no configuration file is found, we default to using the in-memory
- * datastore and the command-line interaction medium.
+ * datastore and the command-line transport.
  * 
  * The properties in the config file can, with one exception, be modified
  * via the "/settings" page. The one exception is the boolean setting 
@@ -39,8 +39,8 @@ import com.amazonaws.auth.AWSCredentials;
  */
 public class ScriptusConfig implements AWSCredentials {
 
-	public static enum Medium {Twitter, CommandLine, Dummy};
-	public static enum Dao {Aws, File, Memory};
+	public static enum TransportType {Twitter, CommandLine, Dummy};
+	public static enum DatastoreType {Aws, File, Memory};
 
 	public static final String DURATION_FORMAT="([0-9]+)[\\ ,]*([smhdwMqyDC])";
 
@@ -69,9 +69,9 @@ public class ScriptusConfig implements AWSCredentials {
 
 	private String s3Bucket;//232942e7-fac3-4363-baa1-ce2bcdc84a78
 	
-	private Medium medium;
+	private TransportType transportType;
 	
-	private Dao dao;
+	private DatastoreType datastoreType;
 	
 	/**
 	 * Set to true during init() iff no config file exists
@@ -158,9 +158,9 @@ public class ScriptusConfig implements AWSCredentials {
 		
 		if(cleanInstall) {
 
-			medium = Medium.CommandLine;
+			transportType = TransportType.CommandLine;
 			
-			dao = Dao.Memory;
+			datastoreType = DatastoreType.Memory;
 			
 		}
 		
@@ -168,7 +168,7 @@ public class ScriptusConfig implements AWSCredentials {
 		 * Try not to touch the local filesystem unless we know we're 
 		 * going to  need to.
 		 */
-		if(configLocation.equals(defaultConfigLocation) || dao == Dao.File) {
+		if(configLocation.equals(defaultConfigLocation) || datastoreType == DatastoreType.File) {
 			
 			if( ! scriptusDir.exists()) {
 				scriptusDir.mkdir();
@@ -187,8 +187,8 @@ public class ScriptusConfig implements AWSCredentials {
 		twitterAccessToken = props.getProperty("twitterAccessToken");
 		twitterAccessTokenSecret = props.getProperty("twitterAccessTokenSecret");
 		s3Bucket = props.getProperty("s3Bucket");
-		dao = Dao.valueOf(props.getProperty("dao"));
-		medium = Medium.valueOf(props.getProperty("medium"));
+		datastoreType = DatastoreType.valueOf(props.getProperty("datastore"));
+		transportType = TransportType.valueOf(props.getProperty("transport"));
 		disableOpenID = Boolean.parseBoolean(props.getProperty("disableOpenID"));
 	}
 	
@@ -203,8 +203,8 @@ public class ScriptusConfig implements AWSCredentials {
 		props.put("twitterAccessToken",			twitterAccessToken);
 		props.put("twitterAccessTokenSecret",	twitterAccessTokenSecret);
 		props.put("s3Bucket", 					s3Bucket);
-		props.put("medium", 					medium.toString());
-		props.put("dao", 						dao.toString());
+		props.put("transport",       			transportType.toString());
+		props.put("datastore", 					datastoreType.toString());
 		/*
 		 * not written out automatically
 		 *  - (a) no option in GUI,
@@ -275,20 +275,20 @@ public class ScriptusConfig implements AWSCredentials {
 		this.twitterConsumerSecret = twitterConsumerSecret;
 	}
 
-	public Medium getMedium() {
-		return medium;
+	public TransportType getTransportType() {
+		return transportType;
 	}
 
-	public void setMedium(Medium medium) {
-		this.medium = medium;
+	public void setTransportType(TransportType transportType) {
+		this.transportType = transportType;
 	}
 
-	public Dao getDao() {
-		return dao;
+	public DatastoreType getDatastoreType() {
+		return datastoreType;
 	}
 
-	public void setDao(Dao dao) {
-		this.dao = dao;
+	public void setDatastoreType(DatastoreType datastoreType) {
+		this.datastoreType = datastoreType;
 	}
 
 	public String getS3Bucket() {

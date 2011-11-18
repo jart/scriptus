@@ -6,10 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
-import net.ex337.scriptus.interaction.InteractionMedium;
-import net.ex337.scriptus.interaction.impl.DummyInteractionMedium;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.Termination;
@@ -25,6 +23,8 @@ import net.ex337.scriptus.model.api.functions.Wait;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 import net.ex337.scriptus.tests.support.ProcessSchedulerDelegate;
+import net.ex337.scriptus.transport.Transport;
+import net.ex337.scriptus.transport.impl.DummyTransport;
 
 /**
  * Tests the Scriptus API calls.
@@ -36,8 +36,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	private static final String TEST_USER = "test";
 	private ProcessScheduler c;
-	private ScriptusDAO dao;
-	private InteractionMedium m;
+	private ScriptusDatastore datastore;
+	private Transport m;
 	
 	private static final Map<String,String> testSources = new HashMap<String,String>() {{
 		put("return.js", "return \"result\";");
@@ -108,17 +108,17 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		super.setUp();
 		
-		m = (InteractionMedium) appContext.getBean("interaction");
+		m = (Transport) appContext.getBean("transport");
 		
 		c = (ProcessScheduler) appContext.getBean("scheduler");
 		
-		dao = (ScriptusDAO) appContext.getBean("dao");
+		datastore = (ScriptusDatastore) appContext.getBean("datastore");
 		
 		for(Map.Entry<String,String> e : testSources.entrySet()) {
-			dao.saveScriptSource(TEST_USER, e.getKey(), e.getValue());
+			datastore.saveScriptSource(TEST_USER, e.getKey(), e.getValue());
 		}
 		
-		//((DummyInteractionMedium)m).response = "response";
+		//((DummyTransport)m).response = "response";
 		
 	}
 	
@@ -131,7 +131,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_return() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "return.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "return.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -139,7 +139,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		NormalTermination n = (NormalTermination) r;
 
-		r.visit(c, m, dao, p); //sould say
+		r.visit(c, m, datastore, p); //sould say
 
 		assertEquals("Correct result", "result", n.getResult());
 		
@@ -147,7 +147,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_log() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "log.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "log.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -155,7 +155,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		NormalTermination n = (NormalTermination) r;
 
-		r.visit(c, m, dao, p); //sould say
+		r.visit(c, m, datastore, p); //sould say
 
 		assertEquals("Correct result", "result", n.getResult());
 		
@@ -170,7 +170,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	 */
 	public void test_prototypes() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "prototypes.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "prototypes.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -182,20 +182,20 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 			@Override
 			public void execute(UUID pid) {
-				ScriptProcess pp = dao.getProcess(pid);
+				ScriptProcess pp = datastore.getProcess(pid);
 				ScriptAction rr = pp.call();
                 assertEquals("final result", NormalTermination.class, rr.getClass());
                 assertEquals("final result value OK", "foo", ((NormalTermination)rr).getResult());
 			}
 			
-		}, m, dao, p); //sould say
+		}, m, datastore, p); //sould say
 		
 
 	}
 
 	public void test_syntaxError() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "syntaxError.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "syntaxError.js", "", "owner");
 		
 		ScriptAction r = p.call();
 
@@ -205,7 +205,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_throwException() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "throw.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "throw.js", "", "owner");
 		
 		ScriptAction r = p.call();
 
@@ -216,7 +216,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_fiddleWithAPI() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "fiddle.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "fiddle.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -225,7 +225,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_fiddleWithAPI2() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "fiddle2.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "fiddle2.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -236,31 +236,31 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_fork() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "fork.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "fork.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
 		assertTrue("Forked correctly", r instanceof Fork);
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 
 	}
 	
 	public void test_forkNoPrefix() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "forkNoPrefix.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "forkNoPrefix.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
 		assertTrue("Forked correctly", r instanceof Fork);
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 
 	}
 	
 	public void test_exit() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "exit.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "exit.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -271,7 +271,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_exec() throws IOException {
 		
-		final ScriptProcess p = dao.newProcess(TEST_USER, "exec.js", "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "exec.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -286,7 +286,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 			@Override
 			public void execute(UUID pid) {
 
-				ScriptProcess pp = dao.getProcess(pid);
+				ScriptProcess pp = datastore.getProcess(pid);
 				
 				assertEquals("good pid", p.getPid(), pid);
 				assertEquals("good source", "returnArg.js", pp.getSourceName());
@@ -298,12 +298,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 				assertEquals("goood result", "resultarg1 arg2", ((NormalTermination)aa).getResult());
 			}
 			
-		}, m, dao, p);
+		}, m, datastore, p);
 	}
 
 	public void test_sleepHour() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "sleepHour.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepHour.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -313,7 +313,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_getHttp() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "getHttp.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "getHttp.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -323,9 +323,9 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, dao, p);
+		g.visit(c, m, datastore, p);
 		
-		p = dao.getProcess(p.getPid());
+		p = datastore.getProcess(p.getPid());
 		
 		assertTrue("got content", p.getState() instanceof String);
 		
@@ -338,7 +338,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_evalGet() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "evalget.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -348,9 +348,9 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, dao, p);
+		g.visit(c, m, datastore, p);
 		
-		p = dao.getProcess(p.getPid());
+		p = datastore.getProcess(p.getPid());
 		
 		assertTrue("got content", p.getState() instanceof String);
 		
@@ -364,7 +364,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_evalGetBug() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "evalgetBUG.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalgetBUG.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -374,9 +374,9 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, dao, p);
+		g.visit(c, m, datastore, p);
 		
-		p = dao.getProcess(p.getPid());
+		p = datastore.getProcess(p.getPid());
 		
 		assertTrue("got content", p.getState() instanceof String);
 		
@@ -390,7 +390,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_getHttps() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "getHttps.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "getHttps.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -400,9 +400,9 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, dao, p);
+		g.visit(c, m, datastore, p);
 		
-		p = dao.getProcess(p.getPid());
+		p = datastore.getProcess(p.getPid());
 		
 		assertTrue("got content", p.getState() instanceof String);
 		
@@ -414,7 +414,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepDate() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "sleepDate.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDate.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -424,7 +424,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepDateObject() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "sleepDateObject.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDateObject.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -434,7 +434,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepDuration() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "sleepDuration.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDuration.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -459,7 +459,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepBadDuration() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "sleepBadDuration.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepBadDuration.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -470,7 +470,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepBadDate() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "sleepBadDate.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepBadDate.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -483,7 +483,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	 */
 	public void test_wait() throws IOException {
 
-		final ScriptProcess p = dao.newProcess(TEST_USER, "wait.js", "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "wait.js", "", "owner");
 		
 		p.save();
 		
@@ -519,7 +519,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						executedParentPostWait.set(Boolean.TRUE);
 						
-						ScriptAction enfin = dao.getProcess(pid).call();
+						ScriptAction enfin = datastore.getProcess(pid).call();
 						
 						assertTrue("script finished", enfin instanceof Termination);
 						assertEquals("script result OK", "waitedfoo"+childPid, ((Termination)enfin).getResult());
@@ -528,7 +528,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						executedParentPostFork.set(Boolean.TRUE);
 						
-						ScriptProcess p2 = dao.getProcess(pid);
+						ScriptProcess p2 = datastore.getProcess(pid);
 						
 						ScriptAction r2 = p2.call();
 						
@@ -538,7 +538,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						//pause thread until child has termination
 						
-						r2.visit(this, m, dao, p2);
+						r2.visit(this, m, datastore, p2);
 
 					}
 
@@ -548,7 +548,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 			
 		};
 		
-		r.visit(testScheduler, m, dao, p);
+		r.visit(testScheduler, m, datastore, p);
 		
 		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
 		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());
@@ -561,7 +561,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	 */
 	public void test_wait2() throws IOException {
 
-		final ScriptProcess p = dao.newProcess(TEST_USER, "wait2.js", "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "wait2.js", "", "owner");
 		
 		p.save();
 		
@@ -588,7 +588,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						executedChildPostSleep.set(Boolean.TRUE);
 						
-						ScriptProcess p2 = dao.getProcess(pid);
+						ScriptProcess p2 = datastore.getProcess(pid);
 						
 						ScriptAction r2 = p2.call();
 
@@ -596,7 +596,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						p2.save();
 						
-						r2.visit(this, m, dao, p2);
+						r2.visit(this, m, datastore, p2);
 
 					} else {
 						
@@ -604,7 +604,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						childPid = pid;
 						
-						ScriptProcess p2 = dao.getProcess(pid);
+						ScriptProcess p2 = datastore.getProcess(pid);
 						
 						ScriptAction r2 = p2.call();
 
@@ -624,7 +624,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						executedParentPostWait.set(Boolean.TRUE);
 						
-						ScriptAction enfin = dao.getProcess(pid).call();
+						ScriptAction enfin = datastore.getProcess(pid).call();
 						
 						assertTrue("script finished", enfin instanceof Termination);
 						assertEquals("script result OK", "waitedfooslept"+childPid, ((Termination)enfin).getResult());
@@ -633,7 +633,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						executedParentPostFork.set(Boolean.TRUE);
 						
-						ScriptProcess p2 = dao.getProcess(pid);
+						ScriptProcess p2 = datastore.getProcess(pid);
 						
 						ScriptAction r2 = p2.call();
 						
@@ -643,7 +643,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						//pause thread until child has termination
 						
-						r2.visit(this, m, dao, p2);
+						r2.visit(this, m, datastore, p2);
 						
 						//assert parent is still waiting
 						//wake child and execute
@@ -657,7 +657,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 			
 		};
 		
-		r.visit(testScheduler, m, dao, p);
+		r.visit(testScheduler, m, datastore, p);
 		
 		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
 		assertEquals("Executed child post-sleep", Boolean.TRUE, executedChildPostSleep.get());
@@ -669,7 +669,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_kill() throws IOException {
 
-		final ScriptProcess p = dao.newProcess(TEST_USER, "kill.js", "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "kill.js", "", "owner");
 		
 		p.save();
 		
@@ -718,7 +718,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						executedParentPostFork.set(Boolean.TRUE);
 						
-						ScriptProcess p2 = dao.getProcess(pid);
+						ScriptProcess p2 = datastore.getProcess(pid);
 						
 						ScriptAction r2 = p2.call();
 						
@@ -726,12 +726,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						assertTrue("Killed correctly", r2 instanceof Kill);
 						
-						r2.visit(this, m, dao, p2);
+						r2.visit(this, m, datastore, p2);
 
 						boolean caughtNotFoundExcepton = false;
 						
 						try {
-							dao.getProcess(childPid);
+							datastore.getProcess(childPid);
 						} catch(ProcessNotFoundException sre) {
 							caughtNotFoundExcepton = true;
 						}
@@ -750,7 +750,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		assertTrue("forking correctly", r instanceof Fork);
 		
-		r.visit(testScheduler, m, dao, p);
+		r.visit(testScheduler, m, datastore, p);
 		
 		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
 		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());
@@ -761,7 +761,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_ask() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "ask.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "ask.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -770,13 +770,13 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 		
 	}
 
 	public void test_defaultAsk() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "defaultAsk.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultAsk.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -785,14 +785,14 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 		
 	}
 
 
 	public void test_askTimeout() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "askTimeout.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "askTimeout.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -801,13 +801,13 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 		
 	}
 
 	public void test_say() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "say.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "say.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -817,12 +817,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_defaultSay() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "defaultSay.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultSay.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -833,7 +833,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_listen() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "listen.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -842,12 +842,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_defaultListen() throws IOException {
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "defaultListen.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultListen.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -856,12 +856,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_evalBroken() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "evalBroken.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalBroken.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -870,7 +870,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_eval() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "eval.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "eval.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -878,14 +878,14 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		p.save();
 
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_addTwoNumbers() throws IOException {
 
-		((DummyInteractionMedium)m).response = "4";
+		((DummyTransport)m).response = "4";
 
-		ScriptProcess p = dao.newProcess(TEST_USER, "addTwoNumbers.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "addTwoNumbers.js", "", "owner");
 		
 		ScriptAction r = p.call();
 
@@ -894,14 +894,14 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		assertTrue("First correctly", r instanceof Fork);
 		
 		//everything else should happen immediately with mocks
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 		
-		((DummyInteractionMedium)m).response = "response";
+		((DummyTransport)m).response = "response";
 	}
 
 	public void test_breakSecurity() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "breakSec.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -909,12 +909,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_breakSecurity2() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "breakSec2.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec2.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -922,12 +922,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_breakSecurity3() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "breakSec3.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec3.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -935,12 +935,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_breakSecurity4() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "breakSec4.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec4.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -948,12 +948,12 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 
 	public void test_breakSecurity5() throws IOException {
 		
-		ScriptProcess p = dao.newProcess(TEST_USER, "breakSec5.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec5.js", "", "owner");
 		
 		ScriptAction r = p.call();
 		
@@ -961,7 +961,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, dao, p);
+		r.visit(c, m, datastore, p);
 	}
 	
 	

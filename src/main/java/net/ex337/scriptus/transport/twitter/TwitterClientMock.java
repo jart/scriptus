@@ -1,4 +1,4 @@
-package net.ex337.scriptus.interaction.twitter;
+package net.ex337.scriptus.transport.twitter;
 
 import java.io.File;
 import java.io.IOException;

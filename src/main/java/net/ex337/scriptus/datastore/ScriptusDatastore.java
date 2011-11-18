@@ -1,4 +1,4 @@
-package net.ex337.scriptus.dao;
+package net.ex337.scriptus.datastore;
 
 import java.util.Calendar;
 import java.util.List;
@@ -17,7 +17,7 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
  * @author ian
  *
  */
-public interface ScriptusDAO {
+public interface ScriptusDatastore {
 
 	/**
 	 * Create a new {@link ScriptProcess} using the supplied parameters
@@ -55,7 +55,7 @@ public interface ScriptusDAO {
 	public void deleteProcess(UUID pid);
 
 
-	//dao methods for admin
+	//datastore methods for admin
 	/**
 	 * CRUDL operations owned by supplied openID user.
 	 */

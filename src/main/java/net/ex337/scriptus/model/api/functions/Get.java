@@ -6,11 +6,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
-import net.ex337.scriptus.interaction.InteractionMedium;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.io.IOUtils;
 
@@ -26,7 +26,7 @@ public class Get extends ScriptAction implements Serializable {
 	
 	
 	@Override
-	public void visit(ProcessScheduler scheduler, InteractionMedium medium, ScriptusDAO dao, ScriptProcess process) {
+	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
 
 		/*
 		 * TODO long-term, this should send a request to a "get processor" to isolate the app IO in one node/module

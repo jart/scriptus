@@ -4,7 +4,7 @@ There are several bad or questionable design choices in Scriptus that I will enu
 
 Ideally an RDBMS should be setup (maybe Jersey or just a JDBC connection) instead of using the filesystem. This may be done later.
 
-The reason it wasn't done immediately is because the filesystem DAO grew out of the original command-line tools I used as my original proof of concept, I didn't have an RDBMS, I didn't want to learn JPA in this project, I originally thought I would need mostly BLOB storage, and I guessed a filesystem would be easier to convert to S3 for horizontal partitioning (a case of YAGNI).
+The reason it wasn't done immediately is because the filesystem datastore grew out of the original command-line tools I used as my original proof of concept, I didn't have an RDBMS, I didn't want to learn JPA in this project, I originally thought I would need mostly BLOB storage, and I guessed a filesystem would be easier to convert to S3 for horizontal partitioning (a case of YAGNI).
 
 #Using correlation IDs instead of the Twitter "in-reply-to" IDs for correlating tweets
 

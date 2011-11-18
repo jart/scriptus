@@ -4,12 +4,12 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Medium;
-import net.ex337.scriptus.interaction.twitter.TwitterInteractionMedium;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
+import net.ex337.scriptus.transport.twitter.TwitterTransportImpl;
 
 public class Testcase_Twitter extends BaseTestCase {
 	
-	TwitterInteractionMedium i;
+	TwitterTransportImpl i;
 	
 	ScriptusConfig conf;
 
@@ -17,9 +17,9 @@ public class Testcase_Twitter extends BaseTestCase {
 		super.setUp();
 		
 		conf = (ScriptusConfig) getAppContext().getBean("config");
-		conf.setMedium(Medium.Twitter);
+		conf.setTransportType(TransportType.Twitter);
 		
-		i = (TwitterInteractionMedium) getAppContext().getBean("twitterInteraction");
+		i = (TwitterTransportImpl) getAppContext().getBean("twitterInteraction");
 		i.init();
 		
 		

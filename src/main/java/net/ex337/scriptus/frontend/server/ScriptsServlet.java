@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -54,7 +54,7 @@ public class ScriptsServlet extends HttpServlet {
 		
 		if("/list".equals(path)){
 
-			Set<String> scripts = ((ScriptusDAO) ctx.getBean("dao")).listScripts(openid);
+			Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(openid);
 			
 			req.setAttribute("scripts", scripts);
 
@@ -70,7 +70,7 @@ public class ScriptsServlet extends HttpServlet {
 			
 			if(StringUtils.isNotEmpty(scriptId)) {
 				
-				scriptSource = ((ScriptusDAO) ctx.getBean("dao")).loadScriptSource(openid, scriptId);
+				scriptSource = ((ScriptusDatastore) ctx.getBean("datastore")).loadScriptSource(openid, scriptId);
 				
 				if(scriptSource == null) {
 					resp.sendError(404);
@@ -114,14 +114,14 @@ public class ScriptsServlet extends HttpServlet {
 			String scriptId = req.getParameter("scriptid");
 			String script = req.getParameter("source");
 			
-			((ScriptusDAO) ctx.getBean("dao")).saveScriptSource(openid, scriptId, script);
+			((ScriptusDatastore) ctx.getBean("datastore")).saveScriptSource(openid, scriptId, script);
 			
 			resp.sendRedirect("list");
 			return;
 			
 		} else if("/delete".equals(path)) {
 			
-			((ScriptusDAO) ctx.getBean("dao")).deleteScript(openid, req.getParameter("deleteid"));
+			((ScriptusDatastore) ctx.getBean("datastore")).deleteScript(openid, req.getParameter("deleteid"));
 			resp.sendRedirect("list");
 			return;
 			

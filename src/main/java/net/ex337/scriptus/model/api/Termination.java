@@ -3,10 +3,10 @@ package net.ex337.scriptus.model.api;
 import java.io.Serializable;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.transport.Transport;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Undefined;
@@ -18,7 +18,7 @@ public abstract class Termination extends ScriptAction implements Serializable {
 	public abstract Object getResult();
 
 	@Override
-	public final void visit(ProcessScheduler scheduler, InteractionMedium medium, ScriptusDAO dao, ScriptProcess process) {
+	public final void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
 		
 		if(process.getWaiterPid() != null) {
 			
@@ -41,7 +41,7 @@ public abstract class Termination extends ScriptAction implements Serializable {
 					Context.enter();
 					
 					if(getResult() != null && ! (getResult() instanceof Undefined)) {
-						medium.say(process.getOwner(), getResult().toString());
+						transport.say(process.getOwner(), getResult().toString());
 					}
  
 				} finally {

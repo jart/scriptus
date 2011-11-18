@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
+import net.ex337.scriptus.transport.Transport;
 
 public class Ask extends ScriptAction implements Serializable, HasTimeout {
 
@@ -50,13 +50,13 @@ public class Ask extends ScriptAction implements Serializable, HasTimeout {
 	
 	
 	@Override
-	public void visit(ProcessScheduler scheduler, InteractionMedium medium, ScriptusDAO dao, ScriptProcess process) {
+	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
 
 		scheduler.updateProcessState(process.getPid(), this);
 
 		scheduler.scheduleTask(timeout, new Wake(process.getPid(), nonce));
 
-		medium.ask(process.getPid(), getWho(), getMsg());
+		transport.ask(process.getPid(), getWho(), getMsg());
 		
 	}
 

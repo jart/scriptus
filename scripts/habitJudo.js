@@ -1,12 +1,99 @@
 /*
-		 http://www.habitjudo.com/
-		"1. Pick 3 new simple daily habits, one of which must be 'Record your habits'
-		2. Get a random number of points between 1 & 10 each day for each successful habit
-		3. Add each day's points to a running point total
-		4. At point totals that occur about every 3 days, get a small reward
-		5. At point totals that occur about every 10-12 days, you level up
-		6. When you level up, you get to add a new habit
-		7. GO TO #2"
+
+fixme point thresholds
+date randomisation
+
+
+*/
+
+/*
+ http://www.habitjudo.com/
+"1. Pick 3 new simple daily habits, one of which must be 'Record your habits'
+*/
+var habits = [];
+//var habitCount = [];
+var numStartingHabits = 3;
+
+for(var i = 0; i != numStartingHabits) {
+	habits.push(ask("habit #"+(i+1)+"?"));
+//	habitCount.push(0);
+}
+
+/*
+2. Get a random number of points between 1 & 10 each day for each successful habit
+*/
+var maxNumPoints = 10;
+/*
+3. Add each day's points to a running point total
+*/
+var score = 0;
+/*
+4. At point totals that occur about every 3 days, get a small reward
+*/
+var avgDaysBetweenRewards = 3;
+/*
+5. At point totals that occur about every 10-12 days, you level up
+*/
+var avgLevelUpDays = 11;
+/*
+6. When you level up, you get to add a new habit
+
+Every time you level up, you get to add a new habit. Habit Judo uses the judo belt system to represent levels. You start as a white belt, and move through the colors yellow, orange, green, blue, and brown on your way up to black belt. To keep you habits present-in-mind, you should symbolize your belt level by something on your person.
+
+7. GO TO #2"
+
+*/
+var belts = ["white", "yellow", "orange", "green", "blue", "brown", "black"];
+var currentLevel = 0;
+
+say("record habits by saying 'did #1'");
+
+var lastReward;
+var lastLevelup;
+
+while(recorded != "STOP") {
+
+	//main event loop
+
+	recorded=listen({timeout:"1d"});
+	
+	if(recorded = "did #") {
+		if(x > habits.length) continue;
+//		habitCount[x-1]++;
+		var count = rnd(maxNumPoints);
+		say(count+" points!");
+	}
+	
+	var now = new Date();
+	
+	if( ! lastReward) {
+		lastReward = now;
+		continue;
+	}
+	
+	if(now - lastReward > rnd(avgDaysBetweenRewards)) {
+		say("reward yourself!");
+		lastReward = now;
+	}
+	
+	if( ! lastLevelup) {
+		lastLevelup = now;
+		continue;
+	}
+	
+	if(now - lastLevelup > rnd(avgLevelUpDays)) {
+		currentLevel++;
+		say("you leveled up! Now at level "+(currentLevel+1)+", "+belts[currentLevel-1]+" belt!");
+		lastLevelup = now;
+		
+		habits.push(ask("habit #"+habits.length+"?"));
+//		habitCount.push(0);
+		
+	}
+	
+}
+
+/*
 
 Habit Judo begins with 3 easy daily habits. They should be little things that you should be doing but aren't, e.g. cleaning kitty litter, flossing, drinking 8 glasses of water, etc. Start easy, so that you build positive momentum for later. You start by keeping track of whether you complete each habit each day. This daily tracking is really important, it's essential to triggering the positive feedback loop that makes the system so powerful. In fact, it's so important that "Record your habits" should always be one of your first three habits (the other two you can choose yourself).
 

@@ -1,11 +1,11 @@
-package net.ex337.scriptus.dao.impl;
+package net.ex337.scriptus.datastore.impl;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.UUID;
 
-import net.ex337.scriptus.dao.ScriptusDAO;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptProcess;
 
@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
  * @author ian
  *
  */
-public abstract class BaseScriptusDAO implements ScriptusDAO {
+public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 	
-	private static final Log LOG = LogFactory.getLog(BaseScriptusDAO.class);
+	private static final Log LOG = LogFactory.getLog(BaseScriptusDatastore.class);
 
 	/**
 	 * to be overridden by Spring to do autowiring

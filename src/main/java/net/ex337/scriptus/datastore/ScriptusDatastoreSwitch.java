@@ -1,4 +1,4 @@
-package net.ex337.scriptus.dao;
+package net.ex337.scriptus.datastore;
 
 import java.util.Calendar;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Dao;
+import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -25,33 +25,33 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
  * via the web interface.
  * 
  */
-public class ScriptusDAOSwitch implements ScriptusDAO {
+public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 
-	@Resource(name = "memoryDAO")
-	private ScriptusDAO memory;
+	@Resource(name = "memoryDatastore")
+	private ScriptusDatastore memory;
 
-	@Resource(name = "fileDAO")
-	private ScriptusDAO file;
+	@Resource(name = "fileDatastore")
+	private ScriptusDatastore file;
 
-	@Resource(name = "awsDAO")
-	private ScriptusDAO aws;
+	@Resource(name = "awsDatastore")
+	private ScriptusDatastore aws;
 
-	private ScriptusDAO activeImpl;
+	private ScriptusDatastore activeImpl;
 
 	@Resource
 	private ScriptusConfig config;
 
 	@PostConstruct
 	public void init() {
-		switchDAO(config.getDao());
+		switchDAO(config.getDatastoreType());
 	}
 
-	private void switchDAO(Dao medium) {
-		if (medium == Dao.Memory) {
+	private void switchDAO(DatastoreType datastore) {
+		if (datastore == DatastoreType.Memory) {
 			activeImpl = memory;
-		} else if (medium == Dao.File) {
+		} else if (datastore == DatastoreType.File) {
 			activeImpl = file;
-		} else if (medium == Dao.Aws) {
+		} else if (datastore == DatastoreType.Aws) {
 			activeImpl = aws;
 		}
 	}

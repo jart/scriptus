@@ -1,5 +1,5 @@
 
-package net.ex337.scriptus.dao.impl;
+package net.ex337.scriptus.datastore.impl;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -35,7 +35,7 @@ import org.apache.commons.io.FileUtils;
  * @author ian
  *
  */
-public abstract class ScriptusDAOFileImpl extends BaseScriptusDAO {
+public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	
 	private File scriptusHome;
 	private File processDir;

@@ -1,4 +1,4 @@
-package net.ex337.scriptus.interaction.twitter;
+package net.ex337.scriptus.transport.twitter;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -19,18 +19,18 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.Medium;
-import net.ex337.scriptus.dao.ScriptusDAO;
-import net.ex337.scriptus.interaction.InteractionMedium;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.api.Message;
+import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * The Twitter interaction medium. Periodically polls Twitter for mentions
+ * The Twitter transport. Periodically polls Twitter for mentions
  * of the configured account's screen name and sends any tweets found to
  * the process scheduler and Scriptus processes.
  * 
@@ -41,14 +41,14 @@ import org.apache.commons.logging.LogFactory;
  * @author ian
  *
  */
-public class TwitterInteractionMedium implements InteractionMedium {
+public class TwitterTransportImpl implements Transport {
 
 	private static final int MAX_CID = 0xFFFFFF;
 
-	private static final Log LOG = LogFactory.getLog(TwitterInteractionMedium.class);
+	private static final Log LOG = LogFactory.getLog(TwitterTransportImpl.class);
 
 	@Resource
-	private ScriptusDAO dao;
+	private ScriptusDatastore datastore;
 
 	@Resource
 	private ScriptusConfig config;
@@ -64,7 +64,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
     @PostConstruct
 	public void init() {
 		
-		if(config.getMedium() != Medium.Twitter) {
+		if(config.getTransportType() != TransportType.Twitter) {
 			return;
 		}
 		
@@ -85,7 +85,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 			@Override
 			public void run() {
 				try {
-					TwitterInteractionMedium.this.checkMessages();
+					TwitterTransportImpl.this.checkMessages();
 				} catch(Exception e) {
 					LOG.error("exception checking for messaged on Twitter", e);
 				}
@@ -114,7 +114,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 	 */
 	protected void checkMessages() {
 		
-		List<Long> lastMentions = dao.getTwitterLastMentions();
+		List<Long> lastMentions = datastore.getTwitterLastMentions();
 		
 		for(Long l : lastMentions) {
 			LOG.debug("lastm:"+snowflakeDate(getSecond(l)));
@@ -169,7 +169,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 				 * if in reply to ask()
 				 */
 				
-				TwitterCorrelation c = dao.getTwitterCorrelationByID(e);
+				TwitterCorrelation c = datastore.getTwitterCorrelationByID(e);
 
 				/*
 				 * if I've setup scriptus with my own account,
@@ -191,7 +191,7 @@ public class TwitterInteractionMedium implements InteractionMedium {
 			 * so we put listeners in a stack and pop them on a FIFO basis.
 			 */
 			if( ! foundPid ) {
-				UUID pid = dao.getMostRecentTwitterListener(s.getScreenName());
+				UUID pid = datastore.getMostRecentTwitterListener(s.getScreenName());
 				if(pid != null) {
 					incomings.add(new Message(pid, s.getScreenName(), cleanTweet(s, null, s.getScreenName())));
 					listenersToUnregister.add(new Object[]{pid, s.getScreenName()});
@@ -206,13 +206,13 @@ public class TwitterInteractionMedium implements InteractionMedium {
 		londonCalling.handleIncomings(incomings);
 		
 		if( ! processedIncomings.isEmpty()) {
-			dao.updateTwitterLastMentions(processedIncomings);
+			datastore.updateTwitterLastMentions(processedIncomings);
 		}
 		for(String s : correlationsToUnregister) {
-			dao.unregisterTwitterCorrelation(s);
+			datastore.unregisterTwitterCorrelation(s);
 		}
 		for(Object[] o : listenersToUnregister) {
-			dao.unregisterTwitterListener((UUID)o[0], (String)o[1]);
+			datastore.unregisterTwitterListener((UUID)o[0], (String)o[1]);
 		}
 		
 		
@@ -327,14 +327,14 @@ public class TwitterInteractionMedium implements InteractionMedium {
 
 		long id = twitter.tweet("@"+to+" #"+next+" "+msg);
 
-		dao.registerTwitterCorrelation(new TwitterCorrelation(pid, to, next, id));
+		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, to, next, id));
 
 	}
 
 	@Override
 	public void listen(UUID pid, String to) {
 		
-		dao.registerTwitterListener(pid, to);
+		datastore.registerTwitterListener(pid, to);
 		
 
 	}
