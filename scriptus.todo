@@ -1,6 +1,5 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-
 	
 	test twitter integration
 	   - listen
@@ -10,14 +9,16 @@
 	  desired weight is healthy,
 	  desired rate of weight loss is medically safe (ask for age maybe?)
 	  - need to reverse-engineer curves
+	  
 	 - habit judo from metafilter
 	    -> see detials in script habitJudo.js
+	    -> rate or just every X days
 	 - multi-user scripts:
+	   - secret santa!
 	   - auction
 	   - election
 	   - rota
 	   - poll
-	   - secret santa!
 	 - game tournament
 	    - brush up on set theory
 	 - adventure game from Nathanael
@@ -125,10 +126,11 @@ docd	kill - fix problem with running processes
 		 expect(api), respond([result]), result = continue([substArgs]), setClock(time)
 		 
 		 test_reminders.js:
+		 
 		 	expect(get); continue();
 		 	expect(ask); respond("FRED");
-		 	expect(ask); respond ("THE EVENT");
-		 	expect(ask); respond ("3 Dec 2015");
+		 	expect(ask); respond("THE EVENT");
+		 	expect(ask); respond("3 Dec 2015");
 		 
 		 	for(1...5) {
 		 		expect(fork);
