@@ -1,5 +1,7 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
+
+	regexp based responses in dummy
 	
 	test twitter integration
 	   - listen
@@ -30,134 +32,17 @@ low
 	docs: easy to write annoying, difficult to be considerate...
 	move outstanding stuff to github tasks
 
-	*************BUGS
-docd	on root process termination, 
-docd	 - child processes should be re-parented, 
-docd	     - and when they terminate, what happens if their output has not been waited upon?
-docd	Timeout on listen() should make one last check before returning null to program	
-docd	remove listener registered on timeout
-docd	CID not stored per-user, too small a namespace for a big deployment (if that ever happens)...
-docd	scheduler is imprecise. use paging
-docd	kill - fix problem with running processes
+	*************BUGS not documented in known-problems.md
 	      - children list should be managed separately (SDB?)
 	         - might as well separate state out too...
 	         - add status column
 	      - processes not deleted properly on wait / termination
 	      
-	Future directions inspired by UNIX
-	 - filesystem, read/write/open
-	 var contents = read(path);
-	 var files = list(path);
-	 file-at-once
-		 write(path, contents);
-		 read(path, function(block) {});
-	 functional, block-oriented
-		 function getBlock() {}//use yield?
-		 write(path, getBlock);
-	 -> what gets mounted and how?
-	  /proc for admin, /bin with standard tools?
-	->keep view source principal: tools are scripts
-	->REPL : pipe commands, e.g.
-	$ poll "Are widgets splunkable?" yes no
-	$ elect 2 "widget experts" | debate "Should widgets be splunked?"
-
-	DAO
-
-	TRANSPORTS
-	 - email
-	 - sms?
-	 
-
-	PIPES	
-	 - pipe()
-	 - read() & write()
-	 - bind outputs to normal command?
-	FILESYSTEM
-	 - read & write
-	 - list()?
-
-	Suggestions from Sander
-	 - email interaction medium
-	    - pop3 or imap?
-	 - multiple transports per script: use transport option
-	 - import/export functionality for DAO
-	    - separate DAO from ScriptProcess
-	    - versioning
-		DAO API versioning... important for evolution!
-		- how do we deal with blobs?
-	 - process table
-	    -> via procfs?
-	 - user admin
-
-	
-	Suggestions from Jenya
-	 - how to integrate with existing services & web-applications?
-	 - i.e. use it as workflow engine or store state of process
-	   --> investigate how pipes & stdin/out works in UNIX
-	    --> read() and write()
-	 
-	** features that would be nice
-	API
-	- pipe(function(in, out){})?
-	  - say & listen to ids
-	- post()? etc?
-	- get + post should expose response headers to script & allow headers to be specified.
-	- location & multimedia APIs
-	  look(); //photo upload
-	  where(); / at(); / near(); //location: coordinates
-	view source principle for scripts (using snapshotted debugger info from rhino)
-	 - would be via filesystem
-	online REPL / dev environment?
-	 - problem is doing fork & wait in browser JS, where there is no thread model (maybe with narcissus + cloning for fork)
-	regexp based responses in dummy
-	
-
-	lessons learnt from reminders.js:
-	 eval(get) means your script has to run onlne 
-	 -> good reason to have a filesystem 
-
-	   - needs time-machine to test properly...
-	    - Context.setSystemTimeDelta(long millis) {
-		  - add from NativeDate, boolean flag for optimizing
-	    	}
-		 - centralise clock in system + scheduler
-		 - test-bed with time-machine built in. How? should be mirror-image of script.
-		
-		 expect(api), respond([result]), result = continue([substArgs]), setClock(time)
-		 
-		 test_reminders.js:
-		 
-		 	expect(get); continue();
-		 	expect(ask); respond("FRED");
-		 	expect(ask); respond("THE EVENT");
-		 	expect(ask); respond("3 Dec 2015");
-		 
-		 	for(1...5) {
-		 		expect(fork);
-		 		var result = continue();
-		 		if(result == 0) {//child
-		 			expect(sleep);
-		 			setClock("5 Dec 2015");
-		 			expect(say);
-		 			return;
-		 		}
-		 	}
-	 		expect(say);
-	 		expect(ask);
-	 		respond("cancel");
-	 		for(1..5) {
-		 		expect(kill); continue();
-		 	}
-
-			or maybe just the input & output should be logged?
-			
 	site
 	 - index.html & default layout re-use CSS & HTML
 	 - site doesn't work locally and on github due to "/scriptus" relocation
 
 	promo
-		JS weekly
-		show HN: Script long-running interactions on Twitter in JavaScript
 still a newbie?		mefi projects?
 		demo on twitter 
 		 - install the iPhone client
@@ -165,25 +50,51 @@ still a newbie?		mefi projects?
 		blog posts
 		 - idea of 'slow code'		 
 		ask friends for feedback
-		feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com		
+followup		JavaScript Weekly
+		?feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com		
 
-THE LONG CODE MANIFESTO
 
-Computers run faster and faster. But in the real world, anything important takes time and effort to achieve. If our goal is to make a difference, to make the world a better place, to improve things, then we need to learn to code on a world-changing scale.
 
-Programs that change the world will run for years or decades. Their input and output will be our thoughts and actions. They will work with us first, computers second.
 
-Everyone knows how an election works. Why can't we write a program that anyone can run, and that will let anyone run an election?
 
-Everybody knows how a debate works. Where is debate software? Chess tournament software?
 
-Why can't a single program run for months, or years? Why do we let computer
 
-Change takes time. Self-improvement such as losing weight takes time. Big changes, like the civil rights movement, takes time. 
 
-How many important changes were encapsulated in a computer program? In the past, none of them were. In the future, 
+While I was thinking about the kind of programs I could write with Scriptus, I realised that my general concept of 'execution' was quite limiting, because it limited me to in-memory processes. Once execution can happen anywhere, like in the XKCD cartoon(http://xkcd.com/505/), we can use it for anything, on any scale.
 
-I believe the challenge	is this: write programs for the long term. Write long programs that run for months, years or decades. And then run them on us.
+For example, how an election works is common knowledge. The process of nomination, candidature, campaigning and voting takes months, but is procedurally simple at heart.  How do we write a program that that will let anybody run an election?
+
+The right answer is to write the program and then think about how to run it.
+
+This is some that Tim  O'Reilly 
+
+
+
+
+
+
+
+The Long Code Manifesto
+
+Computers run faster and faster. But in the real world, anything important takes time and effort to achieve.
+
+If our goal is to make the world a better place, then we need to learn to code on a world-changing scale.
+
+Therefore, we should not think of /execution/ as being a transient, in-memory process of computation.
+
+Programs that change the world will run for years or decades, so they can't reside on any one computer, and they need to stick around.
+
+The challenge is to write programs for the long term. Write programs that run for months, years or decades.
+
+Their input and output will be our thoughts and actions, and they will work with us first, computers second.
+
+Because computers can't change the world. We can.
+
+
+
+
+
+
 
 
 	 		 	
@@ -482,4 +393,63 @@ X	 - s/DAO/datastore/g?
 X test	  - code
 X	  - docs
 X no	 - program / running program // script / process?
+X		JS weekly
+X 800 hits, yay		show HN & reddit: Script long-running interactions on Twitter in JavaScript
+X docd	DAO
+X docd	TRANSPORTS
+X docd	 - email
+X docd	 - sms?
+X docd	PIPES	
+X docd	 - pipe()
+X docd	 - read() & write()
+X	Suggestions from Sander
+X docd	 - email interaction medium
+X docd	    - pop3 or imap?
+X docd	 - multiple transports per script: use transport option
+X docd	 - import/export functionality for DAO
+X docd	    - separate DAO from ScriptProcess
+X docd	    - versioning
+X docd		DAO API versioning... important for evolution!
+X docd		- how do we deal with blobs?
+X docd	 - process table (see procfs)
+X	Suggestions from Jenya
+X	** features that would be nice
+X	API
+X docd	- get + post should expose response headers to script & allow headers to be specified.
+X docd	- pipe(function(in, out){})?
+X docd	  - say & listen to ids
+X docd	- post()? etc?
+X docd	- location & multimedia APIs
+X docd	  look(); //photo upload
+X docd	  where(); / at(); / near(); //location: coordinates
+X docd	on root process termination, 
+X docd	 - child processes should be re-parented, 
+X docd	     - and when they terminate, what happens if their output has not been waited upon?
+X docd	Timeout on listen() should make one last check before returning null to program	
+X docd	remove listener registered on timeout
+X docd	CID not stored per-user, too small a namespace for a big deployment (if that ever happens)...
+X docd	scheduler is imprecise. use paging
+X docd	kill - fix problem with running processes
+X docd	   - needs time-machine to test properly...
+X docd		 - test-bed with time-machine built in. How? should be mirror-image of script.
+X docd	view source principle for scripts (using snapshotted debugger info from rhino)
+X docd	online REPL / dev environment?
+X docd	 - problem is doing fork & wait in browser JS, where there is no thread model (maybe with narcissus + cloning for fork)
+X	   --> investigate how pipes & stdin/out works in UNIX
+X docd	->keep view source principal: tools are scripts
+X docd	 - from Sander, user admin
+X docd	 - from Jenya, how to integrate with existing services & web-applications?
+X docd	 - from Jenya, i.e. use it as workflow engine or store state of process
+X docd	   - bind outputs to normal command?
+X docd	Future directions inspired by UNIX
+X docd	   procfs?
+X docd	 - filesystem, read/write/open
+X docd	 -> what gets mounted and how?
+X docd	  /proc for admin, /bin with standard tools? (VSP!)
+X docd	->REPL : pipe commands, e.g.
+X docd	$ poll "Are widgets splunkable?" yes no
+X docd	$ elect 2 "widget experts" | debate "Should widgets be splunked?"
+X docd	lessons learnt from reminders.js:
+X docd	 eval(get) means your script has to run onlne 
+X docd	 -> good reason to have a filesystem 
 
