@@ -16,6 +16,12 @@ Another potential "transport" would be to have a native clients for iOS and Andr
 
 Because any social network with a good API can act as a transport, it might be interesting to add a stub application for Facebook too.
 
+##Architecture
+
+Right now, a Scriptus install has one configuration per interaction medium. This means that multiple Scriptus users share the same Twitter account, command prompt, etc. A more useful approach would be to allow each user to configure their own Twitter account details. For each transport, a user should be able to enter their own authentication details.
+
+The downside of this is that it effectively turns Scriptus into a password database, and a very high-value target for computer intrusion attempts. This means that a great deal of care would have to be taken in designing the 'authentication store' - threat profiles need analysis, and things like key material handling, database encryption, and lots of other topics suddenly become important - not because it's functionally necessary, but because to ignore the security aspect would be irresponsible.
+
 ##Internals
 
 A major feature of Scriptus is that Scriptus programs are meant to last for weeks, months, years or more. If this is so, we must think ahead to the upgrade & maintenance cycles of future releases. Scriptus must be backwards compatible with all its previous versions, otherwise the whole idea of having an environment for running long-term processes is void. Right now this is definitely not the case.
@@ -32,7 +38,7 @@ I've now written two or three short program using Scriptus and there are couple 
 
 The solution to this is a time-machine. Specifically, to modify Rhino so that a delta can be applied to the apparent system time inside of running scripts, and to centralise all time-related functions in Scriptus into a single Clock object/service which we can wind back and forth as necessary to achieve the desired code paths in our tests.
 
-An example of how this might work can be found in [this example test for `reminder.js`](https://raw.github.com/ianso/scriptus/master/scripts/test.reminder.js).
+An example of how this might work can be found in [this example test for `reminder.js`](https://raw.github.com/ianso/scriptus/master/scripts/test.reminder.js). Once this is done, given that the test harness would be a way for one Scriptus program to monitor and direct the execution of another, this could help in the creation of a "control plane", where a lot of the 'host' logic would be moved from Java into JavaScript.
 
 ##The View Source Principle (VSP)
 
