@@ -18,7 +18,7 @@ Because any social network with a good API can act as a transport, it might be i
 
 ##Architecture
 
-Right now, a Scriptus install has one configuration per interaction medium. This means that multiple Scriptus users share the same Twitter account, command prompt, etc. A more useful approach would be to allow each user to configure their own Twitter account details. For each transport, a user should be able to enter their own authentication details.
+Right now, a Scriptus install has one configuration per transport. This means that multiple Scriptus users share the same Twitter account, command prompt, etc. A more useful approach would be to allow each user to configure their own Twitter account details. For each transport, a user should be able to enter their own authentication details.
 
 The downside of this is that it effectively turns Scriptus into a password database, and a very high-value target for computer intrusion attempts. This means that a great deal of care would have to be taken in designing the 'authentication store' - threat profiles need analysis, and things like key material handling, database encryption, and lots of other topics suddenly become important - not because it's functionally necessary, but because to ignore the security aspect would be irresponsible.
 
@@ -34,7 +34,7 @@ These two goals are complementary in many ways, and they may not be sexy but the
 
 ##Developing Scriptus programs
 
-I've now written two or three short program using Scriptus and there are couple of things that are immediately clear. The first is that a program that is meant to run for years is difficult to test properly, because normally one would have to wait for years to see if the program terminates properly. How's that for a development cycle!
+I've now written two or three short programs using Scriptus and there are couple of things that are immediately clear. The first is that a program that is meant to run for years is difficult to test properly, because normally one would have to wait for years to see if the program terminates properly. How's that for a development cycle!
 
 The solution to this is a time-machine. Specifically, to modify Rhino so that a delta can be applied to the apparent system time inside of running scripts, and to centralise all time-related functions in Scriptus into a single Clock object/service which we can wind back and forth as necessary to achieve the desired code paths in our tests.
 
