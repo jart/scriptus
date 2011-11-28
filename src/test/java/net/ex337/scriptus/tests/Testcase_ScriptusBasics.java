@@ -883,7 +883,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_addTwoNumbers() throws IOException {
 
-		((DummyTransport)m).response = "4";
+		((DummyTransport)m).defaultResponse = "4";
 
 		ScriptProcess p = datastore.newProcess(TEST_USER, "addTwoNumbers.js", "", "owner");
 		
@@ -896,7 +896,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		//everything else should happen immediately with mocks
 		r.visit(c, m, datastore, p);
 		
-		((DummyTransport)m).response = "response";
+		((DummyTransport)m).defaultResponse = "response";
 	}
 
 	public void test_breakSecurity() throws IOException {
