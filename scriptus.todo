@@ -1,10 +1,14 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 
-	regexp based responses in dummy
+!!	WAR deployable for v0.1.0 & executable JAR?
+
+test	regexp based responses in dummy
+
+
 	
-	test twitter integration
-	   - listen
+	twitter integration
+test	   - listen
 
 	 - line diet
 	    - simple calculus

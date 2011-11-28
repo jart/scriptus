@@ -55,11 +55,11 @@ Using AWS also means that programs cannot be run offline, for obvious reasons.
 
 ##Choosing a transport
 
-The transport is the means via which Scriptus programs interact with their users. There are three mediums and they all have their uses.
+The transport is the means via which Scriptus programs interact with their users. There are three transports and they all have their uses.
 
- *   **Dummy response** just responds with "response" to every `ask()` and not at all to a `listen()`.
-It can be useful for testing simple scripts. In future a more flexible dummy will be put in place to allow for better automated testing of scripts.
- 
+ *   **Dummy response** just responds with a predetermined response to every `ask()` and not at all to a `listen()`.
+It can be useful for testing simple scripts. To help with this goal, it checks the messages against a series of regular expressions and can respond with a replacement expression if one matches, otherwise a default response is returned. The regular expressions are in the file `src/main/resources/spring/scriptus.xml`.
+
  *   **Command prompt** sends all `ask()`s and `listen()`s to the command line, where the local user can respond.
 To *not* respond simply hit enter when you're prompted for your response.
  

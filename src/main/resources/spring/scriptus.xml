@@ -20,7 +20,16 @@
     <bean id="config" class="net.ex337.scriptus.config.ScriptusConfig" />
 
     <bean id="dummyTransport" class="net.ex337.scriptus.transport.impl.DummyTransport" 
-    	p:response="response"/>
+    	p:defaultResponse="response">
+    	<property name="regexpResponseMatchers">
+			<map>
+				<entry key="SYN" value="ACK"/>
+				<entry key="D[A-Z]*G" value="CAT"/>
+				<entry key="I have ([0-9]*) cats" value="I have $1 dogs"/>
+			</map>
+    	</property>
+   	</bean>
+    	
     <bean id="cmdLineTransport" class="net.ex337.scriptus.transport.impl.CommandLineTransport" />
     <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl" />
 
