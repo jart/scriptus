@@ -1,0 +1,41 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+	<!-- This assembly produces an executable WAR from a basic WAR file. 
+	The only bit which is specific to Scriptus is the main class below.
+	-->
+	<id>executable-webapp</id>
+	<formats>
+		<format>war</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<!-- we only take the 'Main' class from the actual project, that launches 
+			the Jetty server. -->
+		<fileSet>
+			<directory>${project.build.directory}/classes</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>net/ex337/scriptus/server/ScriptusFrontend.class</include>
+				<include>log4j.properties</include>
+			</includes>
+		</fileSet>
+		<!-- We take everything that was built for that WAR. -->
+		<fileSet>
+			<directory>${project.build.directory}/${project.artifactId}</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<!-- We take all the 'provided' libraries which are in fact the application 
+			server, servlet & JSP spec etc. They're loaded at the application server 
+			level. -->
+		<dependencySet>
+			<outputDirectory>/</outputDirectory>
+			<useProjectArtifact>true</useProjectArtifact>
+			<unpack>true</unpack>
+			<scope>provided</scope>
+		</dependencySet>
+	</dependencySets>
+</assembly>

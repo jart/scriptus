@@ -1,4 +1,4 @@
-package net.ex337.scriptus.frontend.server;
+package net.ex337.scriptus.server.frontend;
 
 import java.io.IOException;
 import java.util.Set;

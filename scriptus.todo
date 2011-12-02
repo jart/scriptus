@@ -1,24 +1,33 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-
-!!	WAR deployable for v0.1.0 & executable JAR?
-
-test	regexp based responses in dummy
-
-
 	
+	mvn install -Dmaven.test.skip=true
+	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false -P T2
+	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
+
+X!!	executable WAR deployable for v0.1.0
+	 - documentation
+
+
+	improve first page of minisite
+	 - better focus, call to action
+	improve internal first-time experience
+	 - hardlinks to links to API documentation & known problems 
+	 - more links + content when new
+
 	twitter integration
 test	   - listen
 
+	 - habit judo from metafilter
+	    -> see detials in script habitJudo.js
+	    -> rate or just every X days? ask the guy
+	    
 	 - line diet
 	    - simple calculus
 	  desired weight is healthy,
 	  desired rate of weight loss is medically safe (ask for age maybe?)
 	  - need to reverse-engineer curves
 	  
-	 - habit judo from metafilter
-	    -> see detials in script habitJudo.js
-	    -> rate or just every X days
 	 - multi-user scripts:
 	   - secret santa!
 	   - auction
@@ -32,6 +41,7 @@ test	   - listen
 medium	
 	Amazon AMI for playing with Scriptus
 low
+	add WAR filter to prevent traversal, downloading class files
 	pids should be URNs: "pid:12345";
 	docs: easy to write annoying, difficult to be considerate...
 	move outstanding stuff to github tasks
@@ -53,9 +63,6 @@ still a newbie?		mefi projects?
 		   - upgrade firmware, finally
 		blog posts
 		 - idea of 'slow code'		 
-		ask friends for feedback
-followup		JavaScript Weekly
-		?feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com		
 
 
 
@@ -66,11 +73,9 @@ followup		JavaScript Weekly
 
 While I was thinking about the kind of programs I could write with Scriptus, I realised that my general concept of 'execution' was quite limiting, because it limited me to in-memory processes. Once execution can happen anywhere, like in the XKCD cartoon(http://xkcd.com/505/), we can use it for anything, on any scale.
 
-For example, how an election works is common knowledge. The process of nomination, candidature, campaigning and voting takes months, but is procedurally simple at heart.  How do we write a program that that will let anybody run an election?
+For example, how an election works is common knowledge. The process of nomination, candidature, campaigning and voting takes months, but is procedurally simple at heart. How do we write a program that that will let anybody run an election?
 
-The right answer is to write the program and then think about how to run it.
-
-This is some that Tim  O'Reilly 
+The answer is to write the program and then think about how to run it. Once we expand the idea of programming to include many of the things that encompass everyday life, it becomes easier to think about Tim O'Reilly's idea of "working on stuff that matters".
 
 
 
@@ -456,4 +461,16 @@ X docd	$ elect 2 "widget experts" | debate "Should widgets be splunked?"
 X docd	lessons learnt from reminders.js:
 X docd	 eval(get) means your script has to run onlne 
 X docd	 -> good reason to have a filesystem 
+X test	regexp based responses in dummy
+X followup		JavaScript Weekly
+X no		?feedback from this guy (rhino maintainer, works @ twitter):  constc.blogspot.com		
+X done		ask friends for feedback
+X	 & executable JAR?
+X no	   - spring handlers merging
+X	   - file name corrections?
+X yes!	   - can we get it all in one file?
+X	command-line options (
+X	  port, 
+X test	  config file)
+X	comment POM & assembly files...
 

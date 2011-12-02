@@ -2,6 +2,7 @@ package net.ex337.scriptus.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +40,9 @@ import com.amazonaws.auth.AWSCredentials;
  */
 public class ScriptusConfig implements AWSCredentials {
 
-	public static enum TransportType {Twitter, CommandLine, Dummy};
+	public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
+
+    public static enum TransportType {Twitter, CommandLine, Dummy};
 	public static enum DatastoreType {Aws, File, Memory};
 
 	public static final String DURATION_FORMAT="([0-9]+)[\\ ,]*([smhdwMqyDC])";
@@ -103,9 +106,9 @@ public class ScriptusConfig implements AWSCredentials {
 		
 		configLocation = defaultConfigLocation;
 
-		if(System.getProperty("scriptus.config") != null) {
-
-			configLocation = System.getProperty("scriptus.config");
+		if(System.getProperty(SCRIPTUS_CONFIG_SYSVAR) != null) {
+		    
+			configLocation = System.getProperty(SCRIPTUS_CONFIG_SYSVAR);
 			
 			Properties props = new Properties();
 
@@ -122,15 +125,21 @@ public class ScriptusConfig implements AWSCredentials {
 				configStream = new URL(configLocation).openStream();
 				
 			} catch(MalformedURLException mfe) {
-				
+			    
 				configStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(configLocation);
 				
+			}
+			
+			if(configStream == null) try {
+			    configStream = new FileInputStream(configLocation);
+			} catch(FileNotFoundException fnfe) {
+			    //do nothing...
 			}
 			
 			boolean canLoadConfig = (configStream != null);
 			
 			if(canLoadConfig) {
-				
+
 				props.load(configStream);
 				load(props);
 				

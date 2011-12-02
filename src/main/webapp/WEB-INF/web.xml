@@ -13,12 +13,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	
 	<servlet>
 		<servlet-name>scriptus</servlet-name>
-		<servlet-class>net.ex337.scriptus.frontend.server.ScriptsServlet</servlet-class>
+		<servlet-class>net.ex337.scriptus.server.frontend.ScriptsServlet</servlet-class>
 	</servlet>
 	
 	<servlet>
 		<servlet-name>settings</servlet-name>
-		<servlet-class>net.ex337.scriptus.frontend.server.SettingsServlet</servlet-class>
+		<servlet-class>net.ex337.scriptus.server.frontend.SettingsServlet</servlet-class>
 	</servlet>
 	
 	
