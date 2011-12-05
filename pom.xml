@@ -310,12 +310,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-
-		<dependency>
-			<groupId>opensymphony</groupId>
-			<artifactId>quartz</artifactId>
-			<version>1.6.1</version>
-		</dependency>
 	</dependencies>
 
 	<!--repo for temporarily patched libraries, like Rhino -->

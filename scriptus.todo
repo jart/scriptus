@@ -1,9 +1,11 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 	
-	mvn install -Dmaven.test.skip=true
+	mvn clean install -Dmaven.test.skip=true
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false -P T2
 	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
+
+	jetty should be error level, not "null" level
 
 	documentation for executable WAR once uploaded
 	improve first page of minisite
