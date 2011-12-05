@@ -5,15 +5,13 @@
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false -P T2
 	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
 
-X!!	executable WAR deployable for v0.1.0
-	 - documentation
-
-
+	documentation for executable WAR once uploaded
 	improve first page of minisite
 	 - better focus, call to action
-	improve internal first-time experience
-	 - hardlinks to links to API documentation & known problems 
-	 - more links + content when new
+
+	IMPORTANT
+	rhino migration script
+	serialisable stuff
 
 	twitter integration
 test	   - listen
@@ -473,4 +471,8 @@ X	command-line options (
 X	  port, 
 X test	  config file)
 X	comment POM & assembly files...
+X!!	executable WAR deployable for v0.1.0
+X test	improve internal first-time experience
+X test	 - hardlinks to links to API documentation & known problems 
+X	 - more links + content when new
 

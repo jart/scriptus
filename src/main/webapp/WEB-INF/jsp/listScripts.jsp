@@ -1,5 +1,9 @@
 <html>
 <head><title>Scriptus - user scripts</title>
+<%@page import="net.ex337.scriptus.config.ScriptusConfig"%>
+<%
+ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
+%>
 <script type="text/javascript">
 function run(id) {
 
@@ -23,26 +27,43 @@ function del(id) {
 </script>
 </head>
 <body>
-<p>[<a href="<%=request.getContextPath()%>/">login</a> | <a href="<%=request.getContextPath()%>/scripts/list">list scripts</a> | <a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">settings (127.0.0.1 access only)</a> | <a href="<%=request.getContextPath()%>/?logout">logout</a>]</p>
+<%@include file="header.jsp"%>
 
-<h1>Scriptus - user scripts</h1><ul>
+<h1>Scriptus - user scripts</h1>
 
-<p><a href="edit">new</a></p>
+<%
+java.util.Set<String> scripts = (java.util.Set<String>) request.getAttribute("scripts");
 
-<%			
-			java.util.Set<String> scripts = (java.util.Set<String>) request.getAttribute("scripts");
-			
-			for(String s : scripts) {
-				%><li>
-				
-				<a href="edit?script=<%=s%>"><%=s%></a> 
-				&nbsp; [<a href="#" onClick="run('<%=s%>')">run</a>] 
-				&nbsp; [<a href="#" onClick="del('<%=s%>')">delete</a>]
-		
-				</li><%
-			}
-%>
-</ul>
+if(cfg.isCleanInstall() || scripts.isEmpty()){%>
+<div style="background-color:yellow">
+
+	<p><strong>Welcome to Scriptus!</strong> You don't have any scripts saved on this installation yet.</p>
+	
+	<p>You can <a href="edit">create a new script here</a>, or you might like to try one of the <a href="https://github.com/ianso/scriptus/tree/master/scripts/">the examples</a>, which are <a href="https://github.com/ianso/scriptus/blob/master/docs/examples.md">explained and documented here.</a></p>
+	
+	<p>You can access <a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">the settings page here</a>, provided you are using the installation from localhost.</a>
+
+</div>
+
+<%} else {%>
+
+	<p><a href="edit">new script</a></p>
+
+	<ul><%
+
+	for(String s : scripts) {
+		%><li>
+	
+		<a href="edit?script=<%=s%>"><%=s%></a> 
+		&nbsp; [<a href="#" onClick="run('<%=s%>')">run</a>] 
+		&nbsp; [<a href="#" onClick="del('<%=s%>')">delete</a>]
+
+		</li><%
+	}
+	%></ul>
+<%}%>
+
+
 
 <form action="run" method="POST">
 	<fieldset>

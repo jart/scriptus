@@ -32,7 +32,7 @@ function saveScript() {
 </style>
 </head>
 <body>
-<p>[<a href="<%=request.getContextPath()%>/">login</a> | <a href="<%=request.getContextPath()%>/scripts/list">list scripts</a> | <a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">settings (127.0.0.1 access only)</a> | <a href="<%=request.getContextPath()%>/?logout">logout</a>]</p>
+<%@include file="header.jsp"%>
 	<h1><%= (scriptId == null ? "New Script" : "Edit script "+scriptId) %></h1>
 <!--fixme escaping-->
 	

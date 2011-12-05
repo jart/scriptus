@@ -51,7 +51,9 @@ public class ScriptsServlet extends HttpServlet {
 		String openid=(String) req.getSession().getAttribute("openid");
 		
 		String path = req.getPathInfo();
-		
+
+        req.setAttribute("config", ctx.getBean("config"));
+
 		if("/list".equals(path)){
 
 			Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(openid);

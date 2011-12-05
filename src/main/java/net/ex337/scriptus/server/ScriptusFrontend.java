@@ -56,7 +56,8 @@ public class ScriptusFrontend {
         WebAppContext context = new WebAppContext();
         context.setServer(server);
         context.setContextPath("/");
-
+        context.getInitParams().put("keepGenerated", "true"); 
+        
         ProtectionDomain protectionDomain = ScriptusFrontend.class.getProtectionDomain();
         URL location = protectionDomain.getCodeSource().getLocation();
         context.setWar(location.toExternalForm());
