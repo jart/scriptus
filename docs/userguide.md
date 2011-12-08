@@ -2,26 +2,20 @@ This document explains in nitty-gritty detail how to start, set up and run the S
 
 #Running Scriptus
 
-Scriptus requires JDK 6 to run. You can download & setup the OpenJDK, or obtain the latest proprietary version either from Oracle or IBM. The IBM JDK should work but hasn't been tested.
+Scriptus requires JDK 6 to run. You can download & setup th
+e OpenJDK, or obtain the latest proprietary version either from Oracle or IBM. The IBM JDK should work but hasn't been tested.
 
-Next, [download and install Maven 2](http://maven.apache.org/download.html#Installation) from the Apache website.
+Next, [download Scriptus here](http://downloads.github.com/ianso/scriptus/scriptus.war). Scriptus can be executed directly or deployed in any standard Servlet container such as Tomcat.
 
-Once Maven is configured,  either download Scriptus as a [zip](https://github.com/ianso/scriptus/zipball/master) or [tar](https://github.com/ianso/scriptus/tarball/master) file, or make a checkout using Git.
+To run Scriptus, use the following command:
 
-You can use Maven to run Scriptus, or compile it into a WAR file that should be deployable in any standard Servlet container such as Tomcat.
+`java -jar scriptus.war`
 
-To run Scriptus using Maven, use the following command in the Scriptus directory:
+By default Scriptus writes log files to "logs" under the Scriptus directory. This location is initially defined using a relative path. The location can be configured in `src/main/resources/log4j.properties`. There are two options at the command-line:
 
-`mvn jetty:run`
-
-To compile Scriptus, use the following command:
-
-`mvn clean install`
-
-You will then find a WAR file under the "target" directory.
-
-By default Scriptus writes log files to "logs" under the Scriptus directory. This location is initially defined using a relative path. The location can be configured in `src/main/resources/log4j.properties`.
-
+ *   `-p` or `--port` allows you to specify which port Scriptus should serve on. 
+ *   `-c` or `--config` allows you to specify a config file, either as a URL, classpath or relative path.
+ 
 #Scriptus administration
 
 Scriptus has a very primitive admin tool that allows users to save, edit and delete programs, and to run saved programs. By default this tool is available at [http://127.0.0.1:8080/](http://127.0.0.1:8080/), if you run Scriptus in Maven. The tool asks users to identify themselves using OpenID, as a simple way of allowing multiple users to store and run their programs on the same server.

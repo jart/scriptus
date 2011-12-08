@@ -1,19 +1,21 @@
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-	
 	mvn clean install -Dmaven.test.skip=true
-	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false -P T2
+	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
 	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
 
-	jetty should be error level, not "null" level
+test	documentation for executable WAR once uploaded
+X	 - readme
+X	 - minisite index
+X	 - userguide
 
-	documentation for executable WAR once uploaded
+	IMPORTANT - rhino
+	reformat patches & resubmit
+	native* migration - help out & change serializable IDs
+	rhino migration script for serialised stuff
+
 	improve first page of minisite
 	 - better focus, call to action
-
-	IMPORTANT
-	rhino migration script
-	serialisable stuff
 
 	twitter integration
 test	   - listen
@@ -37,6 +39,10 @@ test	   - listen
 	 - game tournament
 	    - brush up on set theory
 	 - adventure game from Nathanael
+
+	jetty should be error level, not "null" level
+	war file should print version, not print log4j warnings
+	should also print usage option when -h or --help is used
 
 medium	
 	Amazon AMI for playing with Scriptus
@@ -63,6 +69,7 @@ still a newbie?		mefi projects?
 		   - upgrade firmware, finally
 		blog posts
 		 - idea of 'slow code'		 
+		 - idea of 'social operating system'
 
 
 
@@ -477,4 +484,7 @@ X!!	executable WAR deployable for v0.1.0
 X test	improve internal first-time experience
 X test	 - hardlinks to links to API documentation & known problems 
 X	 - more links + content when new
-
+X	documentation for executable WAR once uploaded
+X	 - readme
+X	 - minisite index
+X	 - userguide
