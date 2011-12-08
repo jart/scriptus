@@ -25,7 +25,7 @@ On Twitter, people are asked questions using @mentions and questions are tracked
 
 A Scriptus server can be stopped at any time. Programs will continue where they left off when it is started again.
 
-You will need JDK 6 or more recent. [Download Scriptus here](http://downloads.github.com/ianso/scriptus/scriptus.war) and then launch it using this command
+You will need JDK 6 or more recent. [Download Scriptus here](https://github.com/downloads/ianso/scriptus/scriptus.war) and then launch it using this command
 
 ```
 java -jar scriptus.war

@@ -5,7 +5,7 @@ This document explains in nitty-gritty detail how to start, set up and run the S
 Scriptus requires JDK 6 to run. You can download & setup th
 e OpenJDK, or obtain the latest proprietary version either from Oracle or IBM. The IBM JDK should work but hasn't been tested.
 
-Next, [download Scriptus here](http://downloads.github.com/ianso/scriptus/scriptus.war). Scriptus can be executed directly or deployed in any standard Servlet container such as Tomcat.
+Next, [download Scriptus here](https://github.com/downloads/ianso/scriptus/scriptus.war). Scriptus can be executed directly or deployed in any standard Servlet container such as Tomcat.
 
 To run Scriptus, use the following command:
 
