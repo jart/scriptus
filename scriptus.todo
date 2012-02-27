@@ -3,19 +3,48 @@
 	mvn clean install -Dmaven.test.skip=true
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
 	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
+	
+IdScriptableObject
+	
 
-test	documentation for executable WAR once uploaded
-X	 - readme
-X	 - minisite index
-X	 - userguide
+	online demo
+	 - twitter account per user, not per install
+	    - auth process as designed
+	    - store keys in sdb, encrypt then HMAC (or whatever it is)
+	 - work with Twitter, not agin' it 
+	    - use in-reply-to
+	 - limits (size, tweets, # processes, CPU time)
+	 - better site design
+	 - simple process admin?
+	 - inline documentation?
+	 
 
-	IMPORTANT - rhino
-	reformat patches & resubmit
-	native* migration - help out & change serializable IDs
+
+
+
+
+	pipe
+	read
+	write
+	 - separate out state into SDB
+	 - incl. process table
+	add time machine to rhino
+x no?	filesystem
+	 - procfs
+	 - mnt
+
+	IMPORTANT - rhino  
+	git remote add upstream git://github.com/mozilla/rhino.git
+	native* migration - help out & write migration
+test	  Boolean.length / Boolean.prototype.constructor.length == 1...	
+	Questions
+	return null / IllegalArgumentException?
+
 	rhino migration script for serialised stuff
+	 -->migrating tags from Strings to Enums on properties ...
 
 	improve first page of minisite
-	 - better focus, call to action
+	 - better focus, appeal, call to action
 
 	twitter integration
 test	   - listen
@@ -488,3 +517,11 @@ X	documentation for executable WAR once uploaded
 X	 - readme
 X	 - minisite index
 X	 - userguide
+X test	documentation for executable WAR once uploaded
+X	 - readme
+X	 - minisite index
+X	 - userguide
+X	reformat patches & resubmit
+X	 - pre-patch commit: 
+X	  676a6746d41df70d0904a3ef5e14701db1c6fff4
+
