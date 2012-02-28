@@ -101,23 +101,21 @@ do {
 
 <p>Scriptus creates a simple JavaScript environment for communicating via Twitter. Scripts are run inside a simple UNIX-like process model.</p>
 
-<p>A Scriptus server can be stopped at any time. Programs will continue where they left off when it is started again. Scriptus programs are designed to run for days, months or years, waiting for user input or waking as necessary. </p>
+<p>A Scriptus server can be stopped at any time. Programs will continue where they left off when it is started again.</p>
 
 <h2>Running Scriptus</h2>
 
-<p>You need JDK 6 or more recent, and <a href="http://maven.apache.org/">Maven 2.2+</a> to build Scriptus. Once you've downloaded the code, you need one command:<p>
+<p>You will need JDK 6 or more recent. <a href="https://github.com/downloads/ianso/scriptus/scriptus.war">Download Scriptus here</a> and then launch it using this command<p>
 
-<blockquote><strong><code>mvn jetty:run</code></strong> will immediately run Scriptus at <a href="http://127.0.0.1:8080/">http://127.0.0.1:8080/</a></blockquote>
+<blockquote><strong><code>java -jar scriptus.war</code></strong></blockquote>
+
+<p>Scriptus will immediately start at <a href="http://127.0.0.1:8080/">http://127.0.0.1:8080/</a>. You can change the port using the '-p' option.</p>
  
-<p>Alternately, <code>mvn clean install</code> will give you a WAR file that can be deployed in any standard servlet container. </p>
-
 <h2>Using Scriptus</h2>
 
-<p>For running and configuring Scriptus, see <a href="https://github.com/ianso/scriptus/tree/master/docs/userguide.md">the Scriptus user guide</a>.</p>
+<p><a href="https://github.com/ianso/scriptus/tree/master/docs/userguide.md">The Scriptus user guide</a>, and <a href="https://github.com/ianso/scriptus/tree/master/docs/api.md">the API documentation</a> are linked to from inside the webapp for reference.</p>
 
-<p>For programming with Scriptus, see <a href="https://github.com/ianso/scriptus/tree/master/docs/api.md">the API documentation</a>.</p>
-
-<p>For information on the internals, see <a href="https://github.com/ianso/scriptus/tree/master/docs/index.md">the rest of the documentation</a>.</p>
+<p>For information on the internals, see <a href="https://github.com/ianso/scriptus/tree/master/docs/index.md">the documentation index</a>.</p>
 
 <h2>Mailing list</h2>
 <p>If you want to discuss Scriptus, <a href="http://groups.google.com/group/collaborative-games">the 'collaborative games' mailing list</a> is a good list to subscribe to. Despite its title, general discussion concerning Scriptus is fine. At present it's very low traffic.</p>
@@ -131,8 +129,11 @@ do {
 
 
     <h2>Download</h2>
+    
+    <p>The <a href="https://github.com/downloads/ianso/scriptus/scriptus.war">Scriptus WAR file</a> can be executed from the command line or deployed in any servlet 2.3 container such as Tomcat 6.</p>
+    
     <p>
-      You can download this project in either
+      You can also download the source in either
       <a href="http://github.com/ianso/scriptus/zipball/master">zip</a> or
       <a href="http://github.com/ianso/scriptus/tarball/master">tar</a> formats.
     </p>
