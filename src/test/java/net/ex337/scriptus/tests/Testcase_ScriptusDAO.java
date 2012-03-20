@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
@@ -70,19 +71,19 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	
 	public void testCorrelationIDs() throws InterruptedException {
 		
-		String postfix = Integer.toString(this.hashCode());
+//		String postfix = Integer.toString(this.hashCode());
 		
 		UUID pid = UUID.randomUUID();
 		
-		String cid = "cid"+postfix;
+		Long l = new Random().nextLong();
 		
-		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, "user", cid, 123));
+		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, "user", l));
 
-		assertEquals("correct pid returned", pid, datastore.getTwitterCorrelationByID(cid).getPid());
+		assertEquals("correct pid returned", pid, datastore.getTwitterCorrelationByID(l).getPid());
 		
-		datastore.unregisterTwitterCorrelation(cid);
+		datastore.unregisterTwitterCorrelation(l);
 		
-		assertEquals(null, datastore.getTwitterCorrelationByID(cid));
+		assertEquals(null, datastore.getTwitterCorrelationByID(l));
 
 	}
 
@@ -95,15 +96,15 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		Wake w = new Wake(UUID.randomUUID(), 1234);
 		
-		datastore.scheduleTask(then, w);
+		datastore.saveScheduledTask(then, w);
 		
 		List<ScheduledScriptAction> actions = datastore.getScheduledTasks(Calendar.getInstance());
 		
-		assertTrue("no actions in list", actions.isEmpty());
+		assertFalse("doesnt contain task in future", actions.contains(w));
 		
 		actions = datastore.getScheduledTasks(then);
 		
-		assertTrue("list not empty",  ! actions.isEmpty());
+		assertTrue("contains task in future",  actions.contains(w));
 		
 		boolean found = false;
 		

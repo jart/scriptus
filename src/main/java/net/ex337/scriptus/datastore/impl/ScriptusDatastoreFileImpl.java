@@ -242,7 +242,7 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	}
 
 	@Override
-	public void scheduleTask(Calendar when, ScheduledScriptAction task) {
+	public void saveScheduledTask(Calendar when, ScheduledScriptAction task) {
 		
 		try {
 			FileUtils.writeStringToFile(new File(schedulerDir, when.getTimeInMillis()+"_"+task.getPid()+"_"+task.getNonce()), task.toString());
@@ -266,16 +266,16 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	@Override
 	public void registerTwitterCorrelation(TwitterCorrelation correlation) {
 		try {
-			FileUtils.writeByteArrayToFile(new File(correlationDir, correlation.getId()), SerializableUtils.serialiseObject(correlation));
+			FileUtils.writeByteArrayToFile(new File(correlationDir, Long.toString(correlation.getSourceSnowflake())), SerializableUtils.serialiseObject(correlation));
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
 		}
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(String cid) {
+	public TwitterCorrelation getTwitterCorrelationByID(long snowflake) {
 		try {
-			File cidf = new File(correlationDir, cid);
+			File cidf = new File(correlationDir, Long.toString(snowflake));
 			
 			if( ! cidf.exists()) {
 				return null;
@@ -291,8 +291,8 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(String cid) {
-		new File(correlationDir, cid).delete();
+	public void unregisterTwitterCorrelation(long snowflake) {
+		new File(correlationDir, Long.toString(snowflake)).delete();
 	}
 
 	@Override

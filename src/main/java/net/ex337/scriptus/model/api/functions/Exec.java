@@ -3,6 +3,7 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 
 import net.ex337.scriptus.ProcessScheduler;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -33,16 +34,16 @@ public class Exec extends ScriptAction implements Serializable {
 
 
 	@Override
-	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
+	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 
 		//TODO add script not found exception
-		ScriptProcess p = datastore.newProcess(process.getUserId(), script, args, process.getOwner());
+		ScriptProcess p = scriptus.newProcess(process.getUserId(), script, args, process.getOwner());
 		
 		p.setPid(process.getPid());
 		
 		p.save();
 		
-		scheduler.execute(process.getPid());
+		scriptus.execute(process.getPid());
 
 	}
 

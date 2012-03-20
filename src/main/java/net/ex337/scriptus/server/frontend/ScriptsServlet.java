@@ -133,7 +133,7 @@ public class ScriptsServlet extends HttpServlet {
 			String args = req.getParameter("args");
 			String owner = req.getParameter("owner");
 			
-			((ProcessScheduler) ctx.getBean("scheduler")).newProcess(openid, script, args, owner);
+			((ProcessScheduler) ctx.getBean("scheduler")).executeNewProcess(openid, script, args, owner);
 
 			resp.sendRedirect("list");
 			return;

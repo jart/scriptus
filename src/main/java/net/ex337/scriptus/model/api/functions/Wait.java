@@ -3,13 +3,11 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 import java.util.UUID;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.Termination;
-import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +26,7 @@ public class Wait extends ScriptAction implements Serializable {
 	}
 
 	@Override
-	public void visit(final ProcessScheduler scheduler, Transport transport, final ScriptusDatastore datastore, final ScriptProcess process) {
+	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 		
 		LOG.debug("waiting for "+childPid.toString().substring(30));
 		
@@ -38,20 +36,20 @@ public class Wait extends ScriptAction implements Serializable {
 
 		try {
 			
-			scheduler.runWithLock(childPid, new Runnable() {
+			scriptus.runWithLock(childPid, new Runnable() {
 
 				@Override
 				public void run() {
 					
-					ScriptProcess child = datastore.getProcess(childPid); //overwrites state with child
+					ScriptProcess child = scriptus.getProcess(childPid); //overwrites state with child
 					
 					//already terminated
 					if(child.getState() instanceof Termination) {
 
 						//FIXME we should delete child & remove from list of children
-						scheduler.updateProcessState(process.getPid(), ((Termination)child.getState()).getResult());
+						scriptus.updateProcessState(process.getPid(), ((Termination)child.getState()).getResult());
 
-						scheduler.execute(process.getPid());
+						scriptus.execute(process.getPid());
 
 						return;
 						

@@ -3,14 +3,12 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 import java.util.UUID;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
-import net.ex337.scriptus.transport.Transport;
 
 /**
  * Implements kill(). Kill() 
@@ -35,24 +33,24 @@ public class Kill extends ScriptAction implements Serializable {
 	}
 
 	@Override
-	public void visit(final ProcessScheduler scheduler, Transport transport, final ScriptusDatastore datastore, final ScriptProcess process) {
+	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 	
 		if( process.getChildren().contains(pid)) {
 			/*
 			 * FIXME if the child process is running at this very instant, the child is recreated...
 			 */
-			scheduler.runWithLock(pid, new Runnable() {
+			scriptus.runWithLock(pid, new Runnable() {
 				@Override
 				public void run() {
 					try {
-						ScriptProcess child = datastore.getProcess(pid);
+						ScriptProcess child = scriptus.getProcess(pid);
 
 						if(child.getState() instanceof HasTimeout) {
 							//delete wake if it exists, should fail silently
-							datastore.deleteScheduledTask(new Wake(pid, ((HasTimeout)child.getState()).getNonce()));
+							scriptus.deleteScheduledTask(new Wake(pid, ((HasTimeout)child.getState()).getNonce()));
 						}
 						
-						scheduler.markAsKilledIfRunning(pid);
+						scriptus.markAsKilledIfRunning(pid);
 						
 						child.delete();
 						process.getChildren().remove(pid);
@@ -68,7 +66,7 @@ public class Kill extends ScriptAction implements Serializable {
 
 		
 		//continue execution
-		scheduler.execute(process.getPid());
+		scriptus.execute(process.getPid());
 
 	}
 

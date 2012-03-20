@@ -1,29 +1,23 @@
 package net.ex337.scriptus.transport.twitter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Tweet implements Comparable<Tweet> {
-	
-	private static final Pattern HASHTAG_REGEXP = Pattern.compile("#([A-Za-z0-9]*)");
-	
+
 	private long snowflake;
+	private long inReplyToId;
 	private String text;
 	private String screenName;
-	private List<String> hashtags = new ArrayList<String>();
-	
-	public Tweet(long snowflake, String text, String screenName) {
+
+    public Tweet(long snowflake, String text, String screenName) {
+        this(snowflake, text, screenName, -1);
+    }
+
+	public Tweet(long snowflake, String text, String screenName, long inReplyTo) {
 		super();
 		this.snowflake = snowflake;
 		this.text = text;
 		this.screenName = screenName;
-		
-		Matcher m = HASHTAG_REGEXP.matcher(text);
-		while(m.find()) {
-			hashtags.add(m.group(1));
-		}
+		this.inReplyToId = inReplyTo;
 	}
 	
 	public long getSnowflake() {
@@ -31,9 +25,6 @@ public class Tweet implements Comparable<Tweet> {
 	}
 	public String getText() {
 		return text;
-	}
-	public List<String> getHashtags() {
-		return hashtags;
 	}
 	public String getScreenName() {
 		return screenName;
@@ -65,6 +56,14 @@ public class Tweet implements Comparable<Tweet> {
 		}
 		return false;
 	}
+
+    public long getInReplyToId() {
+        return inReplyToId;
+    }
+
+    public void setInReplyToId(long inReplyToId) {
+        this.inReplyToId = inReplyToId;
+    }
 
 	
 

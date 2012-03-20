@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
-import twitter4j.Query;
-import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -20,9 +21,11 @@ public class TwitterClientImpl implements TwitterClient {
 
     private Twitter twitter;
     
-    private String screenName;
+    @Resource
+    private ScriptusConfig config;
 
-    public TwitterClientImpl(ScriptusConfig config) {
+    @PostConstruct
+    public void init() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 		.setOAuthConsumerKey(config.getTwitterConsumerKey())
@@ -32,14 +35,6 @@ public class TwitterClientImpl implements TwitterClient {
 		.setIncludeEntitiesEnabled(true);
 
 		twitter = new TwitterFactory(cb.build()).getInstance();
-		
-		try {
-			screenName = twitter.getScreenName();
-		} catch (IllegalStateException e) {
-			throw new ScriptusRuntimeException(e);
-		} catch (TwitterException e) {
-			throw new ScriptusRuntimeException(e);
-		}
     }
     
 	@Override
@@ -56,18 +51,25 @@ public class TwitterClientImpl implements TwitterClient {
 		try {
 			List<Status> mentions = twitter.getMentions();
 			
-			Query q = new Query("@"+screenName);
-			
-			QueryResult r = twitter.search(q);
-			
 			for(Status s : mentions) {
-				result.add(new Tweet(s.getId(), s.getText(), s.getUser().getScreenName()));
+			    Tweet t = new Tweet(s.getId(), s.getText(), s.getUser().getScreenName());
+			    t.setInReplyToId(s.getInReplyToStatusId());
+				result.add(t);
 			}
-			
-			for(twitter4j.Tweet t : r.getTweets()) {
-				//compute hashcodes like in mockimpl
-				result.add(new Tweet(t.getId(), t.getText(), t.getFromUser()));
-			}
+			//mentions should be fixed now?
+//            Query q = new Query("@"+screenName);
+//            
+//            QueryResult r = twitter.search(q);
+//            
+//			for(twitter4j.Tweet t : r.getTweets()) {
+//				//compute hashcodes like in mockimpl
+//			    Tweet tt = new Tweet(t.getId(), t.getText(), t.getFromUser());
+//			    if(t.get){
+//			        tt.setInReplyToId(t.getInReplyToStatusId()))
+//			    }
+//			    t.
+//				result.add(tt);
+//			}
 			
 		} catch (TwitterException e) {
 			throw new ScriptusRuntimeException(e);

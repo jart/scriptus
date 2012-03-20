@@ -2,11 +2,9 @@ package net.ex337.scriptus.model.api.functions;
 
 import java.io.Serializable;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.transport.Transport;
 
 public class Say extends ScriptAction implements Serializable {
 
@@ -33,13 +31,13 @@ public class Say extends ScriptAction implements Serializable {
 	}
 
 	@Override
-	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
+	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 
-		transport.say(who, msg);
+		scriptus.send(who, msg);
 		
-		scheduler.updateProcessState(process.getPid(), null);
+		scriptus.updateProcessState(process.getPid(), null);
 
-		scheduler.execute(process.getPid());
+		scriptus.execute(process.getPid());
 
 	}
 }

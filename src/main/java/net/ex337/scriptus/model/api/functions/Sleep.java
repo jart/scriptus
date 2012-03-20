@@ -3,13 +3,11 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
-import net.ex337.scriptus.transport.Transport;
 
 public class Sleep extends ScriptAction implements Serializable, HasTimeout {
 
@@ -24,11 +22,11 @@ public class Sleep extends ScriptAction implements Serializable, HasTimeout {
 	}
 	
 	@Override
-	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
+	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 		
-		scheduler.scheduleTask(until, new Wake(process.getPid(), nonce));
+	    scriptus.saveScheduledTask(until, new Wake(process.getPid(), nonce));
 		
-		scheduler.updateProcessState(process.getPid(), this);
+		scriptus.updateProcessState(process.getPid(), this);
 		
 	}
 

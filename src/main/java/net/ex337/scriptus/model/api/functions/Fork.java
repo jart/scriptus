@@ -3,11 +3,9 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 import java.util.UUID;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,11 +16,11 @@ public class Fork extends ScriptAction implements Serializable {
 
 	private static final Log LOG = LogFactory.getLog(Fork.class);
 
-	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, final ScriptProcess parent) {
+	public void visit(final ScriptusFacade scriptus, final ScriptProcess parent) {
 		
 		final UUID childPid = UUID.randomUUID();
 		
-		scheduler.runWithLock(childPid, new Runnable() {
+		scriptus.runWithLock(childPid, new Runnable() {
 
 			@Override
 			public void run() {
@@ -46,8 +44,9 @@ public class Fork extends ScriptAction implements Serializable {
 		
 		child.save();
 		
-		scheduler.execute(child.getPid());
-		scheduler.execute(parent.getPid());
+		scriptus.execute(child.getPid());
+		
+		scriptus.execute(parent.getPid());
 		
 	}
 

@@ -1,6 +1,7 @@
 package net.ex337.scriptus.model;
 
 import net.ex337.scriptus.ProcessScheduler;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.transport.Transport;
 
@@ -14,6 +15,6 @@ import net.ex337.scriptus.transport.Transport;
  */
 public abstract class ScriptAction {
 
-	public abstract void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore dataastore, ScriptProcess process);
+	public abstract void visit(ScriptusFacade scriptus, ScriptProcess process);
 
 }

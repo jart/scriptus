@@ -3,13 +3,11 @@ package net.ex337.scriptus.model.api.functions;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
-import net.ex337.scriptus.transport.Transport;
 
 public class Listen extends ScriptAction implements Serializable, HasTimeout {
 
@@ -39,13 +37,13 @@ public class Listen extends ScriptAction implements Serializable, HasTimeout {
 	}
 	
 	@Override
-	public void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
+	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 
-		scheduler.updateProcessState(process.getPid(), this);
+		scriptus.updateProcessState(process.getPid(), this);
 
-		scheduler.scheduleTask(timeout, new Wake(process.getPid(), nonce));
+		scriptus.saveScheduledTask(timeout, new Wake(process.getPid(), nonce));
 
-		transport.listen(process.getPid(), getWho());
+		scriptus.listen(process.getPid(), getWho());
 		
 	}
 

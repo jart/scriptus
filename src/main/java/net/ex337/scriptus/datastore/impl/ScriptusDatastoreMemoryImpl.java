@@ -40,7 +40,7 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 
 	private final Map<String,String> sources = new HashMap<String,String>();
 
-	private final Map<String,TwitterCorrelation> correlationMap = new HashMap<String,TwitterCorrelation>();
+	private final Map<Long,TwitterCorrelation> correlationMap = new HashMap<Long,TwitterCorrelation>();
 	
 	private final Map<ScheduledScriptAction, Long> scheduledActions = new HashMap<ScheduledScriptAction,Long>();
 
@@ -126,7 +126,7 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	}
 
 	@Override
-	public void scheduleTask(Calendar until, ScheduledScriptAction task) {
+	public void saveScheduledTask(Calendar until, ScheduledScriptAction task) {
 		
 		scheduledActions.put(task, until.getTimeInMillis());
 		
@@ -134,16 +134,16 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 
 	@Override
 	public void registerTwitterCorrelation(TwitterCorrelation cid) {
-		correlationMap.put(cid.getId(), cid);
+		correlationMap.put(cid.getSourceSnowflake(), cid);
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(String cid) {
+	public TwitterCorrelation getTwitterCorrelationByID(long cid) {
 		return correlationMap.get(cid);
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(String cid) {
+	public void unregisterTwitterCorrelation(long cid) {
 		correlationMap.remove(cid);
 	}
 

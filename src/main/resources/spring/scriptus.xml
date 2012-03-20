@@ -32,6 +32,11 @@
     	
     <bean id="cmdLineTransport" class="net.ex337.scriptus.transport.impl.CommandLineTransport" />
     <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl" />
+    
+    <bean id="twitterClientMock" class="net.ex337.scriptus.transport.twitter.TwitterClientMock"/>
+    <bean id="twitterClientImpl" class="net.ex337.scriptus.transport.twitter.TwitterClientImpl"/>
+
+    <alias name="twitterClientImpl" alias="twitterClient" />
 
     <bean id="transport" class="net.ex337.scriptus.transport.TransportSwitch" />
 

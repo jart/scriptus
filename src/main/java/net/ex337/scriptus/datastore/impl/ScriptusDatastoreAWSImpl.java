@@ -253,7 +253,7 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	}
 
 	@Override
-	public void scheduleTask(final Calendar until, final ScheduledScriptAction task) {
+	public void saveScheduledTask(final Calendar until, final ScheduledScriptAction task) {
 		
 		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
 			add(new ReplaceableAttribute("pid", task.getPid().toString(), false));
@@ -272,22 +272,21 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
 			add(new ReplaceableAttribute("pid", correlation.getPid().toString(), false));
 			add(new ReplaceableAttribute("user", correlation.getUser(), false));
-			add(new ReplaceableAttribute("snowflake", Long.toString(correlation.getSourceSnowflake()), false));
+//			add(new ReplaceableAttribute("snowflake", Long.toString(correlation.getSourceSnowflake()), false));
 		}};
-		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, correlation.getId(), atts);
+		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, Long.toString(correlation.getSourceSnowflake()), atts);
 
 		sdb.putAttributes(r);
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(final String cid) {
+	public TwitterCorrelation getTwitterCorrelationByID(final long snowflake) {
 		
-		GetAttributesRequest r = new GetAttributesRequest(CORRELATION_IDS, cid);
+		GetAttributesRequest r = new GetAttributesRequest(CORRELATION_IDS, Long.toString(snowflake));
 		r.setConsistentRead(true);
 		r.setAttributeNames(new HashSet<String>() {{
 			add("pid");
 			add("user");
-			add("snowflake");
 		}});
 		List<Attribute> atts = sdb.getAttributes(r).getAttributes();
 		if(atts.size() == 0){
@@ -296,15 +295,12 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 		
 		String foundUser = null;
 		UUID pid = null;
-		long snowflake = -1;
 		
 		for(Attribute a : atts) {
 			if("pid".equals(a.getName())) {
 				pid = UUID.fromString(a.getValue());
 			} else if("user".equals(a.getName())) {
 				foundUser = a.getValue();
-			} else if("snowflake".equals(a.getName())) {
-				snowflake = Long.parseLong(a.getValue());
 			}
 		}
 		
@@ -314,12 +310,12 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 		
 		LOG.info("found atts:"+atts.toString());
 		
-		return new TwitterCorrelation(pid, foundUser, cid, snowflake);
+		return new TwitterCorrelation(pid, foundUser, snowflake);
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(final String cid) {
-		sdb.deleteAttributes(new DeleteAttributesRequest(CORRELATION_IDS, cid));
+	public void unregisterTwitterCorrelation(final long snowflake) {
+		sdb.deleteAttributes(new DeleteAttributesRequest(CORRELATION_IDS, Long.toString(snowflake)));
 		
 	}
 	

@@ -50,15 +50,11 @@ public class TransportSwitch implements Transport {
 		}			
 	}
 
-	public void say(String to, String msg) {
-		activeImpl.say(to, msg);
-	}
+    public long send(String to, String msg) {
+        return activeImpl.send(to, msg);
+    }
 
-	public void ask(UUID pid, String to, String msg) {
-		activeImpl.ask(pid, to, msg);
-	}
-
-	public void listen(UUID pid, String to) {
+    public void listen(UUID pid, String to) {
 		activeImpl.listen(pid, to);
 	}
 

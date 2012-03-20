@@ -18,10 +18,10 @@ do {
 
 It's easy to get started. Scriptus programs interact with people via Twitter and has a simple UNIX-like process model.
 
-On Twitter, people are asked questions using @mentions and questions are tracked using #hashtags. Responses are sent back to Scriptus in the same way. Anything after "//" will be ignored. For example:
+On Twitter, people are asked questions using @mentions. Responses are sent back to Scriptus by replying to the tweets sent out. Anything after "//" will be ignored. For example:
 
-	@ianso #ef3hED electing HOW many presidents-for-life?!
-	@robotoscriptu #ef3hED 4 //but I can depose them whenever I want!
+	@ianso electing HOW many presidents-for-life?!
+	[the reply] @robotoscriptu 4 //but I can depose them whenever I want!
 
 A Scriptus server can be stopped at any time. Programs will continue where they left off when it is started again.
 

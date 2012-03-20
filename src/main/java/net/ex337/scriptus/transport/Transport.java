@@ -15,26 +15,13 @@ import net.ex337.scriptus.model.api.ScriptusAPI;
  *
  */
 public interface Transport {
-	
-	/**
-	 * Say a message to a user.
-	 * 
-	 * @param to
-	 * @param msg
-	 */
-	void say(String to, String msg);
-	
-	/**
-	 * Sends a message to a user, with the expectation that a reply
-	 * may be received and directed to the process specified via
-	 * the pid. The response if any will be handled via the 
-	 * registereed {@link MessageReceiver}.
-	 * 
-	 * @param pid
-	 * @param to
-	 * @param msg
-	 */
-	void ask(UUID pid, String to, String msg);
+    
+    /**
+     * Sends the message to the user specified,
+     * and returns the ID of the message sent.
+     * 
+     */
+    public long send(String to, String msg);
 	
 	/**
 	 * Routes the next message from the given user to the process

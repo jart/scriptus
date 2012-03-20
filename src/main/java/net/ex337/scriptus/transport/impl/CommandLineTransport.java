@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.PostConstruct;
 
@@ -39,17 +40,19 @@ public class CommandLineTransport implements Transport {
 		r = new BufferedReader(new InputStreamReader(System.in));
 	}
 	
+	private AtomicLong ctr = new AtomicLong();
+	
 	//@Override
 	/*
 	 * synch to make command-line interaction thread-safe
 	 */
-	private synchronized void send(final UUID pid, final String to, final String msg) {
+	private synchronized long send(final UUID pid, final String to, final String msg) {
 		
 		//just sending, no response expected
 		if(pid == null) {
 			LOG.debug("send  to:"+to+" msg:"+msg);
 			System.out.println("send to:"+to+" msg:"+msg);
-			return;
+			return ctr.getAndIncrement();
 		}
 		
 		
@@ -71,6 +74,8 @@ public class CommandLineTransport implements Transport {
 			throw new RuntimeException(e);
 		}
 
+		return ctr.getAndIncrement();
+		
 	}
 
 	@Override
@@ -81,15 +86,10 @@ public class CommandLineTransport implements Transport {
 		this.receiver = londonCalling;
 	}
 
-	@Override
-	public void say(String to, String msg) {
-		send(null, to, msg);
-	}
-
-	@Override
-	public void ask(UUID pid, String to, String msg) {
-		send(pid, to, msg);
-	}
+   @Override
+    public long send(String to, String msg) {
+        return send(null, to, msg);
+    }
 
 	@Override
 	public void listen(final UUID pid, String to) {

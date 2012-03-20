@@ -1,11 +1,9 @@
 package net.ex337.scriptus.tests;
 
-import java.util.List;
-
-import twitter4j.TwitterException;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.transport.twitter.TwitterTransportImpl;
+import twitter4j.TwitterException;
 
 public class Testcase_Twitter extends BaseTestCase {
 	
@@ -19,7 +17,7 @@ public class Testcase_Twitter extends BaseTestCase {
 		conf = (ScriptusConfig) getAppContext().getBean("config");
 		conf.setTransportType(TransportType.Twitter);
 		
-		i = (TwitterTransportImpl) getAppContext().getBean("twitterInteraction");
+		i = (TwitterTransportImpl) getAppContext().getBean("twitterTransport");
 		i.init();
 		
 		
@@ -27,7 +25,7 @@ public class Testcase_Twitter extends BaseTestCase {
 	
 	public void testSay() throws TwitterException {
 		
-		i.say("robotoscriptu", "098765231");
+		i.send("robotoscriptu", "098765231");
 		
 		assertTrue(true);
 		

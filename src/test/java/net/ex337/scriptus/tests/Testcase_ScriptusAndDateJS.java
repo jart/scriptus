@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.ex337.scriptus.ProcessScheduler;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -76,7 +77,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, datastore, p);
+		g.visit(new ScriptusFacade(datastore, c, m), p);
 		
 		p = datastore.getProcess(p.getPid());
 		

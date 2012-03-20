@@ -54,7 +54,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	 * will blow your stack eventually.
 	 * 
 	 */
-	private static boolean EXECUTE_INLINE = false;
+	public static boolean EXECUTE_INLINE = false;
 	
 	private static final int MAX_CONCURRENT_PROCESSES = 10;
 
@@ -127,7 +127,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	 * @see net.ex337.scriptus.ProcessScheduler#newProcess(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void newProcess(String userId, String sourceName, String args, String owner) {
+	public void executeNewProcess(String userId, String sourceName, String args, String owner) {
 		ScriptProcess p = datastore.newProcess(userId, sourceName, args, owner);
 		p.save();
 		execute(p.getPid());
@@ -184,7 +184,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 				@Override
 				public void run() {
 					try {
-						t.visit(ProcessSchedulerImpl.this, transport, datastore, datastore.getProcess(t.getPid()));
+						t.visit(new ScriptusFacade(datastore, ProcessSchedulerImpl.this, transport), datastore.getProcess(t.getPid()));
 					} catch(Exception e) {
 						//FIXME should set state of task as "error" (and add != clause to query)
 						LOG.error("Exception when executing scheduled task", e);
@@ -215,13 +215,6 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see net.ex337.scriptus.ProcessScheduler#scheduleTask(java.util.Calendar, net.ex337.scriptus.model.scheduler.ScheduledScriptAction)
-	 */
-	@Override
-	public void scheduleTask(Calendar until, ScheduledScriptAction task) {
-		datastore.scheduleTask(until, task);
-	}
 	
 	private final class ProcessExecutor implements Runnable {
 		

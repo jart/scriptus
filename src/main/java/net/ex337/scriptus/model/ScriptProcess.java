@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.ProcessScheduler;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
@@ -333,7 +334,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 		this.save();
 		
-		result.visit(scheduler, transport, datastore, this);
+		result.visit(new ScriptusFacade(datastore, scheduler, transport), this);
 		
 		
 	}

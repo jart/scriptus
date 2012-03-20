@@ -61,12 +61,12 @@ To *not* respond simply hit enter when you're prompted for your response.
 
 ##A note on Twitter
 
-On Twitter, people are asked questions using @mentions and questions are tracked using #hashtags. Responses are sent back to Scriptus in the same way. Anything after "//" will be ignored. For example:
+On Twitter, people are asked questions using @mentions. Responses are sent back to Scriptus by replying to the tweets sent by Scriptus. Anything after "//" will be ignored. For example:
 
-1. @robotoscriptu tweets `@ianso #ef3hED electing HOW many presidents-for-life?!`
-2. @ianso tweets `@robotoscriptu #ef3hED 4 //but I can depose them whenever I want!`
+1. @robotoscriptu tweets `@ianso electing HOW many presidents-for-life?!`
+2. @ianso replied with `@robotoscriptu 4 //but I can depose them whenever I want!`
 
-In the above exchange, the hashtag `#ef3hED` is used by Scriptus to match the reply from `ianso` to the question asked by `robotoscriptu`. `ianso` has replied "4".
+In the above exchange, Twitter marks the second tweet as being a reply to the first if the "reply" function is used, and this is how Scriptus matches the answer from `ianso` to the question asked by `robotoscriptu`. `ianso` has replied "4".
 
 At present, Twitter prevents users from sending identical status updates within a certain time period. This can sometimes present a problem for Scriptus if a running program needs the same input twice. In this case, adding something random after a "//" will make the status update unique enough for Twitter.
 

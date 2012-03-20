@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,18 +46,20 @@ public class DummyTransport implements Transport {
 	}
 	
 	//@Override
-	private void send(final UUID pid, final String to, final String msg) {
+	private long send(final UUID pid, final String to, final String msg) {
 
 		LOG.debug("send "+ (pid == null ? "" : pid)+" to:"+to+" msg:"+msg);
 		
 		if(pid == null) {
-			return;
+			return ctr.getAndIncrement();
 		}
 		
 		List<Message> responseList = new ArrayList<Message>();
 		responseList.add(new Message(pid, to, getResponse(msg)));
 
 		receiver.handleIncomings(responseList);
+
+        return ctr.getAndIncrement();
 
 	}
 
@@ -90,15 +93,12 @@ public class DummyTransport implements Transport {
 		this.receiver = londonCalling;
 	}
 
-	@Override
-	public void say(String to, String msg) {
-		send(null, to, msg);
-	}
+   private AtomicLong ctr = new AtomicLong();
 
-	@Override
-	public void ask(UUID pid, String to, String msg) {
-		send(pid, to, msg);
-	}
+   @Override
+   public long send(String to, String msg) {
+       return send(null, to, msg);
+   }
 
 	@Override
 	public void listen(UUID pid, String to) {

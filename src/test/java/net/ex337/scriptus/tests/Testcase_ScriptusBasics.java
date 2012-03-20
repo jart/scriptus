@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.ex337.scriptus.ProcessScheduler;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.model.ScriptAction;
@@ -22,7 +23,6 @@ import net.ex337.scriptus.model.api.functions.Sleep;
 import net.ex337.scriptus.model.api.functions.Wait;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
-import net.ex337.scriptus.tests.support.ProcessSchedulerDelegate;
 import net.ex337.scriptus.transport.Transport;
 import net.ex337.scriptus.transport.impl.DummyTransport;
 
@@ -139,7 +139,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		NormalTermination n = (NormalTermination) r;
 
-		r.visit(c, m, datastore, p); //sould say
+		r.visit(new ScriptusFacade(datastore, c, m), p); //sould say
 
 		assertEquals("Correct result", "result", n.getResult());
 		
@@ -155,7 +155,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		NormalTermination n = (NormalTermination) r;
 
-		r.visit(c, m, datastore, p); //sould say
+		r.visit(new ScriptusFacade(datastore, c, m), p); //sould say
 
 		assertEquals("Correct result", "result", n.getResult());
 		
@@ -178,9 +178,9 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 
-		r.visit(new ProcessSchedulerDelegate(c) {
+		r.visit(new ScriptusFacade(datastore, c, m) {
 
-			@Override
+		    @Override
 			public void execute(UUID pid) {
 				ScriptProcess pp = datastore.getProcess(pid);
 				ScriptAction rr = pp.call();
@@ -188,7 +188,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
                 assertEquals("final result value OK", "foo", ((NormalTermination)rr).getResult());
 			}
 			
-		}, m, datastore, p); //sould say
+		}, p);
 		
 
 	}
@@ -242,7 +242,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		assertTrue("Forked correctly", r instanceof Fork);
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 
 	}
 	
@@ -254,7 +254,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		assertTrue("Forked correctly", r instanceof Fork);
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 
 	}
 	
@@ -281,7 +281,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		assertEquals("Exec good program", "returnArg.js", ((Exec)r).getScript());
 		assertEquals("Exec good args", "arg1 arg2", ((Exec)r).getArgs());
 		
-		r.visit(new ProcessSchedulerDelegate(c) {
+		r.visit(new ScriptusFacade(datastore, c, m) {
 
 			@Override
 			public void execute(UUID pid) {
@@ -298,7 +298,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 				assertEquals("goood result", "resultarg1 arg2", ((NormalTermination)aa).getResult());
 			}
 			
-		}, m, datastore, p);
+		}, p);
 	}
 
 	public void test_sleepHour() throws IOException {
@@ -323,7 +323,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, datastore, p);
+		g.visit(new ScriptusFacade(datastore, c, m), p);
 		
 		p = datastore.getProcess(p.getPid());
 		
@@ -348,7 +348,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, datastore, p);
+		g.visit(new ScriptusFacade(datastore, c, m), p);
 		
 		p = datastore.getProcess(p.getPid());
 		
@@ -374,7 +374,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, datastore, p);
+		g.visit(new ScriptusFacade(datastore, c, m), p);
 		
 		p = datastore.getProcess(p.getPid());
 		
@@ -400,7 +400,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(c, m, datastore, p);
+		g.visit(new ScriptusFacade(datastore, c, m), p);
 		
 		p = datastore.getProcess(p.getPid());
 		
@@ -495,7 +495,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		final ThreadLocal<Boolean> executedParentPostWait = new ThreadLocal<Boolean>();
 		final ThreadLocal<Boolean> executedChild = new ThreadLocal<Boolean>();
 		
-		ProcessScheduler testScheduler = new ProcessSchedulerDelegate(c) {
+		ScriptusFacade testFacade = new ScriptusFacade(datastore, c, m) {
 			
 			private UUID childPid;
 
@@ -538,7 +538,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						//pause thread until child has termination
 						
-						r2.visit(this, m, datastore, p2);
+						r2.visit(this, p2);
 
 					}
 
@@ -548,7 +548,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 			
 		};
 		
-		r.visit(testScheduler, m, datastore, p);
+		r.visit(testFacade, p);
 		
 		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
 		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());
@@ -574,7 +574,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		final ThreadLocal<Boolean> executedChild = new ThreadLocal<Boolean>();
 		final ThreadLocal<Boolean> executedChildPostSleep = new ThreadLocal<Boolean>();
 
-		ProcessScheduler testScheduler = new ProcessSchedulerDelegate(c) {
+		ScriptusFacade testFacade = new ScriptusFacade(datastore, c, m) {
 			
 			private UUID childPid;
 
@@ -596,7 +596,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 						
 						p2.save();
 						
-						r2.visit(this, m, datastore, p2);
+						r2.visit(this, p2);
 
 					} else {
 						
@@ -643,7 +643,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						//pause thread until child has termination
 						
-						r2.visit(this, m, datastore, p2);
+						r2.visit(this, p2);
 						
 						//assert parent is still waiting
 						//wake child and execute
@@ -657,7 +657,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 			
 		};
 		
-		r.visit(testScheduler, m, datastore, p);
+		r.visit(testFacade, p);
 		
 		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
 		assertEquals("Executed child post-sleep", Boolean.TRUE, executedChildPostSleep.get());
@@ -683,7 +683,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println("pid="+p.getPid());
 		
-		ProcessScheduler testScheduler = new ProcessSchedulerDelegate(c) {
+		ScriptusFacade testFacade = new ScriptusFacade(datastore, c, m) {
 			
 			private UUID childPid;
 			
@@ -726,7 +726,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 						assertTrue("Killed correctly", r2 instanceof Kill);
 						
-						r2.visit(this, m, datastore, p2);
+						r2.visit(this, p2);
 
 						boolean caughtNotFoundExcepton = false;
 						
@@ -750,7 +750,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		assertTrue("forking correctly", r instanceof Fork);
 		
-		r.visit(testScheduler, m, datastore, p);
+		r.visit(testFacade, p);
 		
 		assertEquals("Executed child", Boolean.TRUE, executedChild.get());
 		assertEquals("Executed parent (post-fork)", Boolean.TRUE, executedParentPostFork.get());
@@ -770,7 +770,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 		
 	}
 
@@ -785,7 +785,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 		
 	}
 
@@ -801,7 +801,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 		
 	}
 
@@ -817,7 +817,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_defaultSay() throws IOException {
@@ -842,7 +842,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_defaultListen() throws IOException {
@@ -856,7 +856,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		p.save();
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_evalBroken() throws IOException {
@@ -878,7 +878,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 		p.save();
 
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_addTwoNumbers() throws IOException {
@@ -894,7 +894,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		assertTrue("First correctly", r instanceof Fork);
 		
 		//everything else should happen immediately with mocks
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 		
 		((DummyTransport)m).defaultResponse = "response";
 	}
@@ -909,7 +909,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_breakSecurity2() throws IOException {
@@ -922,7 +922,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_breakSecurity3() throws IOException {
@@ -935,7 +935,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_breakSecurity4() throws IOException {
@@ -948,7 +948,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
 	public void test_breakSecurity5() throws IOException {
@@ -961,7 +961,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
-		r.visit(c, m, datastore, p);
+		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 	
 	

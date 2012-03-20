@@ -1,7 +1,5 @@
 package net.ex337.scriptus.transport.twitter;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,8 +41,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TwitterTransportImpl implements Transport {
 
-	private static final int MAX_CID = 0xFFFFFF;
-
 	private static final Log LOG = LogFactory.getLog(TwitterTransportImpl.class);
 
 	@Resource
@@ -53,22 +49,19 @@ public class TwitterTransportImpl implements Transport {
 	@Resource
 	private ScriptusConfig config;
 	
-	private MessageReceiver londonCalling;
-	
-	private ScheduledExecutorService scheduledTwitterChecker;
-	
-	private SecureRandom rnd = new SecureRandom();
-
+	@Resource(name="twitterClient")
 	private TwitterClient twitter;
-	
+
+    private MessageReceiver londonCalling;
+
+    private ScheduledExecutorService scheduledTwitterChecker;
+
     @PostConstruct
 	public void init() {
 		
 		if(config.getTransportType() != TransportType.Twitter) {
 			return;
 		}
-		
-		twitter = new TwitterClientImpl(config);
 
 		scheduledTwitterChecker = new ScheduledThreadPoolExecutor(2);
 
@@ -111,8 +104,10 @@ public class TwitterTransportImpl implements Transport {
 	 * tweet to see if (a) they have a correlation ID hashtag, or 
 	 * (b) if the originating user is being listened to by a process.
 	 * 
+	 * public for testcases
+	 * 
 	 */
-	protected void checkMessages() {
+	public void checkMessages() {
 		
 		List<Long> lastMentions = datastore.getTwitterLastMentions();
 		
@@ -132,7 +127,7 @@ public class TwitterTransportImpl implements Transport {
 		}
 		
 		List<Message> incomings =  new ArrayList<Message>(); 
-		List<String> correlationsToUnregister =  new ArrayList<String>(); 
+		List<Long> correlationsToUnregister =  new ArrayList<Long>(); 
 		//a bit ugly...
 		List<Object[]> listenersToUnregister =  new ArrayList<Object[]>(); 
 		List<Long> processedIncomings =  new ArrayList<Long>(); 
@@ -163,27 +158,24 @@ public class TwitterTransportImpl implements Transport {
 			
 			boolean foundPid = false;
 			
-			for(final String e : s.getHashtags()) {
-				
-				/*
-				 * if in reply to ask()
-				 */
-				
-				TwitterCorrelation c = datastore.getTwitterCorrelationByID(e);
+			if(s.getInReplyToId() != -1){
+			    //then it could be a reply to an ask();
+                TwitterCorrelation c = datastore.getTwitterCorrelationByID(s.getInReplyToId());
 
-				/*
-				 * if I've setup scriptus with my own account,
-				 * we need to make sure that 'request' and 'reply'
-				 * tweets don't get mixed up
-				 */
-				if(c != null && 
-				   s.getSnowflake() != c.getSourceSnowflake() && 
-				   s.getScreenName().equals(c.getUser())) {
-						incomings.add(new Message(c.getPid(), s.getScreenName(), cleanTweet(s, e, c.getUser())));
-						correlationsToUnregister.add(e);
-						foundPid = true;
-				}
+                /*
+                 * if I've setup scriptus with my own account,
+                 * we need to make sure that 'request' and 'reply'
+                 * tweets don't get mixed up
+                 */
+                if(c != null && 
+                   s.getSnowflake() != c.getSourceSnowflake() && 
+                   s.getScreenName().equals(c.getUser())) {
+                        incomings.add(new Message(c.getPid(), s.getScreenName(), cleanTweet(s, c.getUser())));
+                        correlationsToUnregister.add(s.getInReplyToId());
+                        foundPid = true;
+                }
 			}
+			
 			
 			/*
 			 * Then we need to check that a pid might be listening to
@@ -193,7 +185,7 @@ public class TwitterTransportImpl implements Transport {
 			if( ! foundPid ) {
 				UUID pid = datastore.getMostRecentTwitterListener(s.getScreenName());
 				if(pid != null) {
-					incomings.add(new Message(pid, s.getScreenName(), cleanTweet(s, null, s.getScreenName())));
+					incomings.add(new Message(pid, s.getScreenName(), cleanTweet(s, s.getScreenName())));
 					listenersToUnregister.add(new Object[]{pid, s.getScreenName()});
 					foundPid = true;
 				}
@@ -208,7 +200,7 @@ public class TwitterTransportImpl implements Transport {
 		if( ! processedIncomings.isEmpty()) {
 			datastore.updateTwitterLastMentions(processedIncomings);
 		}
-		for(String s : correlationsToUnregister) {
+		for(Long s : correlationsToUnregister) {
 			datastore.unregisterTwitterCorrelation(s);
 		}
 		for(Object[] o : listenersToUnregister) {
@@ -218,7 +210,7 @@ public class TwitterTransportImpl implements Transport {
 		
 	}
 
-	private String cleanTweet(Tweet s, final String cid, String screenName) {
+	private String cleanTweet(Tweet s, String screenName) {
 		/*
 		 * remove trailing comments
 		 */
@@ -228,12 +220,6 @@ public class TwitterTransportImpl implements Transport {
 			text = text.substring(0, text.indexOf("//"));
 		}
 		
-		/*
-		 * remove hashtag
-		 */
-		if(cid != null) {
-			text = StringUtils.remove(text, "#"+cid);
-		}
 		
 		/*
 		 * strip mention
@@ -308,28 +294,17 @@ public class TwitterTransportImpl implements Transport {
 		//FIXME is all this equivalent to (snowflake - (snowflake % 0x3FFFFFF) / 0x3FFFFF?
 	}
 
-	
-	@Override
-	public void say(String to, String msg) {
-		
-		long id = twitter.tweet("@"+to+" "+msg);
-		
-		LOG.debug(id+" : "+"@"+to+" "+msg);
-			
-	}
 
-	@Override
-	public void ask(UUID pid, String to, String msg) {
-		
-		String next = transformNumber(new BigInteger(Integer.toString(Math.abs(rnd.nextInt(MAX_CID)))), 62);
-
-		LOG.info("registering cid "+next+" for pid "+pid.toString().substring(30));
-
-		long id = twitter.tweet("@"+to+" #"+next+" "+msg);
-
-		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, to, next, id));
-
-	}
+    @Override
+    public long send(String to, String msg) {
+        
+        long id = twitter.tweet("@"+to+" "+msg);
+        
+        LOG.debug(id+" : "+"@"+to+" "+msg);
+        
+        return id;
+            
+    }
 
 	@Override
 	public void listen(UUID pid, String to) {
@@ -337,98 +312,6 @@ public class TwitterTransportImpl implements Transport {
 		datastore.registerTwitterListener(pid, to);
 		
 
-	}
-
-	public static String transformNumber(BigInteger decimal, final int baseInt) {
-		
-		char[] alphabet = new char[baseInt];
-		int aNum = 0;
-		for(int i = '0'; i != '9'+1 && aNum < baseInt; i++) {
-			alphabet[aNum++] = (char) i;
-		}
-		if(aNum < baseInt) for(int i = 'A'; i != 'Z'+1 && aNum < baseInt; i++) {
-			alphabet[aNum++] = (char) i;
-		}
-		if(aNum < baseInt) for(int i = 'a'; i != 'z'+1 && aNum < baseInt; i++) {
-			alphabet[aNum++] = (char) i;
-		}
-		
-		if(baseInt > aNum ) {
-			throw new RuntimeException("Run out of alphabet for base "+baseInt);
-		}
-		//populate
-		
-		StringBuilder b = new StringBuilder();
-		
-		final BigInteger firstBase = new BigInteger(Integer.toString(baseInt));
-		
-		BigInteger base = new BigInteger(firstBase.toByteArray());
-
-		BigInteger lastBase = BigInteger.ONE;
-		
-		for(int pow = 2; ; pow++) {
-			
-			BigInteger digit = decimal.mod(base);
-			
-			char c = alphabet[digit.divide(lastBase).intValue()];
-			
-			b.append(c);
-			
-			decimal = decimal.subtract(digit);
-			
-			if(decimal.equals(BigInteger.ZERO)) {
-				break;
-			}
-			
-			lastBase = base;
-			base = firstBase.pow(pow);
-			
-		}
-		
-		return b.reverse().toString();
-		
-	}
-
-	public static void main(String[] args) {
-		
-		/*
-		 * 10^3  1000 * 4 = 4000
-		 * 10^2   100 * 2 =  200
-		 * 10^1    10 * 3 =   30
-		 * 10^0     1 * 5 =    5
-		 * 
-		 * 4235    = 
-		 * 
-		 * 
-		 * 2^7  128 * 1 = 128
-		 * ...
-		 * ...
-		 * ...
-		 * 2^3    8 * 1 =   8
-		 * 2^2    4 * 0 =   0
-		 * 2^1    2 * 1 =   2
-		 * 2^0    1 * 1 =   1
-		 * 			    	____
-		 * 			       139
-		 * 
-		 * 
-		 * 10001011
-		 *  1000000
-		 */
-		SecureRandom r = new SecureRandom();
-		for(int i = 0; i != 10; i++) {
-			
-			String s = Long.toString(Math.abs(r.nextLong()));
-			
-			System.out.println(s);
-			
-			BigInteger b= new BigInteger(s);
-
-			System.out.println(transformNumber(b, 10));
-			System.out.println(transformNumber(b, 62));
-		}
-		
-		
 	}
 	
 }

@@ -93,7 +93,7 @@ public interface ScriptusDatastore {
 	/**
 	 * @see #getScheduledTasks(Calendar)
 	 */
-	public void scheduleTask(Calendar when, ScheduledScriptAction task);
+	public void saveScheduledTask(Calendar when, ScheduledScriptAction task);
 
 	/*
 	 * this stuff should be in a TwitterInteractionMediumDAO.
@@ -109,12 +109,12 @@ public interface ScriptusDatastore {
 	/**
 	 * @see #registerTwitterCorrelation(TwitterCorrelation)
 	 */
-	public TwitterCorrelation getTwitterCorrelationByID(String cid);
+	public TwitterCorrelation getTwitterCorrelationByID(long snowflake);
 	
 	/**
 	 * @see #registerTwitterCorrelation(TwitterCorrelation)
 	 */
-	public void unregisterTwitterCorrelation(String cid);
+	public void unregisterTwitterCorrelation(long snowflake);
 
 	/**
 	 * Used as a cursor to keep track of the tweets we've already

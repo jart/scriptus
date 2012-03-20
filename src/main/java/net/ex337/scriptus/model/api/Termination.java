@@ -2,11 +2,9 @@ package net.ex337.scriptus.model.api;
 
 import java.io.Serializable;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.transport.Transport;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Undefined;
@@ -18,13 +16,13 @@ public abstract class Termination extends ScriptAction implements Serializable {
 	public abstract Object getResult();
 
 	@Override
-	public final void visit(ProcessScheduler scheduler, Transport transport, ScriptusDatastore datastore, ScriptProcess process) {
+	public final void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 		
 		if(process.getWaiterPid() != null) {
 			
-			scheduler.updateProcessState(process.getWaiterPid(), this.getResult());
+			scriptus.updateProcessState(process.getWaiterPid(), this.getResult());
 			
-			scheduler.execute(process.getWaiterPid());
+			scriptus.execute(process.getWaiterPid());
 			
 			process.delete();
 			
@@ -41,7 +39,7 @@ public abstract class Termination extends ScriptAction implements Serializable {
 					Context.enter();
 					
 					if(getResult() != null && ! (getResult() instanceof Undefined)) {
-						transport.say(process.getOwner(), getResult().toString());
+						scriptus.send(process.getOwner(), getResult().toString());
 					}
  
 				} finally {
@@ -57,7 +55,7 @@ public abstract class Termination extends ScriptAction implements Serializable {
 				 * TODO orphaned processes aren't dealt with at all.
 				 */
 				
-				scheduler.updateProcessState(process.getPid(), this);
+				scriptus.updateProcessState(process.getPid(), this);
 			}
 
 
