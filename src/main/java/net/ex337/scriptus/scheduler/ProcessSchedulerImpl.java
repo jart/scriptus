@@ -1,23 +1,17 @@
-package net.ex337.scriptus;
+package net.ex337.scriptus.scheduler;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.HasTimeout;
@@ -63,16 +57,13 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	
 	@Resource
 	private ScriptusDatastore datastore;
-	
-	@Resource
-	private ScriptusConfig config;
 
 	private ConcurrentMap<UUID, ScriptProcess> runningProcesses;
 
-	private ConcurrentMap<UUID, Lock> locks;
-
+	@Resource
+	private ProcessLocks locks;
+	
 	private Executor processExecutor;
-	private ScheduledExecutorService scheduledTasksChecker;
 
 	public ProcessSchedulerImpl() {
 
@@ -81,46 +72,18 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	@PostConstruct
 	public void init() {
 
-		//TODO add l0-minute timeout on script execution+extract constant
-		locks = new MapMaker()
-			.expireAfterAccess(11, TimeUnit.MINUTES)
-			.makeMap();
-
 		runningProcesses = new MapMaker()
 			.concurrencyLevel(MAX_CONCURRENT_PROCESSES)
 			.makeMap();
 		
 		transport.registerReceiver(this);
 
-		scheduledTasksChecker = new ScheduledThreadPoolExecutor(2);
 		processExecutor = new ThreadPoolExecutor(2, MAX_CONCURRENT_PROCESSES, MAX_CONCURRENT_PROCESSES, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(10000));
-		
-		/*
-		 * everything is converted into seconds
-		 * so that we can avoid Calendar and use TimeUnit for everything.
-		 */
-		long pollIntervalSeconds = TimeUnit.SECONDS.convert(config.getSchedulerPollInterval(), config.getSchedulerTimeUnit());
-		
-		long delay = pollIntervalSeconds - (System.currentTimeMillis() /1000 % pollIntervalSeconds);
-		
-		scheduledTasksChecker.scheduleAtFixedRate(new Runnable(){
-
-			@Override
-			public void run() {
-				try {
-					ProcessSchedulerImpl.this.checkForScheduledTasks();
-				} catch(Exception e) {
-					LOG.error("error checking for scheduled tasks", e);
-				}
-			}
-			
-		}, delay, pollIntervalSeconds, TimeUnit.SECONDS);
-
 	}
+	
 	
 	@PreDestroy
 	public void destroy() {
-		scheduledTasksChecker.shutdown();
 	}
 
 	/* (non-Javadoc)
@@ -164,7 +127,7 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 
 					if(p.getState() instanceof HasTimeout) {
 						//delete wake if it exists, should fail silently
-						datastore.deleteScheduledTask(new Wake(pid, ((HasTimeout)p.getState()).getNonce()));
+						datastore.deleteScheduledTask(pid, ((HasTimeout)p.getState()).getNonce());
 					}
 
 					updateProcessState(pid, m);
@@ -173,30 +136,6 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 			
 			execute(pid);
 		}
-	}
-
-	protected void checkForScheduledTasks() {
-		
-		List<ScheduledScriptAction> tasks = datastore.getScheduledTasks(Calendar.getInstance());
-		
-		for(final ScheduledScriptAction t : tasks) {
-			runWithLock(t.getPid(), new Runnable() {
-				@Override
-				public void run() {
-					try {
-						t.visit(new ScriptusFacade(datastore, ProcessSchedulerImpl.this, transport), datastore.getProcess(t.getPid()));
-					} catch(Exception e) {
-						//FIXME should set state of task as "error" (and add != clause to query)
-						LOG.error("Exception when executing scheduled task", e);
-					} finally {
-						//no retry
-						//FIXME move this to after visit above
-						datastore.deleteScheduledTask(t);
-					}
-				}
-			});
-		}
-		
 	}
 
 	/* (non-Javadoc)
@@ -258,19 +197,12 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 
 	@Override
 	public final void runWithLock(final UUID pid, Runnable r) {
-		Lock lock;
-		
-		locks.putIfAbsent(pid, new ReentrantLock());
-
-		(lock = locks.get(pid)).lock();
-		
-		try {
-			r.run();
-		} finally {
-			lock.unlock();
-		}
+	    locks.runWithLock(pid, r);
 	}
-
-
+	
+	@Override
+	public void scheduleTask(ScheduledScriptAction action) {
+	    datastore.saveScheduledTask(action);
+	}
 	
 }

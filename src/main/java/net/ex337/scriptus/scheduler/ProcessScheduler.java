@@ -1,6 +1,8 @@
-package net.ex337.scriptus;
+package net.ex337.scriptus.scheduler;
 
 import java.util.UUID;
+
+import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 public interface ProcessScheduler {
 
@@ -24,5 +26,7 @@ public interface ProcessScheduler {
 	public void updateProcessState(UUID pid, Object o);
 
 	public void markAsKilledIfRunning(UUID pid);
+
+    public void scheduleTask(ScheduledScriptAction action);
 
 }

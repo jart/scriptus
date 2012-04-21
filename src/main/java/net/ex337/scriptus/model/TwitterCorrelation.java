@@ -23,13 +23,13 @@ public class TwitterCorrelation implements Serializable {
 	
 	private UUID pid;
 	private String user;
-	private long sourceSnowflake;
+	private String messageId;
 	
-	public TwitterCorrelation(UUID pid, String user, long sourceSnowflake) {
+	public TwitterCorrelation(UUID pid, String user, String sourceSnowflake) {
 		super();
 		this.pid = pid;
 		this.user = user;
-		this.sourceSnowflake = sourceSnowflake;
+		this.messageId = sourceSnowflake;
 	}
 	
 	public UUID getPid() {
@@ -44,11 +44,11 @@ public class TwitterCorrelation implements Serializable {
 	public void setUser(String user) {
 		this.user = user;
 	}
-	public long getSourceSnowflake() {
-		return sourceSnowflake;
+	public String getMessageId() {
+		return messageId;
 	}
-	public void setSourceSnowflake(long sourceSnowflake) {
-		this.sourceSnowflake = sourceSnowflake;
+	public void setMessageId(String sourceSnowflake) {
+		this.messageId = sourceSnowflake;
 	}
 	
 }

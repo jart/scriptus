@@ -97,12 +97,12 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		return activeImpl.getScheduledTasks(dueDate);
 	}
 
-	public void deleteScheduledTask(ScheduledScriptAction t) {
-		activeImpl.deleteScheduledTask(t);
+	public void deleteScheduledTask(UUID pid, long nonce) {
+		activeImpl.deleteScheduledTask(pid, nonce);
 	}
 
-	public void saveScheduledTask(Calendar when, ScheduledScriptAction task) {
-		activeImpl.saveScheduledTask(when, task);
+	public void saveScheduledTask(ScheduledScriptAction task) {
+		activeImpl.saveScheduledTask(task);
 	}
 
 	@Override
@@ -114,11 +114,11 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		activeImpl.registerTwitterCorrelation(cid);
 	}
 
-	public TwitterCorrelation getTwitterCorrelationByID(long snowflake) {
-		return activeImpl.getTwitterCorrelationByID(snowflake);
+	public TwitterCorrelation getTwitterCorrelationByID(String messageId) {
+		return activeImpl.getTwitterCorrelationByID(messageId);
 	}
 
-	public void unregisterTwitterCorrelation(long snowflake) {
+	public void unregisterTwitterCorrelation(String snowflake) {
 		activeImpl.unregisterTwitterCorrelation(snowflake);
 	}
 

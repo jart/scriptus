@@ -16,7 +16,9 @@ This method sends the message provided to the person specified.
 
 The second argument, providing additional parameters, is optional. `tim` above is an example Twitter screen name.
 
-If no person is present, the message will be "said" to the script owner.
+If no person is present, the message will be "said" to nobody in particular.
+
+The return value of this function is a "message ID", which is an opaque string. You can use this message ID to `listen()` for replies to the message.
 
 ##listen()
 
@@ -26,9 +28,25 @@ var heard = listen();
 var heardFromHarper = listen({to:"harper"});
 ```
 
-This method listens for messages. It returns the first message it receives as a string. If the `to` option is missing, it listens to the owner.
+This method listens for messages. It returns the first message it receives as a string. If the `to` option is missing, it returns the first person to reply, or for Twitter, the first mention sent to the Twitter user.
 
-##Using durations in Scriptus
+You can tell who replied by looking at the `from` attribute of the message. In the above example, if `heardFromHarper` was not null, then `heardFromHarper.from` would equal "harper".
+
+This method can also be used to listen to replies to specific messages.
+
+```javascript
+var chorusCall = say("Can I get a witness?");
+
+var chorusResponse = listen({messageId:chorusCall});
+
+var responseFromDiana = listen({messageId:chorusCall, to:"Diana"});
+```
+
+In the above examples, a message is first 'said', and then two responses are listened for. In the first example, Scriptus will return the first response from anyone who replies. In the second, only Diana is being listened to.
+
+The `messageId` parameter is meant to allow script authors to listen for multiple replies to the same message. Be aware that deciding when to stop listening in a loop is important - e.g. after X replies or X amount of time.
+
+##The `timeout` parameter and using durations in Scriptus
 
 By default listen() waits for *24 hours* before returning to the program with `null` if no message has been received in that time.
 
@@ -93,6 +111,8 @@ var unlikely = ask("A short novel please", {to:"victor", timeout:"17y"});
 ```
 
 This method sends a message to a person in the style of `say`, and then awaits responses in the style of `listen`. The result, as with `listen`, is returned as a string, or `null` if the method times out.
+
+If no person is specified using `to`, then the first reply to this question (or tweet) will be returned.
 
 #Program control
 
@@ -199,9 +219,9 @@ The process will lie dormant for the specified amount of time, which as elsewher
 
 In many places it may be better to use `listen` so that a script can be woken up by prodding it if necessary.
 
-##TODO pipe()
+<!--##TODO pipe()
 
-When multiple processes have been created via `fork()` you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array `arr`, representing the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.
+When multiple processes have been created via `fork()` you may want them to communicate with each other without terminating. This is what pipe() is for. In UNIX, the method returns two "ids" at index 0 and 1 of the provided array `arr`, representing the start and end of the pipe respectively. In Scriptus, the supplied object will have the properties "in" and "out" set an ID. The IDs can then be used in the methods say(out) and listen(in) above in the 'person' parameter.-->
 
 #Networking
 
@@ -213,7 +233,7 @@ var response = get("http://www.google.com/robots.txt");
 var sslResponse = get("https://encrypted.google.com/robots.txt");
 ```
 
-This command gets the result of an HTTP GET. In conjunction with eval() it can be used to import other scripts into your script. This can be used to setup libraries, such as parts of [dojo](http://www.dojotoolkit.org) or [jQuery](http://www.jQuery.com) for example.
+This command gets the result of an HTTP GET. In conjunction with `eval()` it can be used to import other scripts into your script. This can be used to setup libraries, such as parts of [dojo](http://www.dojotoolkit.org) or [jQuery](http://www.jQuery.com) for example.
 
 When choosing URLs to import, I recommend that you use URLs to sites that you trust and are highly unlikely to change - for example, a link to a specific revision in a source code repo such as GitHub, Google Code or SourceForge.
 
@@ -221,9 +241,9 @@ At present, only HTTP and HTTPS URLs are supported. If this project takes off, S
 
 The HTTP GET is executed with a timeout of 60 seconds.
 
-TODO add the option to send & receive headers 
+<!--TODO add the option to send & receive headers 
 
-##TODO post()
+##TODO post()-->
 
 #Logging
 
@@ -235,7 +255,7 @@ log(new Date());
 
 The `log` method accepts one argument and then writes that argument's string respresentation to the log file `scriptus_programs.txt` under `logs/`. The log message will automatically prepend a timestamp, so you don't need to include one yourself.
 
-##A note about eval()
+##A note about `eval()`
 
 Although `eval()` works, the Scriptus API methods as listed above cannot be executed within them. For example, this code wouldn't work:
 

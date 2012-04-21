@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.ex337.scriptus.ProcessScheduler;
-import net.ex337.scriptus.ProcessSchedulerImpl;
+import org.apache.commons.lang.StringUtils;
+
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
@@ -15,6 +15,8 @@ import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.model.api.functions.Ask;
+import net.ex337.scriptus.scheduler.ProcessScheduler;
+import net.ex337.scriptus.scheduler.ProcessSchedulerImpl;
 import net.ex337.scriptus.transport.Transport;
 import net.ex337.scriptus.transport.twitter.Tweet;
 import net.ex337.scriptus.transport.twitter.TwitterClientMock;
@@ -85,15 +87,13 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         p.save();
 
-        long nonce = ((Ask) r).getNonce();
-
-        final ThreadLocal<Long> tweetId = new ThreadLocal<Long>();
+        final ThreadLocal<String> tweetId = new ThreadLocal<String>();
 
         ScriptusFacade f = new ScriptusFacade(datastore, c, m) {
 
             @Override
             public void registerTwitterCorrelation(TwitterCorrelation cid) {
-                tweetId.set(cid.getSourceSnowflake());
+                tweetId.set(cid.getMessageId());
                 super.registerTwitterCorrelation(cid);
             }
 
@@ -108,7 +108,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
         assertEquals("correct pid registered", p.getPid(), cc.getPid());
         assertEquals("correct user registered", "ianso", cc.getUser());
 
-        Tweet t = new Tweet(123, "reply", "ianso", tweetId.get());
+        Tweet t = new Tweet(123, "reply", "ianso", Long.parseLong(StringUtils.remove(tweetId.get(), "tweet:")));
 
         clientMock.getMentions().add(t);
         

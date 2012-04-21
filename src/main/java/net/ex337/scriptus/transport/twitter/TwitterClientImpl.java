@@ -94,4 +94,15 @@ public class TwitterClientImpl implements TwitterClient {
 		return s.getId();
 	}
 
+    @Override
+    public String getScreenName() {
+        try {
+            return twitter.getScreenName();
+        } catch (IllegalStateException e) {
+            throw new ScriptusRuntimeException(e);
+        } catch (TwitterException e) {
+            throw new ScriptusRuntimeException(e);
+        }
+    }
+
 }

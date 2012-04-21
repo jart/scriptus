@@ -5,9 +5,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
+
+import com.amazonaws.services.simpledb.model.Attribute;
 
 public class SerializableUtils {
 
+    public static Attribute getAttribute(List<Attribute> atts, String name) {
+        for(Attribute a : atts) {
+            if(name.equals(a.getName())) {
+                return a;
+            }
+        }
+        return null;
+    }
+    
 	public static byte[] serialiseObject(Object o) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);

@@ -19,6 +19,10 @@
 
     <bean id="config" class="net.ex337.scriptus.config.ScriptusConfig" />
 
+    <bean id="waker" class="net.ex337.scriptus.scheduler.ProcessWaker" />
+
+    <bean id="locks" class="net.ex337.scriptus.scheduler.ProcessLocks" />
+
     <bean id="dummyTransport" class="net.ex337.scriptus.transport.impl.DummyTransport" 
     	p:defaultResponse="response">
     	<property name="regexpResponseMatchers">
@@ -42,6 +46,8 @@
 
 	<bean scope="prototype" id="scriptProcess" class="net.ex337.scriptus.model.ScriptProcess"/>
 
+	<bean id="facade" class="net.ex337.scriptus.ScriptusFacade"/>
+
     <bean id="baseDatastore" abstract="true" >
 		<lookup-method name="createScriptProcess" bean="scriptProcess"/>
     </bean>
@@ -52,6 +58,6 @@
 
 	<bean id="datastore" class="net.ex337.scriptus.datastore.ScriptusDatastoreSwitch" />
 
-    <bean id="scheduler" class="net.ex337.scriptus.ProcessSchedulerImpl" />
+    <bean id="scheduler" class="net.ex337.scriptus.scheduler.ProcessSchedulerImpl" />
 
 </beans>

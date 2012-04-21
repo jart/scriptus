@@ -11,6 +11,8 @@ public class TwitterClientMock implements TwitterClient {
     
     public List<String> statusUpdates = new ArrayList<String>();
 
+    public String screenName = "mock";
+    
 	public TwitterClientMock() {
 		//TODO load mocks
 	}
@@ -35,6 +37,11 @@ public class TwitterClientMock implements TwitterClient {
 		
 		return ctr++;
 	}
+
+    @Override
+    public String getScreenName() {
+        return screenName;
+    }
 
 	
 	

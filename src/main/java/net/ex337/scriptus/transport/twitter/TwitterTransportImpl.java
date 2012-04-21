@@ -55,6 +55,8 @@ public class TwitterTransportImpl implements Transport {
     private MessageReceiver londonCalling;
 
     private ScheduledExecutorService scheduledTwitterChecker;
+    
+    private String screenName;
 
     @PostConstruct
 	public void init() {
@@ -85,6 +87,8 @@ public class TwitterTransportImpl implements Transport {
 			}
 			
 		}, delay, pollIntervalSeconds, TimeUnit.SECONDS);
+		
+		screenName = twitter.getScreenName();
 
 	}
 
@@ -127,7 +131,7 @@ public class TwitterTransportImpl implements Transport {
 		}
 		
 		List<Message> incomings =  new ArrayList<Message>(); 
-		List<Long> correlationsToUnregister =  new ArrayList<Long>(); 
+		List<String> correlationsToUnregister =  new ArrayList<String>(); 
 		//a bit ugly...
 		List<Object[]> listenersToUnregister =  new ArrayList<Object[]>(); 
 		List<Long> processedIncomings =  new ArrayList<Long>(); 
@@ -160,7 +164,7 @@ public class TwitterTransportImpl implements Transport {
 			
 			if(s.getInReplyToId() != -1){
 			    //then it could be a reply to an ask();
-                TwitterCorrelation c = datastore.getTwitterCorrelationByID(s.getInReplyToId());
+                TwitterCorrelation c = datastore.getTwitterCorrelationByID("tweet:"+s.getInReplyToId());
 
                 /*
                  * if I've setup scriptus with my own account,
@@ -168,10 +172,10 @@ public class TwitterTransportImpl implements Transport {
                  * tweets don't get mixed up
                  */
                 if(c != null && 
-                   s.getSnowflake() != c.getSourceSnowflake() && 
-                   s.getScreenName().equals(c.getUser())) {
-                        incomings.add(new Message(c.getPid(), s.getScreenName(), cleanTweet(s, c.getUser())));
-                        correlationsToUnregister.add(s.getInReplyToId());
+                   /*"tweet:"+s.getSnowflake() != c.getMessageId() &&*/ 
+                   (c.getUser() == null  || (c.getUser() != null && s.getScreenName().equals(c.getUser())))) {
+                        incomings.add(new Message(c.getPid(), s.getScreenName(), cleanTweet(s, screenName)));
+                        correlationsToUnregister.add("tweet:"+s.getInReplyToId());
                         foundPid = true;
                 }
 			}
@@ -185,7 +189,7 @@ public class TwitterTransportImpl implements Transport {
 			if( ! foundPid ) {
 				UUID pid = datastore.getMostRecentTwitterListener(s.getScreenName());
 				if(pid != null) {
-					incomings.add(new Message(pid, s.getScreenName(), cleanTweet(s, s.getScreenName())));
+					incomings.add(new Message(pid, s.getScreenName(), cleanTweet(s, screenName)));
 					listenersToUnregister.add(new Object[]{pid, s.getScreenName()});
 					foundPid = true;
 				}
@@ -200,7 +204,7 @@ public class TwitterTransportImpl implements Transport {
 		if( ! processedIncomings.isEmpty()) {
 			datastore.updateTwitterLastMentions(processedIncomings);
 		}
-		for(Long s : correlationsToUnregister) {
+		for(String s : correlationsToUnregister) {
 			datastore.unregisterTwitterCorrelation(s);
 		}
 		for(Object[] o : listenersToUnregister) {
@@ -296,13 +300,13 @@ public class TwitterTransportImpl implements Transport {
 
 
     @Override
-    public long send(String to, String msg) {
+    public String send(String to, String msg) {
         
-        long id = twitter.tweet("@"+to+" "+msg);
+        long id = twitter.tweet((to == null ? "" : "@"+to+" ")+msg);
         
         LOG.debug(id+" : "+"@"+to+" "+msg);
         
-        return id;
+        return "tweet:"+id;
             
     }
 

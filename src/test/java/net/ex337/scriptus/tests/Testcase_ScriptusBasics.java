@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
@@ -23,6 +22,7 @@ import net.ex337.scriptus.model.api.functions.Sleep;
 import net.ex337.scriptus.model.api.functions.Wait;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
+import net.ex337.scriptus.scheduler.ProcessScheduler;
 import net.ex337.scriptus.transport.Transport;
 import net.ex337.scriptus.transport.impl.DummyTransport;
 
@@ -781,7 +781,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		ScriptAction r = p.call();
 		
 		assertTrue("Asked correctly", r instanceof Ask);
-		assertTrue("Asked correctly owner", ((Ask)r).getWho().equals("owner"));
+		assertNull("Asked correctly owner", ((Ask)r).getWho());
 		
 		p.save();
 
@@ -827,7 +827,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		ScriptAction r = p.call();
 		
 		assertTrue("Said correctly", r instanceof Say);
-		assertTrue("Said to owner correctly", ((Say)r).getWho().equals("owner"));
+		assertNull("Said to owner correctly", ((Say)r).getWho());
 
 	}
 
@@ -852,7 +852,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		ScriptAction r = p.call();
 		
 		assertTrue("Listened correctly", r instanceof Listen);
-		assertTrue("Listened correctly to", ((Listen)r).getWho().equals("owner"));
+		assertNull("Listened correctly to", ((Listen)r).getWho());
 		
 		p.save();
 		
@@ -881,23 +881,23 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		r.visit(new ScriptusFacade(datastore, c, m), p);
 	}
 
-	public void test_addTwoNumbers() throws IOException {
-
-		((DummyTransport)m).defaultResponse = "4";
-
-		ScriptProcess p = datastore.newProcess(TEST_USER, "addTwoNumbers.js", "", "owner");
-		
-		ScriptAction r = p.call();
-
-		p.save();
-
-		assertTrue("First correctly", r instanceof Fork);
-		
-		//everything else should happen immediately with mocks
-		r.visit(new ScriptusFacade(datastore, c, m), p);
-		
-		((DummyTransport)m).defaultResponse = "response";
-	}
+//	public void test_addTwoNumbers() throws IOException {
+//
+//		((DummyTransport)m).defaultResponse = "4";
+//
+//		ScriptProcess p = datastore.newProcess(TEST_USER, "addTwoNumbers.js", "", "owner");
+//		
+//		ScriptAction r = p.call();
+//
+//		p.save();
+//
+//		assertTrue("First correctly", r instanceof Fork);
+//		
+//		//everything else should happen immediately with mocks
+//		r.visit(new ScriptusFacade(datastore, c, m), p);
+//		
+//		((DummyTransport)m).defaultResponse = "response";
+//	}
 
 	public void test_breakSecurity() throws IOException {
 		
@@ -944,7 +944,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		ScriptAction r = p.call();
 		
-		assertTrue("Failed correctly", r instanceof ErrorTermination);
+		assertEquals("Failed correctly", ErrorTermination.class, r.getClass());
 		
 		System.out.println(((ErrorTermination)r).getError());
 		
@@ -957,8 +957,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		ScriptAction r = p.call();
 		
-		assertTrue("Failed correctly", r instanceof ErrorTermination);
-		
+		assertEquals("Failed correctly", ErrorTermination.class, r.getClass());
+        		
 		System.out.println(((ErrorTermination)r).getError());
 		
 		r.visit(new ScriptusFacade(datastore, c, m), p);

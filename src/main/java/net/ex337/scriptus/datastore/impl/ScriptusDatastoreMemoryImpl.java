@@ -40,9 +40,9 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 
 	private final Map<String,String> sources = new HashMap<String,String>();
 
-	private final Map<Long,TwitterCorrelation> correlationMap = new HashMap<Long,TwitterCorrelation>();
+	private final Map<String,TwitterCorrelation> correlationMap = new HashMap<String,TwitterCorrelation>();
 	
-	private final Map<ScheduledScriptAction, Long> scheduledActions = new HashMap<ScheduledScriptAction,Long>();
+	private final Map<String, ScheduledScriptAction> scheduledActions = new HashMap<String, ScheduledScriptAction>();
 
 	private final Map<String,Map<UUID, Long>> listeners = new HashMap<String,Map<UUID, Long>>();
 
@@ -109,9 +109,9 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 		
 		long dueDateMs = dueDate.getTimeInMillis();
 		
-		for(Map.Entry<ScheduledScriptAction, Long> e : scheduledActions.entrySet()){
-			if(e.getValue() <= dueDateMs) {
-				result.add(e.getKey());
+		for(Map.Entry<String, ScheduledScriptAction> e : scheduledActions.entrySet()){
+			if(e.getValue().getWhen() <= dueDateMs) {
+				result.add(e.getValue());
 			}
 		}
 		
@@ -119,31 +119,31 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	}
 
 	@Override
-	public void deleteScheduledTask(ScheduledScriptAction t) {
+    public void deleteScheduledTask(UUID pid, long nonce) {
 		
-		scheduledActions.remove(t);
+		scheduledActions.remove(pid+"/"+nonce);
 		
 	}
 
 	@Override
-	public void saveScheduledTask(Calendar until, ScheduledScriptAction task) {
+	public void saveScheduledTask(ScheduledScriptAction task) {
 		
-		scheduledActions.put(task, until.getTimeInMillis());
+		scheduledActions.put(task.getPid()+"/"+task.getNonce(), task);
 		
 	}
 
 	@Override
 	public void registerTwitterCorrelation(TwitterCorrelation cid) {
-		correlationMap.put(cid.getSourceSnowflake(), cid);
+		correlationMap.put(cid.getMessageId(), cid);
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(long cid) {
+	public TwitterCorrelation getTwitterCorrelationByID(String cid) {
 		return correlationMap.get(cid);
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(long cid) {
+	public void unregisterTwitterCorrelation(String cid) {
 		correlationMap.remove(cid);
 	}
 

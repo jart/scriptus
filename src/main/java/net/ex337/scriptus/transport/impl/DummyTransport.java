@@ -46,12 +46,12 @@ public class DummyTransport implements Transport {
 	}
 	
 	//@Override
-	private long send(final UUID pid, final String to, final String msg) {
+	private String send(final UUID pid, final String to, final String msg) {
 
 		LOG.debug("send "+ (pid == null ? "" : pid)+" to:"+to+" msg:"+msg);
 		
 		if(pid == null) {
-			return ctr.getAndIncrement();
+			return "dummy:"+Long.toString(ctr.getAndIncrement());
 		}
 		
 		List<Message> responseList = new ArrayList<Message>();
@@ -59,7 +59,7 @@ public class DummyTransport implements Transport {
 
 		receiver.handleIncomings(responseList);
 
-        return ctr.getAndIncrement();
+        return "dummy:"+Long.toString(ctr.getAndIncrement());
 
 	}
 
@@ -96,7 +96,7 @@ public class DummyTransport implements Transport {
    private AtomicLong ctr = new AtomicLong();
 
    @Override
-   public long send(String to, String msg) {
+   public String send(String to, String msg) {
        return send(null, to, msg);
    }
 

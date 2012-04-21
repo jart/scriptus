@@ -6,6 +6,7 @@ import java.util.Calendar;
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TwitterCorrelation;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
 
@@ -14,13 +15,15 @@ public class Listen extends ScriptAction implements Serializable, HasTimeout {
 	private static final long serialVersionUID = -6980840436584237850L;
 	
 	private String who;
+	private String messageId;
 	private Calendar timeout;
 	private long nonce;
 
-	public Listen(String who, Calendar timeout, long nonce){
+	public Listen(String who, Calendar timeout, long nonce, String messageId){
 		this.who = who;
 		this.timeout = timeout;
 		this.nonce = nonce;
+		this.messageId = messageId;
 	}
 	
 	public String getWho() {
@@ -41,11 +44,20 @@ public class Listen extends ScriptAction implements Serializable, HasTimeout {
 
 		scriptus.updateProcessState(process.getPid(), this);
 
-		scriptus.saveScheduledTask(timeout, new Wake(process.getPid(), nonce));
+		scriptus.scheduleTask(new Wake(process.getPid(), nonce, timeout.getTimeInMillis()));
+		
+		if(getMessageId() != null) {
+		    scriptus.registerTwitterCorrelation(new TwitterCorrelation(process.getPid(), who, getMessageId()));
+		} else {
+	        scriptus.listen(process.getPid(), getWho());
+		}
 
-		scriptus.listen(process.getPid(), getWho());
 		
 	}
+
+    public String getMessageId() {
+        return messageId;
+    }
 
 
 }

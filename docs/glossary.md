@@ -20,7 +20,7 @@ Each process is identified by a Process IDentifier, which right now is a v4 UUID
 
 ##script owner
 
-When running a script, you can can have its owner. By default, ask(), say() and listen() revert to this user.
+When running a script, you can specify an owner. This used to be used as a default `to` argument, but this is no longer the case. The result of the root process will be said to the owner.
 
 ##datastore, previously "DAO"
 
