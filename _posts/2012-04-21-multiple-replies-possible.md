@@ -9,7 +9,7 @@ To make this functionality more useful, and to ensure the API remains harmonious
 
 This means that `ask()` and `listen()` without a `to` may return a response from anybody; and `say()` without `to` addresses nobody in particular. In Twitter for example, there would be no `@user` before the tweet.
 
-Because a message's author can now be unknown at the point in the program where it is received, the message has a new attribute, `from`, which is the name of the user who wrote the message. For Twitter this will be the screen name of the user.
+Because a messages author can now be unknown at the point in the program where it is received, the message has a new attribute, `from`, which is the name of the user who wrote the message. For Twitter this will be the screen name of the user.
 
 As usual, this is all reflected in the updated documentation.
 
