@@ -55,7 +55,8 @@ import org.mozilla.javascript.WrappedException;
  */
 public class ScriptusAPI extends ScriptableObject implements Serializable {
 
-	private static final String TIMEOUT_ARG = "timeout";
+    private static final String MSG_ID_ARG = "messageId";
+    private static final String TIMEOUT_ARG = "timeout";
 	private static final String TO_ARG = "to";
 
 	private static final long serialVersionUID = 4654244388518182133L;
@@ -258,11 +259,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 
 	public Object ask(String msg, NativeObject params) {
 
-		Context cx = Context.getCurrentContext();
-		
-		ScriptProcess process = (ScriptProcess) cx.getThreadLocal("process");
-
-		String who = process.getOwner();
+		String who = null;
 		
 		Calendar timeout = Calendar.getInstance();
 		timeout.add(Calendar.HOUR, defaultTimeoutLength);
@@ -287,21 +284,16 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 			throw new WrappedException(new ScriptusRuntimeException("invalid args to ask function, format: ask(question, [{who:who, timeout:duration}]"));
 		}
 
-		ContinuationPending pending = cx.captureContinuation();
+		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
 		pending.setApplicationState(new Ask(msg, who, timeout, rnd.nextLong()));
 		throw pending;
 	}
 
 	public Object say(String msg, NativeObject params) {
 
-		Context cx = Context.getCurrentContext();
-		
 		String who = null;
 
-		if(params == null) {
-			ScriptProcess process = (ScriptProcess) cx.getThreadLocal("process");
-			who = process.getOwner();
-		} else {
+        if(params != null) {
 			
 			Object owho = params.get(TO_ARG, params);
 			
@@ -322,11 +314,9 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 
 	public Object listen(NativeObject params) {
 
-		Context cx = Context.getCurrentContext();
-
-		ScriptProcess process = (ScriptProcess) cx.getThreadLocal("process");
-
-		String who = process.getOwner();
+		String who = null;
+		
+		String messageId = null;
 
 		long timeInSeconds = TimeUnit.SECONDS.convert(defaultTimeoutLength, waitSleepUnit);
 
@@ -347,10 +337,16 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 				timeout = getDuration(otimeout);
 			}
 			
+			Object omessageId = params.get(MSG_ID_ARG, params);
+            
+            if(omessageId != null  && omessageId != NativeObject.NOT_FOUND) {
+                messageId = omessageId.toString();
+            }
+			
 		}
 		
-		ContinuationPending pending = cx.captureContinuation();
-		pending.setApplicationState(new Listen(who, timeout, rnd.nextLong()));
+		ContinuationPending pending = Context.getCurrentContext().captureContinuation();
+		pending.setApplicationState(new Listen(who, timeout, rnd.nextLong(), messageId));
 		throw pending;
 	}
 

@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.scheduler.ProcessScheduler;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;

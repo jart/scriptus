@@ -24,7 +24,7 @@ public class Sleep extends ScriptAction implements Serializable, HasTimeout {
 	@Override
 	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 		
-	    scriptus.saveScheduledTask(until, new Wake(process.getPid(), nonce));
+	    scriptus.scheduleTask(new Wake(process.getPid(), nonce, until.getTimeInMillis()));
 		
 		scriptus.updateProcessState(process.getPid(), this);
 		

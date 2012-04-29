@@ -8,7 +8,6 @@ import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.api.HasTimeout;
-import net.ex337.scriptus.model.scheduler.Wake;
 
 /**
  * Implements kill(). Kill() 
@@ -47,7 +46,7 @@ public class Kill extends ScriptAction implements Serializable {
 
 						if(child.getState() instanceof HasTimeout) {
 							//delete wake if it exists, should fail silently
-							scriptus.deleteScheduledTask(new Wake(pid, ((HasTimeout)child.getState()).getNonce()));
+							scriptus.deleteScheduledTask(pid, ((HasTimeout)child.getState()).getNonce());
 						}
 						
 						scriptus.markAsKilledIfRunning(pid);

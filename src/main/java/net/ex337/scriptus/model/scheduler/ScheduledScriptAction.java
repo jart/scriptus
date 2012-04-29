@@ -12,6 +12,8 @@ import net.ex337.scriptus.model.ScriptAction;
  *
  */
 public abstract class ScheduledScriptAction extends ScriptAction {
+    
+    private long when;
 
 	public abstract UUID getPid();
 	
@@ -51,5 +53,13 @@ public abstract class ScheduledScriptAction extends ScriptAction {
 		return a;
 		
 	}
+
+    public long getWhen() {
+        return when;
+    }
+
+    public void setWhen(long when) {
+        this.when = when;
+    }
 	
 }

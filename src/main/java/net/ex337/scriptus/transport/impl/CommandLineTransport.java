@@ -46,13 +46,13 @@ public class CommandLineTransport implements Transport {
 	/*
 	 * synch to make command-line interaction thread-safe
 	 */
-	private synchronized long send(final UUID pid, final String to, final String msg) {
+	private synchronized String send(final UUID pid, final String to, final String msg) {
 		
 		//just sending, no response expected
 		if(pid == null) {
 			LOG.debug("send  to:"+to+" msg:"+msg);
 			System.out.println("send to:"+to+" msg:"+msg);
-			return ctr.getAndIncrement();
+            return "cmdline:"+Long.toString(ctr.getAndIncrement());
 		}
 		
 		
@@ -74,7 +74,7 @@ public class CommandLineTransport implements Transport {
 			throw new RuntimeException(e);
 		}
 
-		return ctr.getAndIncrement();
+        return "cmdline:"+Long.toString(ctr.getAndIncrement());
 		
 	}
 
@@ -87,7 +87,7 @@ public class CommandLineTransport implements Transport {
 	}
 
    @Override
-    public long send(String to, String msg) {
+    public String send(String to, String msg) {
         return send(null, to, msg);
     }
 

@@ -12,7 +12,6 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Resource;
 
-import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
@@ -23,7 +22,6 @@ import net.ex337.scriptus.model.api.Termination;
 import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
-import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -78,13 +76,10 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	private transient ScriptusDatastore datastore;
 
 	@Resource
-	private transient ProcessScheduler scheduler;
-
-	@Resource(name="transport")
-	private transient Transport transport;
-
-	@Resource
 	private transient ScriptusConfig config;
+	
+	@Resource
+	private transient ScriptusFacade facade;
 	
 	public ScriptProcess() {
 	}
@@ -334,7 +329,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 		this.save();
 		
-		result.visit(new ScriptusFacade(datastore, scheduler, transport), this);
+		result.visit(facade, this);
 		
 		
 	}
@@ -368,10 +363,9 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		r.state = this.state;
 		r.userId = this.userId;
 		r.datastore = this.datastore;
-		r.scheduler = this.scheduler;
-		r.transport = this.transport;
 		r.config = this.config;
 		r.owner = this.owner;
+		r.facade = this.facade;
 		// ?
 		r.isRoot = false;
 		r.version = 0;

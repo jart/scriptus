@@ -1,9 +1,6 @@
 package net.ex337.scriptus.model;
 
-import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.ScriptusFacade;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.transport.Transport;
 
 /**
  * 

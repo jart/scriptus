@@ -2,12 +2,9 @@ package net.ex337.scriptus.model.api.functions;
 
 import java.io.Serializable;
 
-import net.ex337.scriptus.ProcessScheduler;
 import net.ex337.scriptus.ScriptusFacade;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.transport.Transport;
 
 /**
  * Executes a new script belonging to the same openId user

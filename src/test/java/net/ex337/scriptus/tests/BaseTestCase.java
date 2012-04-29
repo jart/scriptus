@@ -1,15 +1,11 @@
 
 package net.ex337.scriptus.tests;
 
-import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
-import net.ex337.scriptus.config.ScriptusConfig.TransportType;
+import junit.framework.TestCase;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import junit.framework.TestCase;
 
 /**
  * Base test case for running Scriptus tests that 

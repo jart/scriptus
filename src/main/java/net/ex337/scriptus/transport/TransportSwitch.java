@@ -55,7 +55,7 @@ public class TransportSwitch implements Transport {
 		}
 	}
 
-    public long send(String to, String msg) {
+    public String send(String to, String msg) {
         return activeImpl.send(to, msg);
     }
 

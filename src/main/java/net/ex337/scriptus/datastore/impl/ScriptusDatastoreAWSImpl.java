@@ -238,31 +238,33 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 		//FIXME nextToken
 		
 		for(Item i : s.getItems()) {
+		    String task = SerializableUtils.getAttribute(i.getAttributes(), "task").getValue();
 						
-			result.add(ScheduledScriptAction.readFromString(i.getName()));
+			result.add(ScheduledScriptAction.readFromString(task));
 		}
 		
 		return result;
 	}
 
 	@Override
-	public void deleteScheduledTask(ScheduledScriptAction t) {
+	public void deleteScheduledTask(UUID pid, long nonce) {
 		
-		sdb.deleteAttributes(new DeleteAttributesRequest(SCHEDULED_TASKS, t.toString()));
+		sdb.deleteAttributes(new DeleteAttributesRequest(SCHEDULED_TASKS, pid+"/"+nonce));
 		
 	}
 
 	@Override
-	public void saveScheduledTask(final Calendar until, final ScheduledScriptAction task) {
+	public void saveScheduledTask(final ScheduledScriptAction task) {
 		
 		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
 			add(new ReplaceableAttribute("pid", task.getPid().toString(), false));
 			//not padding number because all system.currentTimeMillis() is always the same,
 			//At least until the year 2286...
-			add(new ReplaceableAttribute("when", Long.toString(until.getTimeInMillis()), false));
+            add(new ReplaceableAttribute("when", Long.toString(task.getWhen()), false));
+            add(new ReplaceableAttribute("task", task.toString(), false));
 		}};
 		
-		PutAttributesRequest r = new PutAttributesRequest(SCHEDULED_TASKS, task.toString(), atts);
+		PutAttributesRequest r = new PutAttributesRequest(SCHEDULED_TASKS, task.getPid()+"/"+task.getNonce(), atts);
 		sdb.putAttributes(r);
 	}
 
@@ -271,18 +273,19 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 		
 		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
 			add(new ReplaceableAttribute("pid", correlation.getPid().toString(), false));
-			add(new ReplaceableAttribute("user", correlation.getUser(), false));
-//			add(new ReplaceableAttribute("snowflake", Long.toString(correlation.getSourceSnowflake()), false));
+			if(correlation.getUser() != null) {
+	            add(new ReplaceableAttribute("user", correlation.getUser(), false));
+			}
 		}};
-		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, Long.toString(correlation.getSourceSnowflake()), atts);
+		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, correlation.getMessageId(), atts);
 
 		sdb.putAttributes(r);
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(final long snowflake) {
+	public TwitterCorrelation getTwitterCorrelationByID(final String messageId) {
 		
-		GetAttributesRequest r = new GetAttributesRequest(CORRELATION_IDS, Long.toString(snowflake));
+		GetAttributesRequest r = new GetAttributesRequest(CORRELATION_IDS, messageId);
 		r.setConsistentRead(true);
 		r.setAttributeNames(new HashSet<String>() {{
 			add("pid");
@@ -304,18 +307,18 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 			}
 		}
 		
-		if(pid == null || foundUser == null) {
+		if(pid == null) {
 			return null;
 		}
 		
 		LOG.info("found atts:"+atts.toString());
 		
-		return new TwitterCorrelation(pid, foundUser, snowflake);
+		return new TwitterCorrelation(pid, foundUser, messageId);
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(final long snowflake) {
-		sdb.deleteAttributes(new DeleteAttributesRequest(CORRELATION_IDS, Long.toString(snowflake)));
+	public void unregisterTwitterCorrelation(final String snowflake) {
+		sdb.deleteAttributes(new DeleteAttributesRequest(CORRELATION_IDS, snowflake));
 		
 	}
 	

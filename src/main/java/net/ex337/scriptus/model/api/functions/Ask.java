@@ -53,11 +53,11 @@ public class Ask extends ScriptAction implements Serializable, HasTimeout {
 
 		scriptus.updateProcessState(process.getPid(), this);
 
-		scriptus.saveScheduledTask(timeout, new Wake(process.getPid(), nonce));
+		scriptus.scheduleTask(new Wake(process.getPid(), nonce, timeout.getTimeInMillis()));
 
-		long id = scriptus.send(getWho(), getMsg());
+		String messageId = scriptus.send(getWho(), getMsg());
 		
-        scriptus.registerTwitterCorrelation(new TwitterCorrelation(process.getPid(), getWho(), id));
+        scriptus.registerTwitterCorrelation(new TwitterCorrelation(process.getPid(), getWho(), messageId));
 		
 		
 	}

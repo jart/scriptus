@@ -15,4 +15,6 @@ public interface TwitterClient {
 	
 	public long tweet(String txt);
 
+    public String getScreenName();
+
 }

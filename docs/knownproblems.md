@@ -7,14 +7,6 @@ Scriptus does generally work as expected, however there are some quirks, bugs an
 
 The scheduler currently polls the storage for tasks to execute every minute, on the minute. This means that timeouts and durations of a minute or less will take up to a minute plus the time to next poll. e.g. a `sleep()` of 1 minute at 04:34:40 will wake the process at roughly 04:36:00.
 
-##CID namespace size
-
-The correlation ID used in ask() is a number between 0 and 0xFFFFFF, rendered base 62 using 0-9, A-Z and a-z as the alphabet.
-
-This CID should be stored on a per-user basis, as the namespace is too small to guarantee uniqueness over a big deployment.
-
-As there are no big deployments right now this is very theoretical.
-
 ##Listen timeout
 
 The `listen()` call works by registering a process as a listener inside the Twitter transport. We then poll Twitter every minute for mentions by the user being listened to.

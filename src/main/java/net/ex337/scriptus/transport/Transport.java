@@ -20,8 +20,10 @@ public interface Transport {
      * Sends the message to the user specified,
      * and returns the ID of the message sent.
      * 
+     * The ID is an opaque string.
+     * 
      */
-    public long send(String to, String msg);
+    public String send(String to, String msg);
 	
 	/**
 	 * Routes the next message from the given user to the process

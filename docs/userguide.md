@@ -2,8 +2,7 @@ This document explains in nitty-gritty detail how to start, set up and run the S
 
 #Running Scriptus
 
-Scriptus requires JDK 6 to run. You can download & setup th
-e OpenJDK, or obtain the latest proprietary version either from Oracle or IBM. The IBM JDK should work but hasn't been tested.
+Scriptus requires JDK 6 to run. You can download & setup the OpenJDK, or obtain the latest proprietary version either from Oracle or IBM. The IBM JDK should work but hasn't been tested.
 
 Next, [download Scriptus here](https://github.com/downloads/ianso/scriptus/scriptus.war). Scriptus can be executed directly or deployed in any standard Servlet container such as Tomcat.
 
@@ -78,7 +77,7 @@ When a Scriptus program is run, it can be supplied with two parameters:
 
 `owner` - The screen name of the script owner. 
  
-This is the person with whom ask, say & listen will interact with by default, and the person to whom the result of the root process will be said.
+This is the person to whom the result of the root process will be said.
 
 `args` - The program arguments.
  

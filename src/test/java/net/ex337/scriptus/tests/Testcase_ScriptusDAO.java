@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
@@ -29,7 +28,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		
-		System.setProperty("scriptus.config", "test-scriptus.properties");
+//		System.setProperty("scriptus.config", "test-scriptus.properties");
 //		System.setProperty("scriptus.config", "filesystem-based-scriptus.properties");
 		
 		super.setUp();
@@ -75,15 +74,15 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		UUID pid = UUID.randomUUID();
 		
-		Long l = new Random().nextLong();
+		String c = "tweet:1";
 		
-		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, "user", l));
+		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, "user", c));
 
-		assertEquals("correct pid returned", pid, datastore.getTwitterCorrelationByID(l).getPid());
+		assertEquals("correct pid returned", pid, datastore.getTwitterCorrelationByID(c).getPid());
 		
-		datastore.unregisterTwitterCorrelation(l);
+		datastore.unregisterTwitterCorrelation("tweet:1");
 		
-		assertEquals(null, datastore.getTwitterCorrelationByID(l));
+		assertEquals(null, datastore.getTwitterCorrelationByID(c));
 
 	}
 
@@ -94,9 +93,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		Calendar then = Calendar.getInstance();
 		then.add(Calendar.HOUR, 3);
 		
-		Wake w = new Wake(UUID.randomUUID(), 1234);
+		Wake w = new Wake(UUID.randomUUID(), 1234, then.getTimeInMillis());
 		
-		datastore.saveScheduledTask(then, w);
+		datastore.saveScheduledTask(w);
 		
 		List<ScheduledScriptAction> actions = datastore.getScheduledTasks(Calendar.getInstance());
 		
@@ -135,7 +134,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 			}
 		}
 		
-		datastore.deleteScheduledTask(neww);
+		datastore.deleteScheduledTask(neww.getPid(), neww.getNonce());
 
 		actions = datastore.getScheduledTasks(then);
 		

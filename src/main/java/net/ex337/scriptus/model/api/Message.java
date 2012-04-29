@@ -44,6 +44,8 @@ public class Message implements Serializable, ConvertsToScriptable {
 			Scriptable globalScope = cx.initStandardObjects();
 
 			result = (Scriptable) cx.newObject(globalScope, "String", new Object[] {msg});
+			
+			result.put("from", result, getFrom());
 
 		} finally {
 			Context.exit();
