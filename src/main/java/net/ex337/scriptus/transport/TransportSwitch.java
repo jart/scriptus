@@ -30,6 +30,9 @@ public class TransportSwitch implements Transport {
 	@Resource(name="dummyTransport")
 	private Transport dummy;
 
+	@Resource(name="facebookTransport")
+	private Transport facebook;
+
 	private Transport activeImpl;
 	
 	@Resource
@@ -47,7 +50,9 @@ public class TransportSwitch implements Transport {
 			activeImpl = cmdLine;
 		} else if(transportType == TransportType.Dummy) {
 			activeImpl = dummy;
-		}			
+		} else if(transportType == TransportType.Facebook){
+			activeImpl = facebook;
+		}
 	}
 
     public long send(String to, String msg) {

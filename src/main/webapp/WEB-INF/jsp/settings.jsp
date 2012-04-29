@@ -41,6 +41,7 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 <label for="transport">Transport:</label>
 	<select id="transport" name="transport">
 		<option <%=cfg.getTransportType() == TransportType.Twitter? "selected=\"selected\"" : "" %> value="Twitter">Twitter</option>
+		<option <%=cfg.getTransportType() == TransportType.Facebook? "selected=\"selected\"" : "" %> value="Facebook">Facebook</option>
 		<option <%=cfg.getTransportType() == TransportType.CommandLine? "selected=\"selected\"" : "" %> value="CommandLine">Command prompt</option>
 		<option <%=cfg.getTransportType() == TransportType.Dummy? "selected=\"selected\"" : "" %> value="Dummy">Dummy response</option>
 	</select>
@@ -89,7 +90,23 @@ check the log files for errors.</p>
 	<input type="text" name="twitterAccessTokenSecret" id="twitterAccessTokenSecret" />
 </p>
 
+<p>
+	<label for="facebookAccessToken">Facebook access token:</label>
+	<input type="text" name="facebookAccessToken" id="facebookAccessToken" <%=cfg.getFacebookAppKey()==null || cfg.getFacebookAppSecret()==null?"disabled='disabled'":""%> readonly="readonly" value="<%=cfg.getFacebookAccessToken()!=null?cfg.getFacebookAccessToken():""%>" />
+	<button type="button" <%=cfg.getFacebookAppKey()==null || cfg.getFacebookAppSecret()==null?"disabled='disabled'":""%> onclick="<%=cfg.getFacebookAppKey()!=null && cfg.getFacebookAppSecret()!=null?"window.location = 'https://www.facebook.com/dialog/oauth?client_id="+cfg.getFacebookAppKey()+"&redirect_uri="+"http://localhost:8080"+request.getContextPath()+"/settings?&scope=read_stream,publish_stream&state=666":""%>'">Get access token</button>
+</p>
+
+<p>
+	<label for="facebookAppKey">Facebook application key:</label>
+	<input type="text" name="facebookAppKey" id="facebookAppKey" value="<%=cfg.getFacebookAppKey()!=null?cfg.getFacebookAppKey():""%>" />
+</p>
+
+<p>
+	<label for="facebookAppSecret">Facebook application secret:</label>
+	<input type="text" name="facebookAppSecret" id="facebookAppSecret" value="<%=cfg.getFacebookAppSecret()!=null?cfg.getFacebookAppSecret():""%>" />
+</p>
 <input type="submit" value="Save"/>
+</fieldset>
 
 </form>
 

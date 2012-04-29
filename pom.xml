@@ -310,6 +310,12 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>1.6.9</version>
+		</dependency>
+
 	</dependencies>
 
 	<!--repo for temporarily patched libraries, like Rhino -->

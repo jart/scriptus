@@ -42,7 +42,7 @@ public class ScriptusConfig implements AWSCredentials {
 
 	public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
 
-    public static enum TransportType {Twitter, CommandLine, Dummy};
+    public static enum TransportType {Twitter, CommandLine, Dummy, Facebook};
 	public static enum DatastoreType {Aws, File, Memory};
 
 	public static final String DURATION_FORMAT="([0-9]+)[\\ ,]*([smhdwMqyDC])";
@@ -71,6 +71,12 @@ public class ScriptusConfig implements AWSCredentials {
 	private String twitterAccessTokenSecret="";
 
 	private String s3Bucket;//232942e7-fac3-4363-baa1-ce2bcdc84a78
+	
+	private String facebookAppKey="";
+	
+	private String facebookAppSecret="";
+	
+	private String facebookAccessToken="";
 	
 	private TransportType transportType;
 	
@@ -199,6 +205,9 @@ public class ScriptusConfig implements AWSCredentials {
 		datastoreType = DatastoreType.valueOf(props.getProperty("datastore"));
 		transportType = TransportType.valueOf(props.getProperty("transport"));
 		disableOpenID = Boolean.parseBoolean(props.getProperty("disableOpenID"));
+		facebookAppKey = props.getProperty("facebookAppKey");
+		facebookAppSecret = props.getProperty("facebookAppSecret");
+		facebookAccessToken = props.getProperty("facebookAccessToken");
 	}
 	
 	public void save() throws IOException {
@@ -214,6 +223,9 @@ public class ScriptusConfig implements AWSCredentials {
 		props.put("s3Bucket", 					s3Bucket);
 		props.put("transport",       			transportType.toString());
 		props.put("datastore", 					datastoreType.toString());
+		props.put("facebookAppKey", facebookAppKey);
+		props.put("facebookAppSecret", facebookAppSecret);
+		props.put("facebookAccessToken", facebookAccessToken);
 		/*
 		 * not written out automatically
 		 *  - (a) no option in GUI,
@@ -340,7 +352,28 @@ public class ScriptusConfig implements AWSCredentials {
 		return SCHEDULER_TIME_UNIT;
 	}
 
-	
-	
-	
+	public String getFacebookAppKey() {
+		return facebookAppKey;
+	}
+
+	public void setFacebookAppKey(String facebookAppKey) {
+		this.facebookAppKey = facebookAppKey;
+	}
+
+	public String getFacebookAppSecret() {
+		return facebookAppSecret;
+	}
+
+	public void setFacebookAppSecret(String facebookAppSecret) {
+		this.facebookAppSecret = facebookAppSecret;
+	}
+
+	public String getFacebookAccessToken() {
+		return facebookAccessToken;
+	}
+
+	public void setFacebookAccessToken(String facebookAccessToken) {
+		this.facebookAccessToken = facebookAccessToken;
+	}
+
 }
