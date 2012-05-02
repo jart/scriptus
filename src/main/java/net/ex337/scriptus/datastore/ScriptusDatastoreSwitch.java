@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 /**
@@ -110,16 +110,16 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		activeImpl.createTestSources();
 	}
 
-	public void registerTwitterCorrelation(TwitterCorrelation cid) {
-		activeImpl.registerTwitterCorrelation(cid);
+	public void registerMessageCorrelation(MessageCorrelation cid) {
+		activeImpl.registerMessageCorrelation(cid);
 	}
 
-	public TwitterCorrelation getTwitterCorrelationByID(String messageId) {
-		return activeImpl.getTwitterCorrelationByID(messageId);
+	public MessageCorrelation getMessageCorrelationByID(String messageId) {
+		return activeImpl.getMessageCorrelationByID(messageId);
 	}
 
-	public void unregisterTwitterCorrelation(String snowflake) {
-		activeImpl.unregisterTwitterCorrelation(snowflake);
+	public void unregisterMessageCorrelation(String snowflake) {
+		activeImpl.unregisterMessageCorrelation(snowflake);
 	}
 
 	public List<Long> getTwitterLastMentions() {

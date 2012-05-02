@@ -18,6 +18,19 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * 
+ * Processes can sleep and then wake as a result of
+ * the sleep() call or ask() and listen(). This class
+ * is responsible for loadng scheduled wakes from the 
+ * datastore and executing the processes as necessary.
+ * 
+ * Right now the implementation is simple and doesn't
+ * quite act as expected sometimes, see knownproblems.md
+ * 
+ * @author ian
+ *
+ */
 public class ProcessWaker {
 
     private static final Log LOG = LogFactory.getLog(ProcessWaker.class);

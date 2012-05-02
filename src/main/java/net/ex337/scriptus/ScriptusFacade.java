@@ -6,11 +6,20 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 import net.ex337.scriptus.transport.Transport;
 
+/**
+ * A facadfe object giving access to almost all the functionality
+ * of Scriptus. This is the object used by API calls to do their
+ * stuff.
+ * 
+ * 
+ * @author ian
+ *
+ */
 public class ScriptusFacade {
 
     @Resource
@@ -68,14 +77,14 @@ public class ScriptusFacade {
 //    public void saveScheduledTask(ScheduledScriptAction task) {
 //        datastore.saveScheduledTask(task);
 //    }
-    public void registerTwitterCorrelation(TwitterCorrelation cid) {
-        datastore.registerTwitterCorrelation(cid);
+    public void registerMessageCorrelation(MessageCorrelation cid) {
+        datastore.registerMessageCorrelation(cid);
     }
-    public TwitterCorrelation getTwitterCorrelationByID(String messageId) {
-        return datastore.getTwitterCorrelationByID(messageId);
+    public MessageCorrelation getMessageCorrelationByID(String messageId) {
+        return datastore.getMessageCorrelationByID(messageId);
     }
-    public void unregisterTwitterCorrelation(String snowflake) {
-        datastore.unregisterTwitterCorrelation(snowflake);
+    public void unregisterMessageCorrelation(String snowflake) {
+        datastore.unregisterMessageCorrelation(snowflake);
     }
 //    public List<Long> getTwitterLastMentions() {
 //        return datastore.getTwitterLastMentions();

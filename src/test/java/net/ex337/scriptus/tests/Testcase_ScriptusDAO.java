@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 
@@ -76,13 +76,13 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		String c = "tweet:1";
 		
-		datastore.registerTwitterCorrelation(new TwitterCorrelation(pid, "user", c));
+		datastore.registerMessageCorrelation(new MessageCorrelation(pid, "user", c, System.currentTimeMillis()));
 
-		assertEquals("correct pid returned", pid, datastore.getTwitterCorrelationByID(c).getPid());
+		assertEquals("correct pid returned", pid, datastore.getMessageCorrelationByID(c).getPid());
 		
-		datastore.unregisterTwitterCorrelation("tweet:1");
+		datastore.unregisterMessageCorrelation("tweet:1");
 		
-		assertEquals(null, datastore.getTwitterCorrelationByID(c));
+		assertEquals(null, datastore.getMessageCorrelationByID(c));
 
 	}
 

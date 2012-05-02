@@ -6,7 +6,6 @@
 	
 IdScriptableObject
 
-see "~/say API blog post"
 
 In addition to this change, a new page has been added to the documentation, [HOWTO extend Scriptus with custom functionality](). Inspired by some conversations with Nela & Emil at xxx, who've been using Scriptus to run a questionnaire for their followers on Twitter, I've documented the best way to add new functionalities to Scriptus.
 
@@ -14,6 +13,7 @@ In the example, a poll is taken and the poll results are stored in a MySQL datab
 
 	 - API
 	    - listen() should respond with first tweet after listen() called (not first mention)
+	       - like that today, but done not the right way
 	       - add timestamp to correlation
 test	 - anything that wake()s doens't do so exactly on time, but to the nearest scheduler interval.
 test	 - scheduler should use short-term memory-based queue with rolling pre-loading in advance from datastore
@@ -26,18 +26,20 @@ However, if the user 'speaks' after the last poll but before the timeout, then t
 
 In addition, the wake is not unregistered on receipt of a message, causing a needless process load & nonce check.
 
-	Twitter is getting everywhere. TwitterCorrelation, ... + command line client isn't working
 	
 	PROBLEMS
+	 - Twitter is getting everywhere. TwitterCorrelation, ... + command line client isn't working
 	 - TwitterCorrelation is only used for Twitter. 
-	 - processedTweets should be per-pid
+	 - processedTweets should be per-pid with a cursor (per account)
 	 - Command line transport is broken
 	    --> list messages
 	    --> enter # of message to respond to
-	    --> enter message
-	    	 
+	    --> enter message	    	 
 	 - Collecting multiple responses in a short time won't work because we don't check message on timeout, only during.
 	    +DAO process cache?
+	 - when the twitter/facebook token expires, the process craps out.
+	       --> it should pause and ask the user to re-authenticate
+	       --> depends on user checking UI or having alternate auth mechanism
 	SOLUTIONS
 	 - twitter & cmd & mock should use generic asynch queueing mechanism
 	 
@@ -596,4 +598,5 @@ X test	    - change ask, say, listen to remove default 'to'
 X test	    - messages should have a from attribute
 X test case      - add messageId option to listen()
 X reread		 - messageId documentation
+X	see "~/say API blog post"
 

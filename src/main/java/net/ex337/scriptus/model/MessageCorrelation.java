@@ -6,30 +6,30 @@ import java.util.UUID;
 /**
  * 
  * Used as a container object to keep track of the link between
- * hashtags and processes, by pid. Includes the original tweet
- * id so as to avoid taking the original for the response if
- * the user was asking the 'scriptus' user, and the user we
- * expect to hear the response from, to avoid impersonation
- * (and make the CID namespace per-user, meaning it can be shorter).
+ * messages and processes, by pid. Includes the original message
+ * id, a timestap, and the user we expect to hear the response 
+ * from (if any).
  * 
  * TODO move to a better location
  * 
  * @author ian
  *
  */
-public class TwitterCorrelation implements Serializable {
+public class MessageCorrelation implements Serializable {
 	
 	private static final long serialVersionUID = -1766085884095311452L;
 	
 	private UUID pid;
 	private String user;
 	private String messageId;
+	private long timestamp;
 	
-	public TwitterCorrelation(UUID pid, String user, String sourceSnowflake) {
+	public MessageCorrelation(UUID pid, String user, String sourceSnowflake, long timestamp) {
 		super();
 		this.pid = pid;
 		this.user = user;
 		this.messageId = sourceSnowflake;
+		this.timestamp = timestamp;
 	}
 	
 	public UUID getPid() {
@@ -50,5 +50,9 @@ public class TwitterCorrelation implements Serializable {
 	public void setMessageId(String sourceSnowflake) {
 		this.messageId = sourceSnowflake;
 	}
+
+    public long getTimestamp() {
+        return timestamp;
+    }
 	
 }

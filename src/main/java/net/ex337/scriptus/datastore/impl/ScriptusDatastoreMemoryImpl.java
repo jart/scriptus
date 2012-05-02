@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 import org.apache.commons.logging.Log;
@@ -40,7 +40,7 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 
 	private final Map<String,String> sources = new HashMap<String,String>();
 
-	private final Map<String,TwitterCorrelation> correlationMap = new HashMap<String,TwitterCorrelation>();
+	private final Map<String,MessageCorrelation> correlationMap = new HashMap<String,MessageCorrelation>();
 	
 	private final Map<String, ScheduledScriptAction> scheduledActions = new HashMap<String, ScheduledScriptAction>();
 
@@ -133,17 +133,17 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	}
 
 	@Override
-	public void registerTwitterCorrelation(TwitterCorrelation cid) {
+	public void registerMessageCorrelation(MessageCorrelation cid) {
 		correlationMap.put(cid.getMessageId(), cid);
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(String cid) {
+	public MessageCorrelation getMessageCorrelationByID(String cid) {
 		return correlationMap.get(cid);
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(String cid) {
+	public void unregisterMessageCorrelation(String cid) {
 		correlationMap.remove(cid);
 	}
 

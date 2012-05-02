@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 /**
@@ -95,26 +95,22 @@ public interface ScriptusDatastore {
 	 */
 	public void saveScheduledTask(ScheduledScriptAction task);
 
-	/*
-	 * this stuff should be in a TwitterInteractionMediumDAO.
+	/**
+	 * Used to correlate messages sent to ask() users things.
+	 * The message ID is used to retrieve the PID of the process
+	 * that will treat the message.
 	 */
+	public void registerMessageCorrelation(MessageCorrelation cid);
 	
 	/**
-	 * Used to correlate tweets sent to ask() twitter users things,
-	 * which have a short, high-entropy #tag associated with them
-	 * to keep track of them.
+	 * @see #registerMessageCorrelation(MessageCorrelation)
 	 */
-	public void registerTwitterCorrelation(TwitterCorrelation cid);
+	public MessageCorrelation getMessageCorrelationByID(String string);
 	
 	/**
-	 * @see #registerTwitterCorrelation(TwitterCorrelation)
+	 * @see #registerMessageCorrelation(MessageCorrelation)
 	 */
-	public TwitterCorrelation getTwitterCorrelationByID(String string);
-	
-	/**
-	 * @see #registerTwitterCorrelation(TwitterCorrelation)
-	 */
-	public void unregisterTwitterCorrelation(String snowflake);
+	public void unregisterMessageCorrelation(String snowflake);
 
 	/**
 	 * Used as a cursor to keep track of the tweets we've already

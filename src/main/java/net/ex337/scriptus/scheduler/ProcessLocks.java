@@ -14,6 +14,12 @@ import org.apache.commons.logging.LogFactory;
 import com.google.common.collect.MapMaker;
 
 /**
+ * 
+ * Scriptus needs global per-process locks to ensure that
+ * process state is consistent, and that tasks like wake()
+ * only happen once. It also ensures that no contention can
+ * happen betweek wait() and a child process ending, or (I think) kill().
+ * 
  * @author ian
  *
  */
