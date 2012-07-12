@@ -93,7 +93,7 @@ check the log files for errors.</p>
 <p>
 	<label for="facebookAccessToken">Facebook access token:</label>
 	<input type="text" name="facebookAccessToken" id="facebookAccessToken" <%=cfg.getFacebookAppKey()==null || cfg.getFacebookAppSecret()==null?"disabled='disabled'":""%> readonly="readonly" value="<%=cfg.getFacebookAccessToken()!=null?cfg.getFacebookAccessToken():""%>" />
-	<button type="button" <%=cfg.getFacebookAppKey()==null || cfg.getFacebookAppSecret()==null?"disabled='disabled'":""%> onclick="<%=cfg.getFacebookAppKey()!=null && cfg.getFacebookAppSecret()!=null?"window.location = 'https://www.facebook.com/dialog/oauth?client_id="+cfg.getFacebookAppKey()+"&redirect_uri="+"http://localhost:8080"+request.getContextPath()+"/settings?&scope=read_stream,publish_stream&state=666":""%>'">Get access token</button>
+	<button type="button" <%=cfg.getFacebookAppKey()==null || cfg.getFacebookAppSecret()==null?"disabled='disabled'":""%> onclick="<%=cfg.getFacebookAppKey()!=null && cfg.getFacebookAppSecret()!=null?"window.location = 'https://www.facebook.com/dialog/oauth?client_id="+cfg.getFacebookAppKey()+"&redirect_uri="+"http://localhost:8080"+request.getContextPath()+"/settings?&scope=read_stream,publish_stream,manage_notifications&state=666":""%>'">Get access token</button>
 </p>
 
 <p>
