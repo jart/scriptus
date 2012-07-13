@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -26,6 +27,11 @@ public class TwitterClientImpl implements TwitterClient {
 
     @PostConstruct
     public void init() {
+        
+        if(config.getTransportType() != TransportType.Twitter) {
+            return;
+        }
+        
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 		.setOAuthConsumerKey(config.getTwitterConsumerKey())
