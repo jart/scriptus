@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.Set;
 
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.model.api.functions.Ask;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
@@ -21,6 +20,8 @@ import net.ex337.scriptus.transport.Transport;
 import net.ex337.scriptus.transport.twitter.Tweet;
 import net.ex337.scriptus.transport.twitter.TwitterClientMock;
 import net.ex337.scriptus.transport.twitter.TwitterTransportImpl;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Tests the Scriptus API calls.
@@ -103,10 +104,12 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         List<Message> incomings = new ArrayList<Message>();
 
-        MessageCorrelation cc = datastore.getMessageCorrelationByID(tweetId.get());
+        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(tweetId.get(), null);
 
-        assertEquals("correct pid registered", p.getPid(), cc.getPid());
-        assertEquals("correct user registered", "ianso", cc.getUser());
+        assertEquals("1 correlation", 1, ccc.size());
+
+        assertEquals("correct pid registered", ccc.iterator().next().getPid(), ccc.iterator().next().getPid());
+        assertEquals("correct user registered", "ianso", ccc.iterator().next().getUser());
 
         Tweet t = new Tweet(123, "reply", "ianso", Long.parseLong(StringUtils.remove(tweetId.get(), "tweet:")));
 

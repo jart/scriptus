@@ -3,6 +3,11 @@ package net.ex337.scriptus.model;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.springframework.expression.spel.support.ReflectionHelper;
+
 /**
  * 
  * Used as a container object to keep track of the link between
@@ -55,4 +60,20 @@ public class MessageCorrelation implements Serializable {
         return timestamp;
     }
 	
+    public int hashCode(){
+        HashCodeBuilder h = new HashCodeBuilder();
+        h.append(pid);
+        h.append(messageId);
+        h.append(timestamp);
+        h.append(user);
+        return h.toHashCode();
+    }
+    
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+    
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
 }

@@ -39,6 +39,9 @@ public class Tweet implements Comparable<Tweet> {
 		if(t == null) {
 			return 1;
 		}
+		/*
+		 * default sort is DESCENDING, newest first.
+		 */
 		return - Long.valueOf(snowflake).compareTo(t.getSnowflake());
 	}
 	public int hashCode() {

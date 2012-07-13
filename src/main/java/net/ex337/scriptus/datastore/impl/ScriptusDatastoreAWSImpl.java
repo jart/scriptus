@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
@@ -26,18 +28,17 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.simpledb.AmazonSimpleDB;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
@@ -45,6 +46,7 @@ import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
 import com.amazonaws.services.simpledb.model.DeleteAttributesRequest;
 import com.amazonaws.services.simpledb.model.GetAttributesRequest;
+import com.amazonaws.services.simpledb.model.GetAttributesResult;
 import com.amazonaws.services.simpledb.model.Item;
 import com.amazonaws.services.simpledb.model.PutAttributesRequest;
 import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
@@ -71,9 +73,9 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	
 	private static final Log LOG = LogFactory.getLog(ScriptusDatastoreAWSImpl.class);
 	
-	private static final String CORRELATION_IDS = "scriptus-correlation-ids";
+    private static final String CORRELATION_IDS = "scriptus-correlation-ids";
+    private static final String TRANSPORT_CURSORS = "scriptus-transport-cursors";
 	private static final String SCHEDULED_TASKS = "scriptus-scheduled-tasks";
-	private static final String LISTENERS = "scriptus-listeners";
 	
 	@Resource
 	private ScriptusConfig config;
@@ -88,7 +90,7 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
         Collections.unmodifiableList(new ArrayList<String>(){{
             add(CORRELATION_IDS);
             add(SCHEDULED_TASKS);
-            add(LISTENERS);
+            add(TRANSPORT_CURSORS);
         }});
 
 	@PostConstruct
@@ -98,9 +100,6 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 			return;
 		}
 		
-		
-//		PropertiesCredentials config = new PropertiesCredentials(
-//                this.getClass().getClassLoader().getResource("AwsCredentials.properties").openStream());
 		
         s3 = new AmazonS3Client(config);
 		
@@ -272,9 +271,13 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	public void registerMessageCorrelation(final MessageCorrelation correlation) {
 		
 		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
-			add(new ReplaceableAttribute("pid", correlation.getPid().toString(), false));
+            add(new ReplaceableAttribute("pid", correlation.getPid().toString(), false));
+            add(new ReplaceableAttribute("timestamp", Long.toString(correlation.getTimestamp()), false));
 			if(correlation.getUser() != null) {
 	            add(new ReplaceableAttribute("user", correlation.getUser(), false));
+			}
+			if(correlation.getMessageId() != null) {
+                add(new ReplaceableAttribute("messageId", correlation.getMessageId(), false));
 			}
 		}};
 		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, correlation.getMessageId(), atts);
@@ -283,129 +286,99 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	}
 
 	@Override
-	public MessageCorrelation getMessageCorrelationByID(final String messageId) {
+	public Set<MessageCorrelation> getMessageCorrelations(final String messageId, String fromUser) {
+	    
+        String select = 
+            "select * from "+CORRELATION_IDS+" where "+
+            "     (messageId is null and userId is null) ";
+        
+        if(messageId != null) {
+            select +=
+                "  or (messageId = :msgId and userId is null) "+
+                "  or (messageId = :msgId and userId = :user) ";
+        }
+        
+        //user is never null
+        select += 
+            "  or (messageId is null and userId = :user)";
+        
+        select = StringUtils.replace(select, ":msgId", "'"+StringEscapeUtils.escapeSql(messageId)+"'");
+        select = StringUtils.replace(select, ":user", "'"+StringEscapeUtils.escapeSql(fromUser)+"'");
+
+        System.out.println(select);
+        
+        SelectRequest s = new SelectRequest(select, true);
+        
+        SelectResult rs = sdb.select(s);
+	    
+        Set<MessageCorrelation> result = new HashSet<MessageCorrelation>();
+        
+        if(rs == null || rs.getItems() == null || rs.getItems().isEmpty()){
+            return result;
+        }
+        
+        //FIXME cursors!!
+        for(Item i : rs.getItems()) {
+
+            String foundUser = null;
+            String foundMessageId = null;
+            UUID pid = null;
+            long timestamp = 0;
+            
+            for(Attribute a : i.getAttributes()) {
+                if("pid".equals(a.getName())) {
+                    pid = UUID.fromString(a.getValue());
+                } else if("user".equals(a.getName())) {
+                    foundUser = a.getValue();
+                } else if("messageId".equals(a.getName())) {
+                    foundMessageId = a.getValue();
+                } else if("timestamp".equals(a.getName())) {
+                    timestamp = Long.parseLong(a.getValue());
+                }
+            }
+            
+            if(pid == null) {
+                return null;
+            }
+            
+            LOG.info("found atts:"+i.getAttributes().toString());
+            
+            result.add(new MessageCorrelation(pid, foundUser, foundMessageId, timestamp));
+        }
+				
+		return result;
 		
-		GetAttributesRequest r = new GetAttributesRequest(CORRELATION_IDS, messageId);
-		r.setConsistentRead(true);
-		r.setAttributeNames(new HashSet<String>() {{
-			add("pid");
-            add("user");
-            add("timestamp");
-		}});
-		List<Attribute> atts = sdb.getAttributes(r).getAttributes();
-		if(atts.size() == 0){
-			return null;
-		}
-		
-		String foundUser = null;
-		UUID pid = null;
-		long timestamp = 0;
-		
-		for(Attribute a : atts) {
-			if("pid".equals(a.getName())) {
-				pid = UUID.fromString(a.getValue());
-            } else if("user".equals(a.getName())) {
-                foundUser = a.getValue();
-            } else if("timestamp".equals(a.getName())) {
-                timestamp = Long.parseLong(a.getValue());
-			}
-		}
-		
-		if(pid == null) {
-			return null;
-		}
-		
-		LOG.info("found atts:"+atts.toString());
-		
-		return new MessageCorrelation(pid, foundUser, messageId, timestamp);
 	}
 
 	@Override
-	public void unregisterMessageCorrelation(final String snowflake) {
-		sdb.deleteAttributes(new DeleteAttributesRequest(CORRELATION_IDS, snowflake));
+	public void unregisterMessageCorrelation(final MessageCorrelation correlation) {
+		sdb.deleteAttributes(new DeleteAttributesRequest(CORRELATION_IDS, correlation.getPid().toString()));
 		
 	}
+
+    @Override
+    public String getTransportCursor(TransportType transport) {
+        
+        GetAttributesRequest gar = new GetAttributesRequest(TRANSPORT_CURSORS, transport.toString());
+        gar.setAttributeNames(Arrays.asList(new String[]{"cursor"}));
+        
+        GetAttributesResult r = sdb.getAttributes(gar);
+        
+        
+        if(r == null || r.getAttributes() == null || r.getAttributes().isEmpty()) {
+            return null;
+        }
+        return r.getAttributes().get(0).getValue();
+    }
+
+    @Override
+    public void updateTransportCursor(TransportType transport, String cursor) {
+        PutAttributesRequest par = new PutAttributesRequest(TRANSPORT_CURSORS, transport.toString(), new ArrayList<ReplaceableAttribute>());
+        ReplaceableAttribute rat = new ReplaceableAttribute("cursor", cursor, true);
+        par.getAttributes().add(rat);
+       sdb.putAttributes(par);
+    }
 	
-	@Override
-	public List<Long> getTwitterLastMentions() {
-			try {
-				return (List<Long>) SerializableUtils.deserialiseObject(IOUtils.toByteArray(get("/twitter/mentions")));
-			} catch (AmazonS3Exception e) {
-				if(e.getStatusCode() == 404) {
-					return new ArrayList<Long>();
-				}
-				throw e;
-			} catch (IOException e) {
-				throw new ScriptusRuntimeException(e);
-			} catch (ClassNotFoundException e) {
-				throw new ScriptusRuntimeException(e);
-			}
-	}
-
-	@Override
-	public void updateTwitterLastMentions(List<Long> processedIncomings) {
-		ObjectMetadata m = new ObjectMetadata();
-		try {
-			s3.putObject(new PutObjectRequest(s3bucket, "/twitter/mentions", new ByteArrayInputStream(SerializableUtils.serialiseObject(processedIncomings)), m));
-		} catch (IOException e) {
-			throw new ScriptusRuntimeException(e);
-		}
-		
-	}
-
-	@Override
-	public void registerTwitterListener(UUID pid, final String to) {
-		
-		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
-			add(new ReplaceableAttribute("to", to, false));
-			add(new ReplaceableAttribute("timestamp", Long.toString(System.currentTimeMillis()), false));
-		}};
-		
-		PutAttributesRequest r = new PutAttributesRequest(LISTENERS, pid.toString(), atts);
-		sdb.putAttributes(r);
-		
-	}
 	
-	@Override
-	public UUID getMostRecentTwitterListener(String screenName) {
-		
-		String select = 
-			"select * from `"+
-			LISTENERS+"` where to = '"+StringEscapeUtils.escapeSql(screenName)+"'";
-		
-		SelectRequest r = new SelectRequest(select, true);
-		
-		SelectResult s = sdb.select(r);
-		
-		long mostRecentTime = Long.MIN_VALUE;
-		UUID mostRecentPID = null;
-		
-		for(Item i : s.getItems()) {
-			
-			long when = Long.MIN_VALUE;
-			
-			for(Attribute a : i.getAttributes()) {
-				if("when".equals(a.getName())) {
-					when = Long.parseLong(a.getValue());
-				}
-			}
-			
-			if(when >= mostRecentTime) {
-				mostRecentPID = UUID.fromString(i.getName());
-				mostRecentTime = when;
-			}
-
-		}
-
-		return mostRecentPID;
-	}
-
-	@Override
-	public void unregisterTwitterListener(UUID uuid, String to) {
-		
-		sdb.deleteAttributes(new DeleteAttributesRequest(LISTENERS, uuid.toString()));
-		
-	}
-
 
 }

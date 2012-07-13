@@ -20,11 +20,6 @@ public interface ProcessScheduler {
 
 	public void execute(final UUID pid);
 
-	/**
-	 * under a lock for the given pid, update the process state object.
-	 */
-	public void updateProcessState(UUID pid, Object o);
-
 	public void markAsKilledIfRunning(UUID pid);
 
     public void scheduleTask(ScheduledScriptAction action);

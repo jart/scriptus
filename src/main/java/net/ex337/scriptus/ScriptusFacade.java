@@ -1,12 +1,13 @@
 package net.ex337.scriptus;
 
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 import net.ex337.scriptus.transport.Transport;
@@ -80,26 +81,11 @@ public class ScriptusFacade {
     public void registerMessageCorrelation(MessageCorrelation cid) {
         datastore.registerMessageCorrelation(cid);
     }
-    public MessageCorrelation getMessageCorrelationByID(String messageId) {
-        return datastore.getMessageCorrelationByID(messageId);
+    public Set<MessageCorrelation> getMessageCorrelationByID(String inReplyTo, String from) {
+        return datastore.getMessageCorrelations(inReplyTo, from);
     }
-    public void unregisterMessageCorrelation(String snowflake) {
-        datastore.unregisterMessageCorrelation(snowflake);
-    }
-//    public List<Long> getTwitterLastMentions() {
-//        return datastore.getTwitterLastMentions();
-//    }
-//    public void updateTwitterLastMentions(List<Long> processedIncomings) {
-//        datastore.updateTwitterLastMentions(processedIncomings);
-//    }
-//    public UUID getMostRecentTwitterListener(String screenName) {
-//        return datastore.getMostRecentTwitterListener(screenName);
-//    }
-    public void unregisterTwitterListener(UUID pid, String to) {
-        datastore.unregisterTwitterListener(pid, to);
-    }
-    public void registerTwitterListener(UUID pid, String to) {
-        datastore.registerTwitterListener(pid, to);
+    public void unregisterMessageCorrelation(MessageCorrelation correlation) {
+        datastore.unregisterMessageCorrelation(correlation);
     }
 //    public void createTestSources() {
 //        datastore.createTestSources();
@@ -114,7 +100,7 @@ public class ScriptusFacade {
         scheduler.execute(pid);
     }
     public void updateProcessState(UUID pid, Object o) {
-        scheduler.updateProcessState(pid, o);
+        datastore.updateProcessState(pid, o);
     }
     public void markAsKilledIfRunning(UUID pid) {
         scheduler.markAsKilledIfRunning(pid);
@@ -122,18 +108,9 @@ public class ScriptusFacade {
     public String send(String to, String msg) {
         return transport.send(to, msg);
     }
-    public void listen(UUID pid, String to) {
-        transport.listen(pid, to);
-    }
-//    public void registerReceiver(MessageReceiver londonCalling) {
-//        transport.registerReceiver(londonCalling);
-//    }
 
     public void scheduleTask(ScheduledScriptAction action) {
         scheduler.scheduleTask(action);
     }
-    
-    
-    
 
 }
