@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.transport.Transport;
 
@@ -158,8 +158,8 @@ public class FacebookTransportImpl implements Transport {
 						.valueOf(comment.getId().split("_")[1]);
 				Long commentId = Long.valueOf(comment.getId().split("_")[2]);
 				if (!lastMentions.contains(Long.valueOf(commentId))) {
-					TwitterCorrelation c = datastore
-							.getTwitterCorrelationByID("facebook:"
+					MessageCorrelation c = datastore
+							.getMessageCorrelationByID("facebook:"
 									+ commentedPostId);
 					if (c != null)
 					// && (c.getUser() == null || (c.getUser() != null &&
@@ -183,7 +183,7 @@ public class FacebookTransportImpl implements Transport {
 			datastore.updateTwitterLastMentions(processedIncomings);
 		}
 		for (String s : correlationsToUnregister) {
-			datastore.unregisterTwitterCorrelation(s);
+			datastore.unregisterMessageCorrelation(s);
 		}
 		for (Object[] o : listenersToUnregister) {
 			datastore.unregisterTwitterListener((UUID) o[0], (String) o[1]);
