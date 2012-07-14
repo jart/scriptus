@@ -6,7 +6,7 @@ import java.util.Calendar;
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
 
@@ -57,7 +57,7 @@ public class Ask extends ScriptAction implements Serializable, HasTimeout {
 
 		String messageId = scriptus.send(getWho(), getMsg());
 		
-        scriptus.registerTwitterCorrelation(new TwitterCorrelation(process.getPid(), getWho(), messageId));
+        scriptus.registerMessageCorrelation(new MessageCorrelation(process.getPid(), getWho(), messageId, System.currentTimeMillis()));
 		
 		
 	}

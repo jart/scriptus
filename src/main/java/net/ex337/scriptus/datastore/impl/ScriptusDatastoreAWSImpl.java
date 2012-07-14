@@ -21,7 +21,7 @@ import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 import org.apache.commons.io.IOUtils;
@@ -269,7 +269,7 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	}
 
 	@Override
-	public void registerTwitterCorrelation(final TwitterCorrelation correlation) {
+	public void registerMessageCorrelation(final MessageCorrelation correlation) {
 		
 		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
 			add(new ReplaceableAttribute("pid", correlation.getPid().toString(), false));
@@ -283,13 +283,14 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(final String messageId) {
+	public MessageCorrelation getMessageCorrelationByID(final String messageId) {
 		
 		GetAttributesRequest r = new GetAttributesRequest(CORRELATION_IDS, messageId);
 		r.setConsistentRead(true);
 		r.setAttributeNames(new HashSet<String>() {{
 			add("pid");
-			add("user");
+            add("user");
+            add("timestamp");
 		}});
 		List<Attribute> atts = sdb.getAttributes(r).getAttributes();
 		if(atts.size() == 0){
@@ -298,12 +299,15 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 		
 		String foundUser = null;
 		UUID pid = null;
+		long timestamp = 0;
 		
 		for(Attribute a : atts) {
 			if("pid".equals(a.getName())) {
 				pid = UUID.fromString(a.getValue());
-			} else if("user".equals(a.getName())) {
-				foundUser = a.getValue();
+            } else if("user".equals(a.getName())) {
+                foundUser = a.getValue();
+            } else if("timestamp".equals(a.getName())) {
+                timestamp = Long.parseLong(a.getValue());
 			}
 		}
 		
@@ -313,11 +317,11 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 		
 		LOG.info("found atts:"+atts.toString());
 		
-		return new TwitterCorrelation(pid, foundUser, messageId);
+		return new MessageCorrelation(pid, foundUser, messageId, timestamp);
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(final String snowflake) {
+	public void unregisterMessageCorrelation(final String snowflake) {
 		sdb.deleteAttributes(new DeleteAttributesRequest(CORRELATION_IDS, snowflake));
 		
 	}

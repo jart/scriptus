@@ -12,7 +12,7 @@ import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.model.api.functions.Ask;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
@@ -92,9 +92,9 @@ public class Testcase_TwitterReply extends BaseTestCase {
         ScriptusFacade f = new ScriptusFacade(datastore, c, m) {
 
             @Override
-            public void registerTwitterCorrelation(TwitterCorrelation cid) {
+            public void registerMessageCorrelation(MessageCorrelation cid) {
                 tweetId.set(cid.getMessageId());
-                super.registerTwitterCorrelation(cid);
+                super.registerMessageCorrelation(cid);
             }
 
         };
@@ -103,7 +103,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         List<Message> incomings = new ArrayList<Message>();
 
-        TwitterCorrelation cc = datastore.getTwitterCorrelationByID(tweetId.get());
+        MessageCorrelation cc = datastore.getMessageCorrelationByID(tweetId.get());
 
         assertEquals("correct pid registered", p.getPid(), cc.getPid());
         assertEquals("correct user registered", "ianso", cc.getUser());

@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.transport.Transport;
 
@@ -164,7 +164,7 @@ public class TwitterTransportImpl implements Transport {
 			
 			if(s.getInReplyToId() != -1){
 			    //then it could be a reply to an ask();
-                TwitterCorrelation c = datastore.getTwitterCorrelationByID("tweet:"+s.getInReplyToId());
+                MessageCorrelation c = datastore.getMessageCorrelationByID("tweet:"+s.getInReplyToId());
 
                 /*
                  * if I've setup scriptus with my own account,
@@ -205,7 +205,7 @@ public class TwitterTransportImpl implements Transport {
 			datastore.updateTwitterLastMentions(processedIncomings);
 		}
 		for(String s : correlationsToUnregister) {
-			datastore.unregisterTwitterCorrelation(s);
+			datastore.unregisterMessageCorrelation(s);
 		}
 		for(Object[] o : listenersToUnregister) {
 			datastore.unregisterTwitterListener((UUID)o[0], (String)o[1]);

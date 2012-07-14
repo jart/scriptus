@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
 import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
-import net.ex337.scriptus.model.TwitterCorrelation;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 import org.apache.commons.io.FileUtils;
@@ -264,7 +264,7 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	}
 
 	@Override
-	public void registerTwitterCorrelation(TwitterCorrelation correlation) {
+	public void registerMessageCorrelation(MessageCorrelation correlation) {
 		try {
 			FileUtils.writeByteArrayToFile(new File(correlationDir, correlation.getMessageId()), SerializableUtils.serialiseObject(correlation));
 		} catch (IOException e) {
@@ -273,7 +273,7 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	}
 
 	@Override
-	public TwitterCorrelation getTwitterCorrelationByID(String messageId) {
+	public MessageCorrelation getMessageCorrelationByID(String messageId) {
 		try {
 			File cidf = new File(correlationDir, messageId);
 			
@@ -281,7 +281,7 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 				return null;
 			}
 			
-			return (TwitterCorrelation) SerializableUtils.deserialiseObject(FileUtils.readFileToByteArray(cidf));
+			return (MessageCorrelation) SerializableUtils.deserialiseObject(FileUtils.readFileToByteArray(cidf));
 			
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
@@ -291,7 +291,7 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	}
 
 	@Override
-	public void unregisterTwitterCorrelation(String snowflake) {
+	public void unregisterMessageCorrelation(String snowflake) {
 		new File(correlationDir, snowflake).delete();
 	}
 
