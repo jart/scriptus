@@ -11,10 +11,6 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -24,8 +20,6 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterClientImpl implements TwitterClient {
 
-	private static final Log LOG = LogFactory.getLog(TwitterClientImpl.class);
-	
     private Twitter twitter;
     
     @Resource
@@ -46,12 +40,7 @@ public class TwitterClientImpl implements TwitterClient {
 		.setOAuthAccessTokenSecret(config.getTwitterAccessTokenSecret())
 		.setIncludeEntitiesEnabled(true);
 
-		try {
-			twitter = new TwitterFactory(cb.build()).getInstance();
-		} catch (Exception e) {
-			LOG.error("Error while constructing TwitterClient", e);
-			this.twitter = null;
-		}
+		twitter = new TwitterFactory(cb.build()).getInstance();
     }
     
 	@Override
