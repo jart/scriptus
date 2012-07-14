@@ -22,7 +22,6 @@ import com.restfb.DefaultJsonMapper;
 import com.restfb.FacebookClient;
 import com.restfb.JsonMapper;
 import com.restfb.Parameter;
-import com.restfb.exception.FacebookJsonMappingException;
 import com.restfb.json.JsonObject;
 import com.restfb.types.Comment;
 import com.restfb.types.FacebookType;
