@@ -21,6 +21,8 @@
 
     <bean id="waker" class="net.ex337.scriptus.scheduler.ProcessWaker" />
 
+    <bean id="routing" class="net.ex337.scriptus.transport.MessageRouting" />
+
     <bean id="locks" class="net.ex337.scriptus.scheduler.ProcessLocks" />
 
     <bean id="dummyTransport" class="net.ex337.scriptus.transport.impl.DummyTransport" 

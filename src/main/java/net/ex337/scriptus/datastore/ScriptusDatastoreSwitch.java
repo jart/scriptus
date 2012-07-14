@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -114,32 +115,24 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		activeImpl.registerMessageCorrelation(cid);
 	}
 
-	public MessageCorrelation getMessageCorrelationByID(String messageId) {
-		return activeImpl.getMessageCorrelationByID(messageId);
+	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser) {
+		return activeImpl.getMessageCorrelations(inReplyToMessageId, fromUser);
 	}
 
-	public void unregisterMessageCorrelation(String snowflake) {
-		activeImpl.unregisterMessageCorrelation(snowflake);
+	public void unregisterMessageCorrelation(MessageCorrelation c) {
+		activeImpl.unregisterMessageCorrelation(c);
 	}
 
-	public List<Long> getTwitterLastMentions() {
-		return activeImpl.getTwitterLastMentions();
-	}
+    public void updateProcessState(UUID pid, Object o) {
+        activeImpl.updateProcessState(pid, o);
+    }
 
-	public void updateTwitterLastMentions(List<Long> processedIncomings) {
-		activeImpl.updateTwitterLastMentions(processedIncomings);
-	}
+    public String getTransportCursor(TransportType transport) {
+        return activeImpl.getTransportCursor(transport);
+    }
 
-	public UUID getMostRecentTwitterListener(String screenName) {
-		return activeImpl.getMostRecentTwitterListener(screenName);
-	}
-
-	public void unregisterTwitterListener(UUID uuid, String string) {
-		activeImpl.unregisterTwitterListener(uuid, string);
-	}
-
-	public void registerTwitterListener(UUID pid, String to) {
-		activeImpl.registerTwitterListener(pid, to);
-	}
+    public void updateTransportCursor(TransportType transport, String cursor) {
+        activeImpl.updateTransportCursor(transport, cursor);
+    }
 
 }

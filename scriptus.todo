@@ -3,6 +3,19 @@
 	mvn clean install -Dmaven.test.skip=true
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
 	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
+
+The latest series of commits changes nothing on the 'user' end of Scriptus but has affected quite a lot of the internals.
+
+The biggest change is that the command line transport is now more of an interactive console. You now have far more flexibility in testing scripts locally, because the command-line tool can do anything that the Twitter transport can do.
+
+Next, the internal interface between the transports in Scriptus and everything else is now a lot cleaner. This should make it easier for anyone wanting to implement a new transport.
+
+And finally, the message 'routing' has changed. Previously, if multiple processes were listening to one user, or to any user, then the last process to call `listen()` would be the one to receive any messages. Now, all processes receive a copy of the message. This is quite a change from the previous situation, however it allows for a greater range of functionality in scripts - for example, scripts that 'listen' to a users tweet stream and collate information are now possible.
+
+Given that the datastore has also been modified, this is now Scriptus 0.4.0, and is available to download at the normal location. 
+	 
+
+
 	
 IdScriptableObject
 
@@ -18,7 +31,7 @@ In the example, a poll is taken and the poll results are stored in a MySQL datab
 test	 - anything that wake()s doens't do so exactly on time, but to the nearest scheduler interval.
 test	 - scheduler should use short-term memory-based queue with rolling pre-loading in advance from datastore
 test	 - scheduler should queue task in memory undfer a certain delta
-	problem - only stuff executed up to that minute will be executed
+	problem - only stuff sent up to that minute will be executed
 
 The `listen()` call works by registering a process as a listener inside the Twitter transport. We then poll Twitter every minute for mentions by the user being listened to.
 
@@ -28,45 +41,69 @@ In addition, the wake is not unregistered on receipt of a message, causing a nee
 
 	
 	PROBLEMS
-	 - Twitter is getting everywhere. TwitterCorrelation, ... + command line client isn't working
-	 - TwitterCorrelation is only used for Twitter. 
-	 - processedTweets should be per-pid with a cursor (per account)
-	 - Command line transport is broken
-	    --> list messages
-	    --> enter # of message to respond to
-	    --> enter message	    	 
+	DOCS + can use other correlations
 	 - Collecting multiple responses in a short time won't work because we don't check message on timeout, only during.
+	   --> needs to have a per-process cursor.
 	    +DAO process cache?
 	 - when the twitter/facebook token expires, the process craps out.
 	       --> it should pause and ask the user to re-authenticate
 	       --> depends on user checking UI or having alternate auth mechanism
 	SOLUTIONS
-	 - twitter & cmd & mock should use generic asynch queueing mechanism
+test	 - twitter 
+X test	 & cmd
+X test	  - needs to take normal messages, for listen()
+X test	 & mock should use generic asynch queueing mechanism
+test	 listen() should use MessageCorrelation in all cases	 
+X	 correlation storage doesn't allow multiple listeners to the same messge ID
 	 
-	 for each response
-	  --> select pid where cid = ?
-	  union
-	  --> select pid where to= :=response.from and cid is null and ts < response.time /*i.e. listened first*/
-	  union
-	  --> select pid where to is null and cid is null and ts < response.time
-	 
-	 TransportCheckingWake extends Wake
+	 test
+	 two processes listening
+	 two processes listening to a user
+	 two processes listening to a message ID
+	  --> 6 responses to one reply
+	  
+test	 for each response
+test	  --> select pid where cid = ?
+test	  union
+test	  --> select pid where to= :=response.from and cid is null and ts < response.time /*i.e. listened first*/
+test	  union
+test	  --> select pid where to is null and cid is null and ts < response.time	  
+X test	  memory
+X test	  file
+test	  AWS
+	-- ask && listen put MessageCorrelationDeletingTansportCheckingWake extends Wake
+	  --> unregister correlation on wake,
+	  --> check transports on wake.
 		 
 	    - extending Scriptus
 	       - adding new method calls
+	       beginning to think that an RDBMS would be the best way to keep track off all this stuff
+	        - transactions
+	        - relations
 	online demo
 	 - twitter account per user, not per install
 	    - auth process as designed
 	    - store keys in sdb, encrypt then HMAC (or whatever it is)
 	    - things like processedIncomings & listeners are per install, should be per user per pid
 	       --> would also fix listening
-	 - limits (size, tweets, # processes, CPU time, transfer)
+	   -->per user
+	   	 datastore instance
+ 	       transport instance
+ 	       facade
+ 	       -->storing auth creds for twitter
+ 	       -->encrypt before saving!
+ 	       tbl_user_creds
+ 	       uid / service / token / secret
+ 	       threadlocal for user info?
 	 - better site design
-	 - simple process admin?
 	 - inline documentation / QRC? 
-	 - use bootstrap, convert docs to HTML
+	 - use bootstrap
+	 - , convert docs to HTML
 	   -> use pegDown or pull from gitHub?
 	 - owner should be twitter account
+	 - MVC w/servlets, stateless sessions with HMAC?
+	 - simple process admin?
+	 - limits (size, tweets, # processes, CPU time, transfer)
 	 
 	 git stash save diffaccs
 
@@ -187,7 +224,7 @@ Because computers can't change the world. We can.
 
 
 
-
+I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising/orchestrating human activity.
 
 
 
@@ -599,4 +636,18 @@ X test	    - messages should have a from attribute
 X test case      - add messageId option to listen()
 X reread		 - messageId documentation
 X	see "~/say API blog post"
+X feature	  --> allows multiple scripts to react to the same message. Feature or bug?
+X test	 - Twitter is getting everywhere. TwitterCorrelation, ... + command line client isn't working
+X test	 - TwitterCorrelation is only used for Twitter. 
+X don't have this	 - processedTweets should be per-pid with a cursor (per account)
+X test	 - Command line transport is broken
+X test	    --> list messages
+X test	    --> enter # of message to respond to
+X test	    --> enter message	    	 
+X test	 - generalise updateTwitterLastMentions to
+X test	   --> updateTransportCursor(transport,String)
+X test	   --> on cmdLine, use for sequence number of correlationIds
+X	 - generalise listeners 
+X no	 + random start interval?
+X check	add nav links to posts pages	
 

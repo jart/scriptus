@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -39,14 +40,12 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	private final Map<UUID,byte[]> processes = new HashMap<UUID,byte[]>();
 
 	private final Map<String,String> sources = new HashMap<String,String>();
-
-	private final Map<String,MessageCorrelation> correlationMap = new HashMap<String,MessageCorrelation>();
+	
+    private Set<MessageCorrelation> correlations = new HashSet<MessageCorrelation>();
 	
 	private final Map<String, ScheduledScriptAction> scheduledActions = new HashMap<String, ScheduledScriptAction>();
 
-	private final Map<String,Map<UUID, Long>> listeners = new HashMap<String,Map<UUID, Long>>();
-
-	private List<Long> lastMentions = new ArrayList<Long>();
+	private Map<TransportType, String> cursors = new HashMap<TransportType, String>();
 	
 	@Resource
 	private ScriptusConfig config;
@@ -133,74 +132,50 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	}
 
 	@Override
-	public void registerMessageCorrelation(MessageCorrelation cid) {
-		correlationMap.put(cid.getMessageId(), cid);
+	public void registerMessageCorrelation(MessageCorrelation correlation) {
+	    correlations.add(correlation);
 	}
 
 	@Override
-	public MessageCorrelation getMessageCorrelationByID(String cid) {
-		return correlationMap.get(cid);
+	public Set<MessageCorrelation> getMessageCorrelations(String cid, String fromUser) {
+        
+        Set<MessageCorrelation> result = new HashSet<MessageCorrelation>();
+
+        for(MessageCorrelation c : correlations) {
+            if(c.getMessageId() == null && c.getUser() == null){
+                result.add(c);
+            } else if(cid != null) {
+                if(cid.equals(c.getMessageId()) && c.getUser() == null){
+                    result.add(c);
+                } else if(cid.equals(c.getMessageId()) && fromUser.equals(c.getUser())){
+                    result.add(c);
+	            }
+	        } else {
+               if((fromUser.equals(c.getUser()) && c.getMessageId() == null)) {
+                    result.add(c);
+               } else if(c.getMessageId() == null && (c.getUser() == null) || fromUser.equals(c.getUser())) {
+	                result.add(c);
+	           } 
+	        }
+	    }
+
+		return result;
 	}
 
 	@Override
-	public void unregisterMessageCorrelation(String cid) {
-		correlationMap.remove(cid);
+	public void unregisterMessageCorrelation(MessageCorrelation correlation) {
+        correlations.remove(correlation);
 	}
 
-
-	@Override
-	public List<Long> getTwitterLastMentions() {
-		return lastMentions;
-	}
-
-	@Override
-	public void updateTwitterLastMentions(List<Long> processedIncomings) {
-		this.lastMentions = processedIncomings;
-	}
-
-	@Override
-	public void registerTwitterListener(UUID pid, String to) {
-		
-		Map<UUID,Long> l = listeners.get(to);
-		
-		if(l == null) {
-			listeners.put(to, l = new HashMap<UUID, Long>());
-		}
-		
-		l.put(pid, System.currentTimeMillis());
-		
-	}
 	
-	@Override
-	public UUID getMostRecentTwitterListener(String screenName) {
-		
-		Map<UUID,Long> tos = listeners.get(screenName);
-		
-		if(tos == null) {
-			return null;
-		}
-		
-		UUID mostRecentPid = null;
-		Long mostRecentTime = null;
-		
-		for(Map.Entry<UUID,Long> e : tos.entrySet()) {
-			if(mostRecentTime == null || mostRecentTime <= e.getValue()) {
-				mostRecentPid = e.getKey();
-				mostRecentTime = e.getValue();
-			}
-		}
- 		
-		return mostRecentPid;
-	}
+    @Override
+    public String getTransportCursor(TransportType transport) {
+        return cursors.get(transport);
+    }
 
-	@Override
-	public void unregisterTwitterListener(UUID uuid, String to) {
-		Map<UUID, Long> tos = listeners.get(to);
-		if(tos == null) {
-			return;
-		}
-		tos.remove(uuid);
-	}
-
+    @Override
+    public void updateTransportCursor(TransportType transport, String cursor) {
+        cursors.put(transport, cursor);
+    }
 
 }

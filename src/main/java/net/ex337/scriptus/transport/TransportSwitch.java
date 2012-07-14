@@ -1,7 +1,5 @@
 package net.ex337.scriptus.transport;
 
-import java.util.UUID;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -58,14 +56,6 @@ public class TransportSwitch implements Transport {
     public String send(String to, String msg) {
         return activeImpl.send(to, msg);
     }
-
-    public void listen(UUID pid, String to) {
-		activeImpl.listen(pid, to);
-	}
-
-	public void registerReceiver(MessageReceiver londonCalling) {
-		activeImpl.registerReceiver(londonCalling);
-	}
 
 	
 }

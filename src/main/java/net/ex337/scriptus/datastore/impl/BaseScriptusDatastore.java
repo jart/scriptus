@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.scheduler.ProcessLocks;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -24,6 +27,9 @@ import org.apache.commons.logging.LogFactory;
 public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 	
 	private static final Log LOG = LogFactory.getLog(BaseScriptusDatastore.class);
+	
+	@Resource
+	private ProcessLocks locks;
 
 	/**
 	 * to be overridden by Spring to do autowiring
@@ -75,5 +81,21 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 
 		return result;
 	}
+
+	   /* (non-Javadoc)
+     * @see net.ex337.scriptus.ProcessScheduler#updateProcessState(java.util.UUID, java.lang.Object)
+     */
+    @Override
+    public final void updateProcessState(final UUID pid, final Object o) {
+        locks.runWithLock(pid, new Runnable() {
+            @Override
+            public void run() {
+                ScriptProcess script = getProcess(pid);
+                script.setState(o);
+                script.save();
+            }
+            
+        });
+    }
 
 }

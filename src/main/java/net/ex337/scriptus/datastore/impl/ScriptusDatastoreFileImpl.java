@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +18,7 @@ import javax.annotation.PostConstruct;
 
 import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -42,13 +41,21 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	private File scriptsDir;
 	private File correlationDir;
 	private File schedulerDir;
-	private File incomingsDir;
+    private File incomingsDir;
+    private File cursorsDir;
 	
 	/*
 	 * scheduled tasks are stored in a file named <timeMillis>_pid_nonce,
 	 * to effectively enable them to be found abck via time or pid.
 	 * 
 	 * Ugly, but effective for now... 
+	 * 
+	 * ./scriptus/correlation/
+	 * 
+	 * pid-
+	 * usridx/
+	 * pididx/
+	 * msgidx/
 	 * 
 	 */
 	
@@ -62,8 +69,9 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 		correlationDir = new File(scriptusHome, "correlationIds");
 		schedulerDir = new File(scriptusHome, "scheduler");
 		incomingsDir = new File(scriptusHome, "incomings");
+		cursorsDir = new File(scriptusHome, "cursors");
 		
-		checkDirsExist(scriptusHome, processDir, scriptsDir, correlationDir, schedulerDir, incomingsDir);
+		checkDirsExist(scriptusHome, processDir, scriptsDir, correlationDir, schedulerDir, incomingsDir, cursorsDir);
 		
 	}
 
@@ -266,130 +274,87 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	@Override
 	public void registerMessageCorrelation(MessageCorrelation correlation) {
 		try {
-			FileUtils.writeByteArrayToFile(new File(correlationDir, correlation.getMessageId()), SerializableUtils.serialiseObject(correlation));
+	        File f = new File(correlationDir, correlation.getPid()+"-"+correlation.getMessageId()+"-"+correlation.getUser());
+	        FileUtils.writeByteArrayToFile(f, SerializableUtils.serialiseObject(correlation));
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
 		}
 	}
 
 	@Override
-	public MessageCorrelation getMessageCorrelationByID(String messageId) {
+	public Set<MessageCorrelation> getMessageCorrelations(final String messageId, final String fromUser) {
+	    
+	    Set<MessageCorrelation> result = new HashSet<MessageCorrelation>();
+	    
 		try {
-			File cidf = new File(correlationDir, messageId);
-			
-			if( ! cidf.exists()) {
-				return null;
-			}
-			
-			return (MessageCorrelation) SerializableUtils.deserialiseObject(FileUtils.readFileToByteArray(cidf));
+		    for(File f : correlationDir.listFiles(new FilenameFilter() {
+                
+		        /*
+                 * listen({to:"foo",messageId:X}); -X-foo
+                 * 
+                 * any message from that user in rlepy to that
+                 * 
+                 * listen({messageId:X}); -X-null
+                 * listen({to:"foo"}); null-foo
+		         * listen() -null-null
+		         */
+		        
+                @Override
+                public boolean accept(File dir, String name) {
+                    
+                    boolean accept = false;
+                    
+                    accept |= name.contains("-null-null");
+                    
+                    
+                    if(messageId != null) {
+                        accept |= name.contains("-"+messageId+"-null");
+                        accept |= name.contains("-"+messageId+"-"+fromUser);
+                    } else if(messageId == null) {
+                        accept |= name.contains("-null-"+fromUser);
+                    }
+                    
+                    return accept;
+                }
+            })) {
+		        result.add((MessageCorrelation) SerializableUtils.deserialiseObject(FileUtils.readFileToByteArray(f)));
+		    }
 			
 		} catch (IOException e) {
 			throw new ScriptusRuntimeException(e);
 		} catch (ClassNotFoundException e) {
 			throw new ScriptusRuntimeException(e);
 		}
+		
+		return result;
 	}
 
 	@Override
-	public void unregisterMessageCorrelation(String snowflake) {
-		new File(correlationDir, snowflake).delete();
+	public void unregisterMessageCorrelation(MessageCorrelation correlation) {
+		new File(correlationDir, correlation.getPid()+"-"+correlation.getMessageId()+"-"+correlation.getUser()).delete();
 	}
 
-	@Override
-	public List<Long> getTwitterLastMentions() {
-		try {
-			File mentions = new File(correlationDir, "mentions");
-			if( ! mentions.exists()) {
-				return new ArrayList<Long>();
-			}
-			
-			return (List<Long>) SerializableUtils.deserialiseObject(FileUtils.readFileToByteArray(mentions));
-		} catch (IOException e) {
-			throw new ScriptusRuntimeException(e);
-		} catch (ClassNotFoundException e) {
-			throw new ScriptusRuntimeException(e);
-		}
-	}
+    @Override
+    public String getTransportCursor(TransportType transport) {
+        File cursor = new File(cursorsDir, transport.toString());
+        if( ! cursor.exists()) {
+            return null;
+        }
+        try {
+            return FileUtils.readFileToString(cursor);
+        } catch (IOException e) {
+            throw new ScriptusRuntimeException(e);
+        }
+    }
 
-	@Override
-	public void updateTwitterLastMentions(List<Long> processedIncomings) {
-		try {
-			FileUtils.writeByteArrayToFile(new File(correlationDir, "mentions"), SerializableUtils.serialiseObject(processedIncomings));
-		} catch (IOException e) {
-			throw new ScriptusRuntimeException(e);
-		}
-	}
-
-	@Override
-	public void registerTwitterListener(UUID pid, String to) {
-		File toDir = new File(correlationDir, "listenTo"+to);
-
-		try {
-			checkDirsExist(toDir);
-
-			FileUtils.writeStringToFile(new File(toDir, Long.toString(System.currentTimeMillis())), pid.toString());
-
-		} catch (IOException e) {
-			throw new ScriptusRuntimeException(e);
-		}
-		
-		
-	}
-
-	@Override
-	public UUID getMostRecentTwitterListener(String screenName) {
-		
-		File toDir = new File(correlationDir, "listenTo"+screenName);
-		
-		if( ! toDir.exists()){
-			return null;
-		}
-		
-		List<String> found = Arrays.asList(toDir.list());
-		
-		if(found.isEmpty()) {
-			return null;
-		}
-		
-		Collections.sort(found);
-		
-		try {
-			return UUID.fromString(FileUtils.readFileToString(new File(toDir, found.get(found.size()-1))));
-		} catch (IOException e) {
-			throw new ScriptusRuntimeException(e);
-		}
-	}
-
-	@Override
-	public void unregisterTwitterListener(UUID pid, String to) {
-		
-		File toDir = new File(correlationDir, "listenTo"+to);
-		
-		if( ! toDir.exists()){
-			return;
-		}
-		
-		File[] found = toDir.listFiles();
-		
-		if(found.length == 0) {
-			return;
-		}
-		
-		for(File f : found) {
-			String s;
-			try {
-				s = FileUtils.readFileToString(f, ScriptusConfig.CHARSET);
-			} catch (IOException e) {
-				throw new ScriptusRuntimeException(e);
-			}
-			
-			if(UUID.fromString(s).equals(pid)) {
-				f.delete();
-				return;
-			}
-		}
-		
-	}
-
+    @Override
+    public void updateTransportCursor(TransportType transport, String cursor) {
+        File cursorF = new File(cursorsDir, transport.toString());
+        try {
+            FileUtils.writeStringToFile(cursorF, cursor);
+        } catch (IOException e) {
+            throw new ScriptusRuntimeException(e);
+        }
+    }
 
 }

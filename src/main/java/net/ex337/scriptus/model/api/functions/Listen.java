@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 import net.ex337.scriptus.ScriptusFacade;
+import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
 
@@ -46,11 +46,8 @@ public class Listen extends ScriptAction implements Serializable, HasTimeout {
 
 		scriptus.scheduleTask(new Wake(process.getPid(), nonce, timeout.getTimeInMillis()));
 		
-		if(getMessageId() != null) {
-		    scriptus.registerMessageCorrelation(new MessageCorrelation(process.getPid(), who, getMessageId(), System.currentTimeMillis()));
-		} else {
-	        scriptus.listen(process.getPid(), getWho());
-		}
+		//who and messageId can both be null
+        scriptus.registerMessageCorrelation(new MessageCorrelation(process.getPid(), getWho(), getMessageId(), System.currentTimeMillis()));
 
 		
 	}

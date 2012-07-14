@@ -19,8 +19,8 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.Message;
+import net.ex337.scriptus.transport.MessageRouting;
 import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +44,9 @@ public class TwitterTransportImpl implements Transport {
 	private static final Log LOG = LogFactory.getLog(TwitterTransportImpl.class);
 
 	@Resource
+	private MessageRouting routing;
+	
+	@Resource
 	private ScriptusDatastore datastore;
 
 	@Resource
@@ -51,8 +54,6 @@ public class TwitterTransportImpl implements Transport {
 	
 	@Resource(name="twitterClient")
 	private TwitterClient twitter;
-
-    private MessageReceiver londonCalling;
 
     private ScheduledExecutorService scheduledTwitterChecker;
     
@@ -97,11 +98,6 @@ public class TwitterTransportImpl implements Transport {
     	scheduledTwitterChecker.shutdown();
 	}
 
-	@Override
-	public void registerReceiver(MessageReceiver londonCalling) {
-		this.londonCalling = londonCalling;
-	}
-
 	/**
 	 * Retrieves all mentions from Twitter for the configured account's 
 	 * screen name. Then checks all the tweets up to the last-checked
@@ -113,16 +109,13 @@ public class TwitterTransportImpl implements Transport {
 	 */
 	public void checkMessages() {
 		
-		List<Long> lastMentions = datastore.getTwitterLastMentions();
+		String lastMention = datastore.getTransportCursor(TransportType.Twitter);
 		
-		for(Long l : lastMentions) {
-			LOG.debug("lastm:"+snowflakeDate(getSecond(l)));
-		}
+        LOG.debug("lastm:"+snowflakeDate(getSecond(Long.parseLong(lastMention))));
 		
 		List<Tweet> mentions = twitter.getMentions();
 	
-		
-		long ageThreshold = getAgeThreshold(lastMentions);
+		long ageThreshold = getAgeThreshold(lastMention);
 
 		LOG.debug("ageThreshold:"+snowflakeDate(ageThreshold));
 
@@ -131,10 +124,7 @@ public class TwitterTransportImpl implements Transport {
 		}
 		
 		List<Message> incomings =  new ArrayList<Message>(); 
-		List<String> correlationsToUnregister =  new ArrayList<String>(); 
-		//a bit ugly...
-		List<Object[]> listenersToUnregister =  new ArrayList<Object[]>(); 
-		List<Long> processedIncomings =  new ArrayList<Long>(); 
+		Long lastProcessedIncoming = null;
 		
 		Collections.sort(mentions);
 		
@@ -142,9 +132,9 @@ public class TwitterTransportImpl implements Transport {
 			/*
 			 * dealt with this one
 			 */
-			if(lastMentions.contains(s.getSnowflake())) {
-				continue;
-			}
+//			if(lastMentions.contains(s.getSnowflake())) {
+//				continue;
+//			}
 			/*
 			 * i.e. we've gone beyond the last mention and a bit beyond
 			 */
@@ -159,56 +149,23 @@ public class TwitterTransportImpl implements Transport {
 				
 				break;
 			}
-			
-			boolean foundPid = false;
-			
-			if(s.getInReplyToId() != -1){
-			    //then it could be a reply to an ask();
-                MessageCorrelation c = datastore.getMessageCorrelationByID("tweet:"+s.getInReplyToId());
 
-                /*
-                 * if I've setup scriptus with my own account,
-                 * we need to make sure that 'request' and 'reply'
-                 * tweets don't get mixed up
-                 */
-                if(c != null && 
-                   /*"tweet:"+s.getSnowflake() != c.getMessageId() &&*/ 
-                   (c.getUser() == null  || (c.getUser() != null && s.getScreenName().equals(c.getUser())))) {
-                        incomings.add(new Message(c.getPid(), s.getScreenName(), cleanTweet(s, screenName)));
-                        correlationsToUnregister.add("tweet:"+s.getInReplyToId());
-                        foundPid = true;
-                }
+			Message m = new Message(s.getScreenName(), cleanTweet(s, screenName));
+			if(s.getInReplyToId() != -1) {
+			    m.setInReplyToMessageId("tweet:"+s.getInReplyToId());
 			}
 			
+            incomings.add(m);
 			
-			/*
-			 * Then we need to check that a pid might be listening to
-			 * this user. There might be one or more pids listening to the same user,
-			 * so we put listeners in a stack and pop them on a FIFO basis.
-			 */
-			if( ! foundPid ) {
-				UUID pid = datastore.getMostRecentTwitterListener(s.getScreenName());
-				if(pid != null) {
-					incomings.add(new Message(pid, s.getScreenName(), cleanTweet(s, screenName)));
-					listenersToUnregister.add(new Object[]{pid, s.getScreenName()});
-					foundPid = true;
-				}
-				
-			}
 			
-			processedIncomings.add(s.getSnowflake());
+            lastProcessedIncoming = s.getSnowflake();
 		}
 		
-		londonCalling.handleIncomings(incomings);
 		
-		if( ! processedIncomings.isEmpty()) {
-			datastore.updateTwitterLastMentions(processedIncomings);
-		}
-		for(String s : correlationsToUnregister) {
-			datastore.unregisterMessageCorrelation(s);
-		}
-		for(Object[] o : listenersToUnregister) {
-			datastore.unregisterTwitterListener((UUID)o[0], (String)o[1]);
+		routing.handleIncomings(incomings);
+		
+		if( lastProcessedIncoming != null) {
+			datastore.updateTransportCursor(TransportType.Twitter, Long.toString(lastProcessedIncoming));
 		}
 		
 		
@@ -256,22 +213,18 @@ public class TwitterTransportImpl implements Transport {
 		return twitterDF.format(c.getTime());
 	}
 	
-	private long getAgeThreshold(List<Long> snowflakes) {
+	private long getAgeThreshold(String snowflake) {
 		long current = Long.MIN_VALUE;
 		
-		for(long snowflake : snowflakes) {
-
-			//round down
-			long second = getSecond(snowflake);
-			
-			//10-second window - one order of magnitude
-			//outside of the 1-second window for twitters
-			//k-sorted tweets
-			
-			if(second > current) {
-				current = second;
-			}
-			
+		//round down
+		long second = getSecond(Long.parseLong(snowflake));
+		
+		//10-second window - one order of magnitude
+		//outside of the 1-second window for twitters
+		//k-sorted tweets
+		
+		if(second > current) {
+			current = second;
 		}
 
 		/*
@@ -309,13 +262,4 @@ public class TwitterTransportImpl implements Transport {
         return "tweet:"+id;
             
     }
-
-	@Override
-	public void listen(UUID pid, String to) {
-		
-		datastore.registerTwitterListener(pid, to);
-		
-
-	}
-	
 }

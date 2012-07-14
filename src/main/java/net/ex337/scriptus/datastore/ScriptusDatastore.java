@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
+import net.ex337.scriptus.tests.Testcase_ScriptusDAO;
 
 /**
  * 
@@ -103,14 +105,15 @@ public interface ScriptusDatastore {
 	public void registerMessageCorrelation(MessageCorrelation cid);
 	
 	/**
+	 * @param fromUser TODO
 	 * @see #registerMessageCorrelation(MessageCorrelation)
 	 */
-	public MessageCorrelation getMessageCorrelationByID(String string);
+	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser);
 	
 	/**
 	 * @see #registerMessageCorrelation(MessageCorrelation)
 	 */
-	public void unregisterMessageCorrelation(String snowflake);
+	public void unregisterMessageCorrelation(MessageCorrelation correlation);
 
 	/**
 	 * Used as a cursor to keep track of the tweets we've already
@@ -118,36 +121,23 @@ public interface ScriptusDatastore {
 	 * 
 	 * @return a list of tweet IDs for tweets processed at the last poll of the Twitter API.
 	 */
-	public List<Long> getTwitterLastMentions();
+	public String getTransportCursor(TransportType transport);
 	/**
-	 * @see #getTwitterLastMentions()
+	 * @see #getTransportCursor()
 	 */
-	public void updateTwitterLastMentions(List<Long> processedIncomings);
+	public void updateTransportCursor(TransportType transport, String cursor);
 
-	/**
-	 * Used for tracking processes listening to twitter users.
-	 * Because no correlation ID is sent to the user, if multiple
-	 * processes listen to the same user, they receive that users
-	 * mentions in the reverse order in which the processes listened.
-	 * 
-	 * Once a process has received a mention from a user, or if the
-	 * listen() times out, the listener is unregistered.
-	 */
-	public UUID getMostRecentTwitterListener(String screenName);
-	
-	/**
-	 * see {@link #getMostRecentTwitterListener(String)}
-	 */
-	public void unregisterTwitterListener(UUID pid, String to);
-	/**
-	 * see {@link #getMostRecentTwitterListener(String)}
-	 */
-	public void registerTwitterListener(UUID pid, String to);
 
 	/**
 	 * Loads under a user "test" all scripts found under the
 	 * directory "testScripts", if it exists.
 	 */
-	void createTestSources();
+	public void createTestSources();
+
+	/**
+	 * Updates the process state, under lock, to the supplied object.
+	 * 
+	 */
+    public void updateProcessState(UUID pid, Object o);
 	
 }

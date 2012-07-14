@@ -1,14 +1,16 @@
 package net.ex337.scriptus.tests;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 
@@ -71,18 +73,50 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	public void testCorrelationIDs() throws InterruptedException {
 		
 //		String postfix = Integer.toString(this.hashCode());
-		
+		    
 		UUID pid = UUID.randomUUID();
 		
-		String c = "tweet:1";
+		Random r = new Random();
 		
-		datastore.registerMessageCorrelation(new MessageCorrelation(pid, "user", c, System.currentTimeMillis()));
+		String c = "tweet:"+Math.abs(r.nextInt());
+		String u = "user:"+Math.abs(r.nextInt());
+		
+		MessageCorrelation m = new MessageCorrelation(pid, u, c, System.currentTimeMillis());
+		
+		datastore.registerMessageCorrelation(m);
 
-		assertEquals("correct pid returned", pid, datastore.getMessageCorrelationByID(c).getPid());
+		Set<MessageCorrelation> cc = datastore.getMessageCorrelations(c, u);
 		
-		datastore.unregisterMessageCorrelation("tweet:1");
+		assertTrue("correct pid returned", cc.contains(m));
 		
-		assertEquals(null, datastore.getMessageCorrelationByID(c));
+		datastore.unregisterMessageCorrelation(m);
+		
+		assertTrue("nothing left", ! datastore.getMessageCorrelations(c, u).contains(m));
+
+		//listen({to:"user", messageId:"foo"})
+        MessageCorrelation both      = new MessageCorrelation(pid, u,    c,    System.currentTimeMillis());
+        //listen({to:"user"})
+        MessageCorrelation byuser    = new MessageCorrelation(pid, u,    null, System.currentTimeMillis());
+        //listen({messageId:"foo"})
+        MessageCorrelation messageId = new MessageCorrelation(pid, null, c,    System.currentTimeMillis());
+        //listen()
+        MessageCorrelation byNull    = new MessageCorrelation(pid, null, null, System.currentTimeMillis());
+        
+        datastore.registerMessageCorrelation(both);
+        datastore.registerMessageCorrelation(byuser);
+        datastore.registerMessageCorrelation(messageId);
+        datastore.registerMessageCorrelation(byNull);
+        
+        Set<MessageCorrelation> cboth = datastore.getMessageCorrelations(c, u);
+        Set<MessageCorrelation> cbyuser = datastore.getMessageCorrelations(null, u);
+
+        assertTrue("user contains user", cbyuser.contains(byuser));
+        assertTrue("user contains null", cbyuser.contains(byNull));
+
+        assertTrue("both contains both", cboth.contains(both));
+        assertTrue("both contains msgid", cboth.contains(messageId));
+        assertTrue("both contains null", cboth.contains(byNull));
+        
 
 	}
 
@@ -150,53 +184,18 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		assertFalse("task deleted", found);
 
 	}
-
-	public void testLastMentions() {
-		
-		List<Long> ll = new ArrayList<Long>();
-		ll.add(12345L);
-		
-		datastore.updateTwitterLastMentions(ll);
-		
-		List<Long> l = datastore.getTwitterLastMentions();
-		
-		assertEquals("correct length", 1, l.size());
-		assertEquals("contents", 12345L, ((Long)l.get(0)).longValue());
-
-		ll = new ArrayList<Long>();
-		ll.add(54321L);
-
-		datastore.updateTwitterLastMentions(ll);
-
-		l = datastore.getTwitterLastMentions();
-		
-		assertEquals("correct length", 1, l.size());
-		assertEquals("contents", 54321L, ((Long)l.get(0)).longValue());
-
-	}
 	
-	public void testListeners() throws InterruptedException {
-		
-		UUID r = UUID.randomUUID();
-		
-		datastore.registerTwitterListener(r, "foo");
-		
-		Thread.sleep(200);
-		
-		UUID s = UUID.randomUUID();
-		
-		datastore.registerTwitterListener(s, "foo");
-		
-		UUID g = datastore.getMostRecentTwitterListener("foo");
-		
-		assertEquals("correct uuid returned", g, s);
-		
-		datastore.unregisterTwitterListener(g, "foo");
-
-		g = datastore.getMostRecentTwitterListener("foo");
-		
-		assertEquals("correct uuid returned", g, r);
-
+	
+	public void testCursors() {
+	    
+	    UUID s = UUID.randomUUID();
+	    
+	    datastore.updateTransportCursor(TransportType.CommandLine, s.toString());
+	    
+	    UUID t  = UUID.fromString(datastore.getTransportCursor(TransportType.CommandLine));
+	    
+	    assertEquals("cursor updated", s, t);
+	    
 	}
 	
 }

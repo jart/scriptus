@@ -10,7 +10,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
+
 import net.ex337.scriptus.model.api.Message;
+import net.ex337.scriptus.transport.MessageRouting;
 import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.logging.Log;
@@ -27,13 +30,17 @@ public class DummyTransport implements Transport {
 
 	private static final Log LOG = LogFactory.getLog(DummyTransport.class);
 
-	private MessageReceiver receiver;
+    @Resource
+    private MessageRouting routing;
 	
     private Map<String,String> regexpResponseMatchers = new HashMap<String, String>();
     private Map<Pattern,String> cachedPatterns = new HashMap<Pattern, String>();
 	
 	public String defaultResponse;
-	
+
+
+   private AtomicLong ctr = new AtomicLong();
+
 	public void init() {
         cachedPatterns = new HashMap<Pattern, String>();
 	    
@@ -45,21 +52,33 @@ public class DummyTransport implements Transport {
 	    
 	}
 	
-	//@Override
-	private String send(final UUID pid, final String to, final String msg) {
+	@Override
+	public String send(final String to, final String msg) {
 
-		LOG.debug("send "+ (pid == null ? "" : pid)+" to:"+to+" msg:"+msg);
+        final String id = "dummy:"+ctr.getAndIncrement();
+        
+        new Thread() {
+            public void run() {
+                try {
+                  //so that the wrapper method returns first.
+                    sleep(200);
+                } catch (InterruptedException e) {
+                    //TNSH;
+                    throw new RuntimeException(e);
+                }
+                Message m = new Message(to, getResponse(msg));
+                m.setInReplyToMessageId(id);
+                
+                List<Message> responseList = new ArrayList<Message>();
+                responseList.add(m);
+
+                //this should be done after the function returns!
+                routing.handleIncomings(responseList);
+                
+            }
+        }.start();
 		
-		if(pid == null) {
-			return "dummy:"+Long.toString(ctr.getAndIncrement());
-		}
-		
-		List<Message> responseList = new ArrayList<Message>();
-		responseList.add(new Message(pid, to, getResponse(msg)));
-
-		receiver.handleIncomings(responseList);
-
-        return "dummy:"+Long.toString(ctr.getAndIncrement());
+        return id;
 
 	}
 
@@ -84,26 +103,6 @@ public class DummyTransport implements Transport {
 		if(result == null) result = defaultResponse;
         return result;
     }
-
-	@Override
-	public void registerReceiver(MessageReceiver londonCalling) {
-
-		LOG.debug("registerReceiver "+ londonCalling);
-		
-		this.receiver = londonCalling;
-	}
-
-   private AtomicLong ctr = new AtomicLong();
-
-   @Override
-   public String send(String to, String msg) {
-       return send(null, to, msg);
-   }
-
-	@Override
-	public void listen(UUID pid, String to) {
-		//do nothing
-	}
 
 	public void setDefaultResponse(String response) {
 		this.defaultResponse = response;

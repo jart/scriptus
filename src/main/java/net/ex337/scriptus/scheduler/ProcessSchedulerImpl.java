@@ -1,6 +1,5 @@
 package net.ex337.scriptus.scheduler;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentMap;
@@ -14,12 +13,8 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.api.HasTimeout;
-import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
-import net.ex337.scriptus.transport.Transport;
-import net.ex337.scriptus.transport.Transport.MessageReceiver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +34,7 @@ import com.google.common.collect.MapMaker;
  * @author ian
  *
  */
-public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
+public class ProcessSchedulerImpl implements ProcessScheduler {
 	
 	private static final Log LOG = LogFactory.getLog(ProcessSchedulerImpl.class);
 
@@ -52,9 +47,6 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 	
 	private static final int MAX_CONCURRENT_PROCESSES = 10;
 
-	@Resource
-	private Transport transport;
-	
 	@Resource
 	private ScriptusDatastore datastore;
 
@@ -76,8 +68,6 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 			.concurrencyLevel(MAX_CONCURRENT_PROCESSES)
 			.makeMap();
 		
-		transport.registerReceiver(this);
-
 		processExecutor = new ThreadPoolExecutor(2, MAX_CONCURRENT_PROCESSES, MAX_CONCURRENT_PROCESSES, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(10000));
 	}
 	
@@ -110,48 +100,6 @@ public class ProcessSchedulerImpl implements MessageReceiver, ProcessScheduler {
 			this.processExecutor.execute(new ProcessExecutor(pid));
 		}
 
-	}
-
-	@Override
-	public void handleIncomings(List<Message> incomings) {
-		for(final Message m : incomings) {
-
-			LOG.info("msg "+m.getPid()+" "+m.getMsg()+" from "+m.getFrom());
-			
-			final UUID pid = m.getPid();
-			
-			runWithLock(pid, new Runnable() {
-				@Override
-				public void run() {
-					ScriptProcess p = datastore.getProcess(pid);
-
-					if(p.getState() instanceof HasTimeout) {
-						//delete wake if it exists, should fail silently
-						datastore.deleteScheduledTask(pid, ((HasTimeout)p.getState()).getNonce());
-					}
-
-					updateProcessState(pid, m);
-				}
-			});
-			
-			execute(pid);
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see net.ex337.scriptus.ProcessScheduler#updateProcessState(java.util.UUID, java.lang.Object)
-	 */
-	@Override
-	public void updateProcessState(final UUID pid, final Object o) {
-		runWithLock(pid, new Runnable() {
-			@Override
-			public void run() {
-				ScriptProcess script = datastore.getProcess(pid);
-				script.setState(o);
-				script.save();
-			}
-			
-		});
 	}
 
 	
