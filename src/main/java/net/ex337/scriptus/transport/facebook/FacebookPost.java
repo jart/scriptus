@@ -6,10 +6,10 @@ public class FacebookPost implements Comparable<FacebookPost> {
 	private String screenName;
 	private String text;
 	private long creationTimestamp;
-	private long inReplyToId;
+	private String inReplyToId;
 	public static final long DEFAULT_REPLY_TO = -1;
 
-	public FacebookPost(String id, String text, String screenName, long creationTimestamp, long inReplyToId) {
+	public FacebookPost(String id, String text, String screenName, long creationTimestamp, String inReplyToId) {
 		super();
 		this.id = id;
 		this.inReplyToId = inReplyToId;
@@ -19,7 +19,7 @@ public class FacebookPost implements Comparable<FacebookPost> {
 	}
 
 	public FacebookPost(String id, String text, String screenName, long creationTimestamp) {
-		this(id, text, screenName, creationTimestamp, FacebookPost.DEFAULT_REPLY_TO);
+		this(id, text, screenName, creationTimestamp, String.valueOf(FacebookPost.DEFAULT_REPLY_TO));
 	}
 
 	public String getId() {
@@ -54,11 +54,11 @@ public class FacebookPost implements Comparable<FacebookPost> {
 		this.creationTimestamp = creationTimestamp;
 	}
 
-	public long getInReplyToId() {
+	public String getInReplyToId() {
 		return inReplyToId;
 	}
 
-	public void setInReplyToId(long inReplyToId) {
+	public void setInReplyToId(String inReplyToId) {
 		this.inReplyToId = inReplyToId;
 	}
 
