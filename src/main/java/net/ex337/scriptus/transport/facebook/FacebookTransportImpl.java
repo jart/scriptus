@@ -1,6 +1,8 @@
 package net.ex337.scriptus.transport.facebook;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,15 +13,18 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
+import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.api.Message;
+import net.ex337.scriptus.transport.MessageRouting;
 import net.ex337.scriptus.transport.Transport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.impl.dv.util.Base64;
 
 public class FacebookTransportImpl implements Transport {
 
@@ -35,7 +40,8 @@ public class FacebookTransportImpl implements Transport {
 	@Resource(name = "facebookClient")
 	private FacebookClientInterface facebook;
 
-	private MessageReceiver londonCalling;
+	@Resource
+	private MessageRouting routing;
 
 	private ScheduledExecutorService scheduler;
 
@@ -77,116 +83,94 @@ public class FacebookTransportImpl implements Transport {
 
 	@Override
 	public String send(String to, String msg) {
-		long id = facebook.publish(to, msg); // TODO Don't publish if already
-												// present !!
+		// TODO Don't publish if already present !!
+		String id = facebook.publish(to, msg);
 		LOG.debug(id + " : " + "@" + to + " " + msg);
 		return "facebook:" + id;
 	}
 
-	@Override
-	public void listen(UUID pid, String to) {
-		datastore.registerTwitterListener(pid, to);
-	}
-
-	@Override
-	public void registerReceiver(MessageReceiver londonCalling) {
-		this.londonCalling = londonCalling;
-	}
-
+	@SuppressWarnings("unchecked")
 	public void checkMessages() {
-		// Get processed mentions
-		List<Long> lastMentions = datastore.getTwitterLastMentions();
-		// Get the time of the most recent processed post (whose comments where
-		// already processed)
-		Long lastMentionTime = facebook.getTime(lastMentions);
+		// Get most recently processed mention (post/comment)
+		List<String> processedPosts = new ArrayList<String>();
+		try {
+			processedPosts = (List<String>) SerializableUtils
+					.deserialiseObject(Base64.decode(datastore
+							.getTransportCursor(TransportType.Facebook)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		// Get recent posts
+		String lastMention = processedPosts.get(0);
+		processedPosts.remove(0);
+
+		// Get the time of the most recently processed mention (post/comment)
+		Long lastMentionTime = facebook.getTime(lastMention);
+
+		List<FacebookPost> mentions = new ArrayList<FacebookPost>();
+		// Get recent posts since the last mention time
 		List<FacebookPost> recentPosts = facebook
 				.getRecentPosts(lastMentionTime);
+		mentions.addAll(recentPosts);
+		// Get recent comments on previous posts
+		// Comments on post in other people's feed
+		List<FacebookPost> repliesInOtherFeeds = facebook.getPostReplies();
+		mentions.addAll(repliesInOtherFeeds);
+		// Comments on posts in my own feed
+		List<FacebookPost> repliesInMyFeed = new ArrayList<FacebookPost>();
+		for (String postId : processedPosts) {
+			List<FacebookPost> postComments = facebook.getPostComments(postId,
+					lastMentionTime);
+			repliesInMyFeed.addAll(postComments);
+		}
 
+		// This one holds the mentions to process in association to its related
+		// process
 		List<Message> incomings = new ArrayList<Message>();
-		List<String> correlationsToUnregister = new ArrayList<String>();
-		List<Object[]> listenersToUnregister = new ArrayList<Object[]>();
 		// This one holds the mentionId's of the recent mentions
-		List<Long> processedIncomings = new ArrayList<Long>();
+		String lastProcessedIncoming = null;
+		List<String> lastProcessedPosts = new ArrayList<String>();
+
+		Collections.sort(mentions);
 
 		// Loop over recent posts
-		for (FacebookPost post : recentPosts) {
-			// if (lastMentions.contains(post.getId().split("_")[1])) {
-			// This post was already processed, get next !!
-			// continue;
-			// }
-			// Check if there is a listening process related to this user
-			UUID pid = datastore.getMostRecentTwitterListener(post
-					.getScreenName());
-			// If there is such a process then add a new incoming
-			if (pid != null) {
-				incomings.add(new Message(pid, post.getScreenName(), post
-						.getText()));
-				listenersToUnregister.add(new Object[] { pid,
-						post.getScreenName() });
+		for (FacebookPost mention : mentions) {
+			if (lastMentionTime.compareTo(mention.getCreationTimestamp()) > 0) {
+				continue;
 			}
-			processedIncomings.add(Long.valueOf(post.getId().split("_")[1]));
+			Message m = new Message(mention.getScreenName(), mention.getText());
+			if (mention.getInReplyToId() != FacebookPost.DEFAULT_REPLY_TO) {
+				m.setInReplyToMessageId(mention.getInReplyToId());
+			} else {
+				lastProcessedPosts.add(mention.getId());
+			}
+			incomings.add(m);
+			lastProcessedIncoming = mention.getId();
 		}
 
 		// If there are no new posts i will continue pending on comments on
 		// previously processed posts
 		// if (recentPosts.isEmpty()) {
 		// Therefore including the last mentions as processed incomings
-		processedIncomings.addAll(lastMentions);
+		// processedIncomings.addAll(lastMentions);
 		// }
 
-		/*
-		 * Condition to search for comments in previous posts done by the
-		 * scriptus-transport facebook application
-		 */
+		routing.handleIncomings(incomings);
 
-		if (lastMentionTime != null) {
-			// Loop over previous mentions (they may have comments that some
-			// process is waiting for)
-			// comments for the recent mentions (processedIncomings) will be
-			// done the next time this method is called
-			// Process comments only for registered posts after the first
-			// handling of incomings
-			List<FacebookPost> comments = new ArrayList<FacebookPost>();
-			for (Long mentionId : lastMentions) {
-				comments.addAll(facebook.getPostComments(mentionId));
+		if (lastProcessedIncoming != null) {
+			lastProcessedPosts.add(0, lastProcessedIncoming);
+			try {
+				datastore.updateTransportCursor(TransportType.Facebook, Base64
+						.encode(SerializableUtils
+								.serialiseObject(lastProcessedPosts)));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			comments.addAll(facebook.getPostReplies());
-			for (FacebookPost comment : comments) {
-				Long commentedPostId = Long
-						.valueOf(comment.getId().split("_")[1]);
-				Long commentId = Long.valueOf(comment.getId().split("_")[2]);
-				if (!lastMentions.contains(Long.valueOf(commentId))) {
-					MessageCorrelation c = datastore
-							.getMessageCorrelationByID("facebook:"
-									+ commentedPostId);
-					if (c != null)
-					// && (c.getUser() == null || (c.getUser() != null &&
-					// post.getScreenName().equals(c.getUser())))
-					// si el dueño del post no es igual al user del c
-					{
-						incomings.add(new Message(c.getPid(), comment
-								.getScreenName(), comment.getText()));
-						correlationsToUnregister.add("facebook:" + commentId);
-					}
-					processedIncomings.add(commentId);
-				}
-			}
-		}
-
-		londonCalling.handleIncomings(incomings);
-
-		if (!processedIncomings.isEmpty()) {
-			// TODO Useful to change this to store Strings or Objects, with the
-			// actual way, i may confuse post with comment
-			datastore.updateTwitterLastMentions(processedIncomings);
-		}
-		for (String s : correlationsToUnregister) {
-			datastore.unregisterMessageCorrelation(s);
-		}
-		for (Object[] o : listenersToUnregister) {
-			datastore.unregisterTwitterListener((UUID) o[0], (String) o[1]);
 		}
 	}
 }
