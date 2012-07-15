@@ -103,7 +103,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 			String screenName = sender.getUsername().isEmpty() ? sender.getId()
 					: sender.getUsername();
 			FacebookPost fbp = new FacebookPost(c.getId(), c.getMessage(),
-					screenName, c.getCreatedTime().getTime());
+					screenName, c.getCreatedTime().getTime(), p.getId());
 			messageReplies.add(fbp);
 		}
 		return messageReplies;
