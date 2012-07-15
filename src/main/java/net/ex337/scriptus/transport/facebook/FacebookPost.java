@@ -7,7 +7,7 @@ public class FacebookPost implements Comparable<FacebookPost> {
 	private String text;
 	private long creationTimestamp;
 	private String inReplyToId;
-	public static final long DEFAULT_REPLY_TO = -1;
+	public static final String DEFAULT_REPLY_TO = null;
 
 	public FacebookPost(String id, String text, String screenName, long creationTimestamp, String inReplyToId) {
 		super();
