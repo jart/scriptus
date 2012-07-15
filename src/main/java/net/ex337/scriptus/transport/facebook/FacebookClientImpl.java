@@ -18,11 +18,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
-import com.restfb.DefaultJsonMapper;
 import com.restfb.FacebookClient;
-import com.restfb.JsonMapper;
 import com.restfb.Parameter;
-import com.restfb.json.JsonObject;
 import com.restfb.types.Comment;
 import com.restfb.types.FacebookType;
 import com.restfb.types.Post;
@@ -46,12 +43,6 @@ public class FacebookClientImpl implements FacebookClientInterface {
 		facebookClient = new DefaultFacebookClient(
 		// "AAADC80HpsZAYBABTRlc5jb6jGHNIXbtlZCFIRLKXlgbfruUcN5zSeLmsaMRcqmb9jM996Eihu16SZCZAF7m7GmIlwUbcDczGYLftEzTl5QZDZD");
 				config.getFacebookAccessToken());
-	}
-
-	@Override
-	public String getScreenName() {
-		User user = facebookClient.fetchObject("me", User.class);
-		return user.getName();
 	}
 
 	@Override
