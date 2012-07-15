@@ -91,20 +91,19 @@ public class FacebookTransportImpl implements Transport {
 
 	@SuppressWarnings("unchecked")
 	public void checkMessages() {
-		// Get most recently processed mention (post/comment)
+		LOG.info("Start checkMessages");
+		// Get most recently processed posts and most recently processed mention
+		// (post/comment)
 		List<String> processedPosts = new ArrayList<String>();
 		try {
 			processedPosts = (List<String>) SerializableUtils
 					.deserialiseObject(Base64.decode(datastore
 							.getTransportCursor(TransportType.Facebook)));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error while decoding/deserializing processed post", e);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error while decoding/deserializing processed post", e);
 		}
-
 		String lastMention = processedPosts.get(0);
 		processedPosts.remove(0);
 
@@ -127,25 +126,29 @@ public class FacebookTransportImpl implements Transport {
 					lastMentionTime);
 			repliesInMyFeed.addAll(postComments);
 		}
+		mentions.addAll(repliesInMyFeed);
 
-		// This one holds the mentions to process in association to its related
-		// process
+		// This one holds the associations mentions/process
 		List<Message> incomings = new ArrayList<Message>();
-		// This one holds the mentionId's of the recent mentions
+		// This one holds the mentionId of last processed mention
 		String lastProcessedIncoming = null;
+		// This one holds the mentionId's of the last processed posts
 		List<String> lastProcessedPosts = new ArrayList<String>();
 
 		Collections.sort(mentions);
 
 		// Loop over recent posts
 		for (FacebookPost mention : mentions) {
-			if (lastMentionTime.compareTo(mention.getCreationTimestamp()) > 0) {
+			if (new Long(mention.getCreationTimestamp())
+					.compareTo(lastMentionTime) < 0) {
 				continue;
 			}
 			Message m = new Message(mention.getScreenName(), mention.getText());
 			if (mention.getInReplyToId() != FacebookPost.DEFAULT_REPLY_TO) {
+				// It is a comment
 				m.setInReplyToMessageId(mention.getInReplyToId());
 			} else {
+				// It is a post
 				lastProcessedPosts.add(mention.getId());
 			}
 			incomings.add(m);
@@ -153,9 +156,9 @@ public class FacebookTransportImpl implements Transport {
 		}
 
 		// If there are no new posts i will continue pending on comments on
-		// previously processed posts
+		// previously processed posts, therefore including the last processed
+		// posts as processed incomings
 		// if (recentPosts.isEmpty()) {
-		// Therefore including the last mentions as processed incomings
 		// processedIncomings.addAll(lastMentions);
 		// }
 
@@ -168,8 +171,7 @@ public class FacebookTransportImpl implements Transport {
 						.encode(SerializableUtils
 								.serialiseObject(lastProcessedPosts)));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("Error while serializing list of last processed posts");
 			}
 		}
 	}
