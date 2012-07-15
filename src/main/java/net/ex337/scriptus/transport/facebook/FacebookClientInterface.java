@@ -14,24 +14,39 @@ public interface FacebookClientInterface {
 	public List<FacebookPost> getRecentPosts(Long untilTime);
 
 	/**
-	 * Returns the comments of a post in my own wall
+	 * Returns the comments of a post
 	 * 
 	 * @param postId
-	 * @return
+	 *            facebook id of a post
+	 * @return a list comments in reply to a post
 	 */
-	public List<FacebookPost> getPostComments(Long postId);
+	public List<FacebookPost> getPostComments(String postId);
 
 	/**
-	 * Return the time of the last processed post
+	 * Returns recent replies to posts of mine.
 	 * 
-	 * @param id
-	 * @return
+	 * @return a list of replies to my facebook posts
 	 */
-//	public Long getTime(Long id);
-	public Long getTime(List<Long> lastMentions);
-
-	public long publish(String to, String message);
-
 	public List<FacebookPost> getPostReplies();
+
+	/**
+	 * Returns the creation time of a mention (post/comment)
+	 * 
+	 * @param mentionId
+	 *            identifier of the mention (post/comment)
+	 * @return Unix timestamp of the mention's creation time
+	 */
+	public Long getTime(String mentionId);
+
+	/**
+	 * Publishes a message to in a user's feed or in my own feed
+	 * 
+	 * @param to
+	 *            username of the message receiver
+	 * @param message
+	 *            the message to publish
+	 * @return facebook object id of the published message
+	 */
+	public String publish(String to, String message);
 
 }
