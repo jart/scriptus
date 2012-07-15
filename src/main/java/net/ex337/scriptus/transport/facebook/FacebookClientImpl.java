@@ -46,7 +46,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	}
 
 	@Override
-	public List<FacebookPost> getRecentPosts(Long untilTime) {
+	public List<FacebookPost> getRecentPosts(Long sinceTime) {
 		List<FacebookPost> mentions = new ArrayList<FacebookPost>();
 
 		/**
@@ -55,7 +55,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 		Connection<Post> connections = null;
 		List<Post> tags = new ArrayList<Post>();
 		List<Post> posts = new ArrayList<Post>();
-		if (untilTime == null) {
+		if (sinceTime == null) {
 			connections = facebookClient
 					.fetchConnection("me/posts", Post.class);
 			posts = connections.getData();
@@ -63,7 +63,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 		} else {
 			connections = facebookClient.fetchConnection("me/posts",
 					Post.class, Parameter.with("limit", "25"),
-					Parameter.with("since", untilTime));
+					Parameter.with("since", sinceTime));
 			posts = connections.getData();
 			tags.addAll(posts);
 		}
@@ -71,10 +71,10 @@ public class FacebookClientImpl implements FacebookClientInterface {
 			// Ghhr !! facebook graph api is not working well !! until parameter
 			// is not being taken in count, i am handling it
 			if (p.getMessage() != null
-					&& (untilTime == null || untilTime != null
+					&& (sinceTime == null || sinceTime != null
 							&& Long.valueOf(
 									p.getCreatedTime().getTime() / 1000L)
-									.compareTo(untilTime) >= 0)) {
+									.compareTo(sinceTime) >= 0)) {
 				User sender = facebookClient.fetchObject(p.getFrom().getId(),
 						User.class);
 				String screenName = sender.getUsername().isEmpty() ? sender
@@ -85,7 +85,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 			}
 		}
 		// When untiltime is null limit results to the most recent one
-		if (untilTime == null) {
+		if (sinceTime == null) {
 			// Retain last post and discard all others
 			FacebookPost[] lastPostToRetain = { Collections.max(mentions) };
 			mentions.retainAll(Arrays.asList(lastPostToRetain));
@@ -94,16 +94,18 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	}
 
 	@Override
-	public List<FacebookPost> getPostComments(String postId) {
+	public List<FacebookPost> getPostComments(String postId, Long sinceTime) {
 		List<FacebookPost> messageReplies = new ArrayList<FacebookPost>();
-		Post p = facebookClient.fetchObject(postId, Post.class);
-		for (Comment c : p.getComments().getData()) {
+		Connection<Comment> comments = facebookClient.fetchConnection(postId
+				+ "/comments", Comment.class, Parameter.with("limit", "25"),
+				Parameter.with("since", sinceTime));
+		for (Comment c : comments.getData()) {
 			User sender = facebookClient.fetchObject(c.getFrom().getId(),
 					User.class);
 			String screenName = sender.getUsername().isEmpty() ? sender.getId()
 					: sender.getUsername();
 			FacebookPost fbp = new FacebookPost(c.getId(), c.getMessage(),
-					screenName, c.getCreatedTime().getTime(), p.getId());
+					screenName, c.getCreatedTime().getTime(), postId);
 			messageReplies.add(fbp);
 		}
 		return messageReplies;

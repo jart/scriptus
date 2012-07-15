@@ -6,19 +6,20 @@ public interface FacebookClientInterface {
 
 	/**
 	 * 
-	 * @param untilTime
+	 * @param sinceTime
 	 * @return
 	 */
-	public List<FacebookPost> getRecentPosts(Long untilTime);
+	public List<FacebookPost> getRecentPosts(Long sinceTime);
 
 	/**
 	 * Returns the comments of a post
 	 * 
 	 * @param postId
 	 *            facebook id of a post
-	 * @return a list comments in reply to a post
+	 * @param sinceTime
+	 * @return a list of comments in reply to a post
 	 */
-	public List<FacebookPost> getPostComments(String postId);
+	public List<FacebookPost> getPostComments(String postId, Long sinceTime);
 
 	/**
 	 * Returns recent replies to posts of mine.
