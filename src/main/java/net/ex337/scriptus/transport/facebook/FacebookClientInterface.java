@@ -29,11 +29,12 @@ public interface FacebookClientInterface {
 	public List<FacebookPost> getPostReplies();
 
 	/**
-	 * Returns the creation time of a mention (post/comment)
+	 * Returns the creation time of a facebook object (post/comment)
 	 * 
 	 * @param mentionId
 	 *            identifier of the mention (post/comment)
-	 * @return Unix timestamp of the mention's creation time
+	 * @return Unix timestamp of the mention's creation time or null if the
+	 *         received mentionId is not a valid post/comment id
 	 */
 	public Long getTime(String mentionId);
 
