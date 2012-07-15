@@ -19,7 +19,7 @@ public class FacebookPost implements Comparable<FacebookPost> {
 	}
 
 	public FacebookPost(String id, String text, String screenName, long creationTimestamp) {
-		this(id, text, screenName, creationTimestamp, String.valueOf(FacebookPost.DEFAULT_REPLY_TO));
+		this(id, text, screenName, creationTimestamp, FacebookPost.DEFAULT_REPLY_TO);
 	}
 
 	public String getId() {
