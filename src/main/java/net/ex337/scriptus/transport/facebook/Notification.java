@@ -9,6 +9,11 @@ import com.restfb.types.NamedFacebookType;
 
 public class Notification extends NamedFacebookType {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5238833909999405640L;
+
 	@Facebook
 	private NamedFacebookType from;
 
