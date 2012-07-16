@@ -36,10 +36,6 @@ public class FacebookClientImpl implements FacebookClientInterface {
 
 	@PostConstruct
 	public void init() {
-		if (config.getFacebookAccessToken() == null
-				|| config.getFacebookAccessToken().isEmpty()) {
-			return;
-		}
 		facebookClient = new DefaultFacebookClient(
 				config.getFacebookAccessToken());
 	}
