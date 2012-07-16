@@ -20,6 +20,7 @@ import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
+import com.restfb.exception.FacebookException;
 import com.restfb.types.Comment;
 import com.restfb.types.FacebookType;
 import com.restfb.types.Post;
@@ -36,6 +37,10 @@ public class FacebookClientImpl implements FacebookClientInterface {
 
 	@PostConstruct
 	public void init() {
+		if (config.getFacebookAccessToken() == null
+				|| config.getFacebookAccessToken().isEmpty()) {
+			return;
+		}
 		facebookClient = new DefaultFacebookClient(
 				config.getFacebookAccessToken());
 	}
@@ -244,6 +249,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	public String publish(String to, String message) {
 		LOG.info("Start publish");
 		FacebookType publishMessageResponse = null;
+//		try {
 		if (to != null) {
 			User user = facebookClient.fetchObject(to, User.class);
 			publishMessageResponse = facebookClient.publish(user.getId()
@@ -254,6 +260,9 @@ public class FacebookClientImpl implements FacebookClientInterface {
 					FacebookType.class, Parameter.with("message", message));
 		}
 		LOG.error("Published post [" + publishMessageResponse.getId() + "]");
+//		} catch (FacebookException e) {
+//			LOG.error("An error occurred while publishing", e);
+//		}
 		LOG.info("End publish");
 		return publishMessageResponse.getId();
 	}
@@ -277,11 +286,14 @@ public class FacebookClientImpl implements FacebookClientInterface {
 		// .deserialiseObject(Base64.decode(encodedStringList));
 		// System.out.println(decodedList);
 		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
 		// e.printStackTrace();
 		// } catch (ClassNotFoundException e) {
-		// // TODO Auto-generated catch block
 		// e.printStackTrace();
 		// }
+	}
+
+	@Override
+	public boolean isClientReady() {
+		return facebookClient != null;
 	}
 }
