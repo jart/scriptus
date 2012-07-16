@@ -59,15 +59,22 @@ public class FacebookClientImpl implements FacebookClientInterface {
 			connections = facebookClient
 					.fetchConnection("me/posts", Post.class);
 			posts.addAll(connections.getData());
+			connections = facebookClient.fetchConnection("me/tagged",
+					Post.class);
+			posts.addAll(connections.getData());
 		} else {
 			connections = facebookClient.fetchConnection("me/posts",
+					Post.class, Parameter.with("limit", "25"),
+					Parameter.with("since", sinceTime));
+			posts.addAll(connections.getData());
+			connections = facebookClient.fetchConnection("me/tagged",
 					Post.class, Parameter.with("limit", "25"),
 					Parameter.with("since", sinceTime));
 			posts.addAll(connections.getData());
 		}
 		LOG.info("Retrieved [" + posts.size() + "] posts");
 		for (Post p : posts) {
-			// Ghhr !! facebook graph api is not working well !! until parameter
+			// Ghhr !! facebook graph api is not working well !! since parameter
 			// is not being taken in count, i am handling it
 			if (p.getMessage() != null
 					&& (sinceTime == null || sinceTime != null
@@ -214,22 +221,25 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	@Override
 	public Long getTime(String mentionId) {
 		LOG.info("Start getTime");
-		Post p = facebookClient.fetchObject(mentionId, Post.class);
 		Long time = null;
-		if (p == null) {
-			Comment c = facebookClient.fetchObject(mentionId, Comment.class);
-			if (c == null) {
-				LOG.info("Facebook object [" + mentionId
-						+ "] is not a valid post/comment");
+		if (mentionId != null) {
+			Post p = facebookClient.fetchObject(mentionId, Post.class);
+			if (p == null) {
+				Comment c = facebookClient
+						.fetchObject(mentionId, Comment.class);
+				if (c == null) {
+					LOG.info("Facebook object [" + mentionId
+							+ "] is not a valid post/comment");
+				} else {
+					LOG.info("Facebook object [" + mentionId + "] is comment");
+					time = c.getCreatedTime() == null ? null : c
+							.getCreatedTime().getTime() / 1000L;
+				}
 			} else {
-				LOG.info("Facebook object [" + mentionId + "] is comment");
-				time = c.getCreatedTime() == null ? null : c.getCreatedTime()
+				LOG.info("Facebook object [" + mentionId + "] is post");
+				time = p.getCreatedTime() == null ? null : p.getCreatedTime()
 						.getTime() / 1000L;
 			}
-		} else {
-			LOG.info("Facebook object [" + mentionId + "] is post");
-			time = p.getCreatedTime() == null ? null : p.getCreatedTime()
-					.getTime() / 1000L;
 		}
 		LOG.info("End getTime");
 		return time;
@@ -254,12 +264,12 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	}
 
 	public static void main(String[] args) throws MalformedURLException {
-		// FacebookClientImpl facebook = new FacebookClientImpl();
+		FacebookClientImpl facebook = new FacebookClientImpl();
 		// facebook.RecentPosts(new Long(1341536400));
 		// facebook.getPostComments("565534114_10151233794789115", new
 		// Long(1341586260));
 		// facebook.getPostReplies();
-		// facebook.getTime("123");
+		facebook.getTime(null);
 		// List<String> list = new ArrayList<String>();
 		// list.add("a");
 		// list.add("b");
