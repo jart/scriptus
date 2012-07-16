@@ -122,9 +122,12 @@ public class SettingsServlet extends HttpServlet {
 				// immediate deallocation of all system resources
 				httpclient.getConnectionManager().shutdown();
 			} else {
-				LOG.info("Failure exchanging facebook code for a facebook user access token. Status code=["
+				LOG.info("Failure exchanging facebook code for a facebook user access token. Request=["
+						+ httpget.getURI().toString()
+						+ "] Status code=["
 						+ response.getStatusLine().getStatusCode()
-						+ "] Reason=[" + response.getStatusLine().getReasonPhrase() + "]");
+						+ "] Reason=["
+						+ response.getStatusLine().getReasonPhrase() + "]");
 			}
 		}
 		req.setAttribute("config", ctx.getBean("config"));
