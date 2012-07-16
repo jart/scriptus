@@ -94,18 +94,22 @@ public class FacebookTransportImpl implements Transport {
 		LOG.info("Start checkMessages");
 		// Get most recently processed posts and most recently processed mention
 		// (post/comment)
+		String lastMention = null;
 		List<String> processedPosts = new ArrayList<String>();
 		try {
-			processedPosts = (List<String>) SerializableUtils
-					.deserialiseObject(Base64.decode(datastore
-							.getTransportCursor(TransportType.Facebook)));
+			String cursor = datastore
+					.getTransportCursor(TransportType.Facebook);
+			if (cursor != null) {
+				processedPosts = (List<String>) SerializableUtils
+						.deserialiseObject(Base64.decode(cursor));
+				lastMention = processedPosts.get(0);
+				processedPosts.remove(0);
+			}
 		} catch (IOException e) {
 			LOG.error("Error while decoding/deserializing processed post", e);
 		} catch (ClassNotFoundException e) {
 			LOG.error("Error while decoding/deserializing processed post", e);
 		}
-		String lastMention = processedPosts.get(0);
-		processedPosts.remove(0);
 
 		// Get the time of the most recently processed mention (post/comment)
 		Long lastMentionTime = facebook.getTime(lastMention);
@@ -139,14 +143,15 @@ public class FacebookTransportImpl implements Transport {
 
 		// Loop over recent posts
 		for (FacebookPost mention : mentions) {
-			if (new Long(mention.getCreationTimestamp())
-					.compareTo(lastMentionTime) < 0) {
+			if (lastMentionTime != null
+					&& lastMentionTime
+							.compareTo(mention.getCreationTimestamp() / 1000L) > 0) {
 				continue;
 			}
 			Message m = new Message(mention.getScreenName(), mention.getText());
 			if (mention.getInReplyToId() != FacebookPost.DEFAULT_REPLY_TO) {
 				// It is a comment
-				m.setInReplyToMessageId(mention.getInReplyToId());
+				m.setInReplyToMessageId("facebook:" + mention.getInReplyToId());
 			} else {
 				// It is a post
 				lastProcessedPosts.add(mention.getId());
@@ -161,6 +166,7 @@ public class FacebookTransportImpl implements Transport {
 		// if (recentPosts.isEmpty()) {
 		// processedIncomings.addAll(lastMentions);
 		// }
+		lastProcessedPosts.addAll(processedPosts);
 
 		routing.handleIncomings(incomings);
 
