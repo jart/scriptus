@@ -34,14 +34,9 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	@Resource
 	private ScriptusConfig config;
 
-	public FacebookClientImpl() {
-		// this.init();
-	}
-
 	@PostConstruct
 	public void init() {
 		facebookClient = new DefaultFacebookClient(
-		// "AAADC80HpsZAYBABTRlc5jb6jGHNIXbtlZCFIRLKXlgbfruUcN5zSeLmsaMRcqmb9jM996Eihu16SZCZAF7m7GmIlwUbcDczGYLftEzTl5QZDZD");
 				config.getFacebookAccessToken());
 	}
 
