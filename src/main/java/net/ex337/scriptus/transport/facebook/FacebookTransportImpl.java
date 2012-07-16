@@ -81,7 +81,6 @@ public class FacebookTransportImpl implements Transport {
 
 	@Override
 	public String send(String to, String msg) {
-		// TODO Don't publish if already present !!
 		String id = facebook.publish(to, msg);
 		LOG.debug(id + " : " + "@" + to + " " + msg);
 		return "facebook:" + id;
@@ -137,6 +136,10 @@ public class FacebookTransportImpl implements Transport {
 		// This one holds the mentionId's of the last processed posts
 		List<String> lastProcessedPosts = new ArrayList<String>();
 
+		// Ordering from the oldest to the newest, that way when post and reply
+		// to that arrive at the same time they can be processed in the correct
+		// order, furthermore the lastProcessedIncoming is set to the last
+		// processed mention
 		Collections.sort(mentions);
 
 		// Loop over recent posts
