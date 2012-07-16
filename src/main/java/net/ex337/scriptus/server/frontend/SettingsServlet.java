@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,8 +83,8 @@ public class SettingsServlet extends HttpServlet {
 							+ "client_id=" + cfg.getFacebookAppKey()
 							+ "&client_secret=" + cfg.getFacebookAppSecret()
 							+ "&code=" + req.getParameter("code")
-							+ "&redirect_uri=http://localhost:8080"
-							+ req.getContextPath() + "/settings");
+							+ "&redirect_uri=" + URLEncoder.encode("http://localhost:8080"
+									+ req.getContextPath() + "/settings","UTF-8"));
 			HttpResponse response = httpclient.execute(httpget);
 
 			HttpEntity entity = response.getEntity();
