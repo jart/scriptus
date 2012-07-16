@@ -24,6 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.impl.dv.util.Base64;
 
+import com.restfb.exception.FacebookOAuthException;
+
 public class FacebookTransportImpl implements Transport {
 
 	private static final Log LOG = LogFactory
@@ -63,10 +65,24 @@ public class FacebookTransportImpl implements Transport {
 			@Override
 			public void run() {
 				try {
+					if (config.getFacebookAccessToken() != null
+							&& !config.getFacebookAccessToken().isEmpty()) {
 					FacebookTransportImpl.this.checkMessages();
+					}
+				} catch (FacebookOAuthException e1) {
+					LOG.error("Facebook access token became invalid, proceeding to delete it from my records in order to stop errors on the requests and prevent strange behaviors.", e1);
+					config.setFacebookAccessToken("");
+					// Actually i don't have any way to communicate the user
+					// that its token is now invalid :S
+					// I can only delete it from my records and expect the user
+					// to renew it
+					try {
+						config.save();
+					} catch (IOException e2) {
+						LOG.error("There was an error while saving the scriptus configuration after deleting saved facebook access token.", e2);
+					}
 				} catch (Exception e) {
-					LOG.error("exception checking for messages on Facebook"
-							+ this.getClass().getSimpleName(), e);
+					LOG.error("exception checking for messages on Facebook" + this.getClass().getSimpleName(), e);
 				}
 			}
 
