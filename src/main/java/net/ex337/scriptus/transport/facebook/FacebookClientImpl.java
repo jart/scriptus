@@ -20,7 +20,6 @@ import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
-import com.restfb.exception.FacebookException;
 import com.restfb.types.Comment;
 import com.restfb.types.FacebookType;
 import com.restfb.types.Post;
@@ -290,10 +289,5 @@ public class FacebookClientImpl implements FacebookClientInterface {
 		// } catch (ClassNotFoundException e) {
 		// e.printStackTrace();
 		// }
-	}
-
-	@Override
-	public boolean isClientReady() {
-		return facebookClient != null;
 	}
 }

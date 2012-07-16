@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface FacebookClientInterface {
 
-	public boolean isClientReady();
-	
 	/**
 	 * 
 	 * @param sinceTime
