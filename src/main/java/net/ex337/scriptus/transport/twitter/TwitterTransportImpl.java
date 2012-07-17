@@ -111,7 +111,7 @@ public class TwitterTransportImpl implements Transport {
 		
 		String lastMention = datastore.getTransportCursor(TransportType.Twitter);
 		
-        LOG.debug("lastm:"+snowflakeDate(getSecond(Long.parseLong(lastMention))));
+        LOG.debug("lastm:"+(lastMention == null ?  "null" : snowflakeDate(getSecond(Long.parseLong(lastMention)))));
 		
 		List<Tweet> mentions = twitter.getMentions();
 	
@@ -145,7 +145,7 @@ public class TwitterTransportImpl implements Transport {
 			/*
 			 * we've passed last processed tweet
 			 */
-			if(snAgeSecs < ageThreshold) {
+			if(snAgeSecs <= ageThreshold) {
 				
 				break;
 			}
@@ -215,6 +215,10 @@ public class TwitterTransportImpl implements Transport {
 	
 	private long getAgeThreshold(String snowflake) {
 		long current = Long.MIN_VALUE;
+		
+		if(snowflake == null) {
+		    return current;
+		}
 		
 		//round down
 		long second = getSecond(Long.parseLong(snowflake));

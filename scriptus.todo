@@ -4,6 +4,15 @@
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
 	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
 
+X	message correlations not saved
+X aargh	twitter checking not working
+X no	wake not working?
+
+.Thread.run(Thread.java:636)
+Caused by: java.io.InvalidClassException: org.mozilla.javascript.ScriptableObject; local class incompatible: stream classdesc serialVersionUID = 7335823325303937252, local class serialVersionUID = 2829861078851942586
+	at java.io.ObjectStreamClass.initNonProxy(ObjectStreamClass.java:579)
+	at java.io.Objec
+	
 The latest series of commits changes nothing on the 'user' end of Scriptus but has affected quite a lot of the internals.
 
 The biggest change is that the command line transport is now more of an interactive console. You now have far more flexibility in testing scripts locally, because the command-line tool can do anything that the Twitter transport can do.

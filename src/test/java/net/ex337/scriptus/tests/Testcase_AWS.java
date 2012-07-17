@@ -56,7 +56,7 @@ public class Testcase_AWS extends BaseTestCase {
 	       AmazonSimpleDBClient sdb = new AmazonSimpleDBClient(config);
 
         String select = 
-            "select itemName() from "+CORRELATION_IDS+" where "+
+            "select itemName() from `"+CORRELATION_IDS+"` where "+
             "messageId is null";// and userId is null ";
         
 //        if(messageId != null) {

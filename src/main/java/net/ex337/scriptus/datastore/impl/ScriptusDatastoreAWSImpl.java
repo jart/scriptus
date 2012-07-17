@@ -280,7 +280,7 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
                 add(new ReplaceableAttribute("messageId", correlation.getMessageId(), false));
 			}
 		}};
-		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, correlation.getMessageId(), atts);
+		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, correlation.getPid().toString(), atts);
 
 		sdb.putAttributes(r);
 	}
@@ -288,64 +288,65 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	@Override
 	public Set<MessageCorrelation> getMessageCorrelations(final String messageId, String fromUser) {
 	    
-        String select = 
-            "select * from "+CORRELATION_IDS+" where "+
-            "     (messageId is null and userId is null) ";
+	    List<String> selects = new ArrayList<String>();
+	    
+        selects.add( 
+            "select * from `"+CORRELATION_IDS+"` where "+
+            "     (messageId is null and userId is null) ");
         
+        
+        //FIXME parallelise
+        //FIXME RDBS!
+        //too many predicates if we do it all at once
         if(messageId != null) {
-            select +=
-                "  or (messageId = :msgId and userId is null) "+
-                "  or (messageId = :msgId and userId = :user) ";
+            selects.add("select * from `"+CORRELATION_IDS+"` where messageId = :msgId and userId is null");
+            selects.add("select * from `"+CORRELATION_IDS+"` where messageId = :msgId and userId = :user");
         }
         
-        //user is never null
-        select += 
-            "  or (messageId is null and userId = :user)";
-        
-        select = StringUtils.replace(select, ":msgId", "'"+StringEscapeUtils.escapeSql(messageId)+"'");
-        select = StringUtils.replace(select, ":user", "'"+StringEscapeUtils.escapeSql(fromUser)+"'");
-
-        System.out.println(select);
-        
-        SelectRequest s = new SelectRequest(select, true);
-        
-        SelectResult rs = sdb.select(s);
-	    
         Set<MessageCorrelation> result = new HashSet<MessageCorrelation>();
         
-        if(rs == null || rs.getItems() == null || rs.getItems().isEmpty()){
-            return result;
-        }
-        
-        //FIXME cursors!!
-        for(Item i : rs.getItems()) {
+        for(String select : selects) {
+            select = StringUtils.replace(select, ":msgId", "'"+StringEscapeUtils.escapeSql(messageId)+"'");
+            select = StringUtils.replace(select, ":user", "'"+StringEscapeUtils.escapeSql(fromUser)+"'");
+            
+            SelectRequest s = new SelectRequest(select, true);
+            
+            SelectResult rs = sdb.select(s);
+            
+            if(rs == null || rs.getItems() == null || rs.getItems().isEmpty()){
+                continue;
+            }
+            
+            //FIXME cursors!!
+            for(Item i : rs.getItems()) {
 
-            String foundUser = null;
-            String foundMessageId = null;
-            UUID pid = null;
-            long timestamp = 0;
-            
-            for(Attribute a : i.getAttributes()) {
-                if("pid".equals(a.getName())) {
-                    pid = UUID.fromString(a.getValue());
-                } else if("user".equals(a.getName())) {
-                    foundUser = a.getValue();
-                } else if("messageId".equals(a.getName())) {
-                    foundMessageId = a.getValue();
-                } else if("timestamp".equals(a.getName())) {
-                    timestamp = Long.parseLong(a.getValue());
+                String foundUser = null;
+                String foundMessageId = null;
+                UUID pid = null;
+                long timestamp = 0;
+                
+                for(Attribute a : i.getAttributes()) {
+                    if("pid".equals(a.getName())) {
+                        pid = UUID.fromString(a.getValue());
+                    } else if("user".equals(a.getName())) {
+                        foundUser = a.getValue();
+                    } else if("messageId".equals(a.getName())) {
+                        foundMessageId = a.getValue();
+                    } else if("timestamp".equals(a.getName())) {
+                        timestamp = Long.parseLong(a.getValue());
+                    }
                 }
+                
+                if(pid == null) {
+                    continue;
+                }
+                
+                LOG.info("found atts:"+i.getAttributes().toString());
+                
+                result.add(new MessageCorrelation(pid, foundUser, foundMessageId, timestamp));
             }
-            
-            if(pid == null) {
-                return null;
-            }
-            
-            LOG.info("found atts:"+i.getAttributes().toString());
-            
-            result.add(new MessageCorrelation(pid, foundUser, foundMessageId, timestamp));
         }
-				
+        		
 		return result;
 		
 	}

@@ -34,21 +34,27 @@ public class MessageRouting {
 
         LOG.info("msg "+m.getMsg()+" from "+m.getFrom()+" in reply to "+m.getInReplyToMessageId());
         
-        locks.runWithLock(pid, new Runnable() {
-            @Override
-            public void run() {
-                ScriptProcess p = datastore.getProcess(pid);
+        try {
+            locks.runWithLock(pid, new Runnable() {
+                @Override
+                public void run() {
+                    ScriptProcess p = datastore.getProcess(pid);
 
-                if(p.getState() instanceof HasTimeout) {
-                    //delete wake if it exists, should fail silently
-                    datastore.deleteScheduledTask(pid, ((HasTimeout)p.getState()).getNonce());
+                    if(p.getState() instanceof HasTimeout) {
+                        //delete wake if it exists, should fail silently
+                        datastore.deleteScheduledTask(pid, ((HasTimeout)p.getState()).getNonce());
+                    }
+
+                    datastore.updateProcessState(pid, m);
                 }
-
-                datastore.updateProcessState(pid, m);
-            }
-        });
-        
-        scheduler.execute(pid);
+            });
+            
+            scheduler.execute(pid);
+        } catch(Exception e) {
+            LOG.error("could not run process "+pid, e);
+            //continue
+        }
+         
     }
     
     public void handleIncomings(List<Message> messages) {
