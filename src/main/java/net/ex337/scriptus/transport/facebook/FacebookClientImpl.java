@@ -41,8 +41,8 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	}
 
 	@Override
-	public List<FacebookPost> getRecentPosts(Long sinceTime) {
-		List<FacebookPost> recentPosts = new ArrayList<FacebookPost>();
+	public List<FacebookMention> getRecentPosts(Long sinceTime) {
+		List<FacebookMention> recentPosts = new ArrayList<FacebookMention>();
 
 		LOG.info("Start getRecentPosts");
 		/**
@@ -80,7 +80,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 						User.class);
 				String screenName = sender.getUsername().isEmpty() ? sender
 						.getId() : sender.getUsername();
-				FacebookPost fbp = new FacebookPost(p.getId(), p.getMessage(),
+				FacebookMention fbp = new FacebookMention(p.getId(), p.getMessage(),
 						screenName, p.getCreatedTime().getTime());
 				recentPosts.add(fbp);
 			}
@@ -91,7 +91,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 		if (sinceTime == null) {
 			LOG.info("Retaining only most recent posts");
 			// Retain last post and discard all others
-			FacebookPost[] lastPostToRetain = { Collections.max(recentPosts) };
+			FacebookMention[] lastPostToRetain = { Collections.max(recentPosts) };
 			recentPosts.retainAll(Arrays.asList(lastPostToRetain));
 		}
 		LOG.info("End getRecentPosts");
@@ -99,9 +99,9 @@ public class FacebookClientImpl implements FacebookClientInterface {
 	}
 
 	@Override
-	public List<FacebookPost> getPostComments(String postId, Long sinceTime) {
+	public List<FacebookMention> getPostComments(String postId, Long sinceTime) {
 		LOG.info("Start getPostComments");
-		List<FacebookPost> messageReplies = new ArrayList<FacebookPost>();
+		List<FacebookMention> messageReplies = new ArrayList<FacebookMention>();
 		Connection<Comment> comments;
 		if (sinceTime == null) {
 			comments = facebookClient.fetchConnection(postId + "/comments",
@@ -117,7 +117,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 					User.class);
 			String screenName = sender.getUsername().isEmpty() ? sender.getId()
 					: sender.getUsername();
-			FacebookPost fbp = new FacebookPost(c.getId(), c.getMessage(),
+			FacebookMention fbp = new FacebookMention(c.getId(), c.getMessage(),
 					screenName, c.getCreatedTime().getTime(), postId);
 			messageReplies.add(fbp);
 		}
@@ -157,9 +157,9 @@ public class FacebookClientImpl implements FacebookClientInterface {
 		return null;
 	}
 
-	public List<FacebookPost> getPostReplies() {
+	public List<FacebookMention> getPostReplies() {
 		LOG.info("Start getPostReplies");
-		List<FacebookPost> postReplies = new ArrayList<FacebookPost>();
+		List<FacebookMention> postReplies = new ArrayList<FacebookMention>();
 
 		// Fetch all the new notifications
 		List<Notification> notifications = facebookClient.fetchConnection(
@@ -194,7 +194,7 @@ public class FacebookClientImpl implements FacebookClientInterface {
 				String replierScreenName = facebookClient.fetchObject(
 						notif.getFrom().getId(), User.class).getUsername();
 				// Construct facebook post object and return
-				FacebookPost fbp = new FacebookPost(comment_id.toString(),
+				FacebookMention fbp = new FacebookMention(comment_id.toString(),
 						notif.getMessage(), replierScreenName, notif
 								.getCreatedTime().getTime(), p.getId());
 				postReplies.add(fbp);

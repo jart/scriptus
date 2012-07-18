@@ -9,7 +9,7 @@ public interface FacebookClientInterface {
 	 * @param sinceTime
 	 * @return
 	 */
-	public List<FacebookPost> getRecentPosts(Long sinceTime);
+	public List<FacebookMention> getRecentPosts(Long sinceTime);
 
 	/**
 	 * Returns the comments of a post
@@ -19,14 +19,14 @@ public interface FacebookClientInterface {
 	 * @param sinceTime
 	 * @return a list of comments in reply to a post
 	 */
-	public List<FacebookPost> getPostComments(String postId, Long sinceTime);
+	public List<FacebookMention> getPostComments(String postId, Long sinceTime);
 
 	/**
 	 * Returns recent replies to posts of mine.
 	 * 
 	 * @return a list of replies to my facebook posts
 	 */
-	public List<FacebookPost> getPostReplies();
+	public List<FacebookMention> getPostReplies();
 
 	/**
 	 * Returns the creation time of a facebook object (post/comment)

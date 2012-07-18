@@ -1,6 +1,6 @@
 package net.ex337.scriptus.transport.facebook;
 
-public class FacebookPost implements Comparable<FacebookPost> {
+public class FacebookMention implements Comparable<FacebookMention> {
 
 	private String id;
 	private String screenName;
@@ -9,7 +9,7 @@ public class FacebookPost implements Comparable<FacebookPost> {
 	private String inReplyToId;
 	public static final String DEFAULT_REPLY_TO = null;
 
-	public FacebookPost(String id, String text, String screenName, long creationTimestamp, String inReplyToId) {
+	public FacebookMention(String id, String text, String screenName, long creationTimestamp, String inReplyToId) {
 		super();
 		this.id = id;
 		this.inReplyToId = inReplyToId;
@@ -18,8 +18,8 @@ public class FacebookPost implements Comparable<FacebookPost> {
 		this.screenName = screenName;
 	}
 
-	public FacebookPost(String id, String text, String screenName, long creationTimestamp) {
-		this(id, text, screenName, creationTimestamp, FacebookPost.DEFAULT_REPLY_TO);
+	public FacebookMention(String id, String text, String screenName, long creationTimestamp) {
+		this(id, text, screenName, creationTimestamp, FacebookMention.DEFAULT_REPLY_TO);
 	}
 
 	public String getId() {
@@ -63,7 +63,7 @@ public class FacebookPost implements Comparable<FacebookPost> {
 	}
 
 	@Override
-	public int compareTo(FacebookPost p) {
+	public int compareTo(FacebookMention p) {
 		if (p == null) {
 			return 1;
 		}

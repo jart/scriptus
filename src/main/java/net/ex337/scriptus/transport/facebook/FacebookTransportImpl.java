@@ -127,19 +127,19 @@ public class FacebookTransportImpl implements Transport {
 		// Get the time of the most recently processed mention (post/comment)
 		Long lastMentionTime = facebook.getTime(lastMention);
 
-		List<FacebookPost> mentions = new ArrayList<FacebookPost>();
+		List<FacebookMention> mentions = new ArrayList<FacebookMention>();
 		// Get recent posts since the last mention time
-		List<FacebookPost> recentPosts = facebook
+		List<FacebookMention> recentPosts = facebook
 				.getRecentPosts(lastMentionTime);
 		mentions.addAll(recentPosts);
 		// Get recent comments on previous posts
 		// Comments on post in other people's feed
-		List<FacebookPost> repliesInOtherFeeds = facebook.getPostReplies();
+		List<FacebookMention> repliesInOtherFeeds = facebook.getPostReplies();
 		mentions.addAll(repliesInOtherFeeds);
 		// Comments on posts in my own feed
-		List<FacebookPost> repliesInMyFeed = new ArrayList<FacebookPost>();
+		List<FacebookMention> repliesInMyFeed = new ArrayList<FacebookMention>();
 		for (String postId : processedPosts) {
-			List<FacebookPost> postComments = facebook.getPostComments(postId,
+			List<FacebookMention> postComments = facebook.getPostComments(postId,
 					lastMentionTime);
 			repliesInMyFeed.addAll(postComments);
 		}
@@ -159,14 +159,14 @@ public class FacebookTransportImpl implements Transport {
 		Collections.sort(mentions);
 
 		// Loop over recent posts
-		for (FacebookPost mention : mentions) {
+		for (FacebookMention mention : mentions) {
 			if (lastMentionTime != null
 					&& lastMentionTime
 							.compareTo(mention.getCreationTimestamp() / 1000L) > 0) {
 				continue;
 			}
 			Message m = new Message(mention.getScreenName(), mention.getText());
-			if (mention.getInReplyToId() != FacebookPost.DEFAULT_REPLY_TO) {
+			if (mention.getInReplyToId() != FacebookMention.DEFAULT_REPLY_TO) {
 				// It is a comment
 				m.setInReplyToMessageId("facebook:" + mention.getInReplyToId());
 			} else {
