@@ -33,6 +33,7 @@ In addition to this change, a new page has been added to the documentation, [HOW
 
 In the example, a poll is taken and the poll results are stored in a MySQL database. The MySQL DB is accessed separately to the Scriptus storage system, which is still used exclusively for script state. [Check it out]() if you like Scriptus but want it to do extra things that are really specific to your needs.
 
+	 - simple process admin?
 	 - API
 	    - listen() should respond with first tweet after listen() called (not first mention)
 	       - like that today, but done not the right way
@@ -111,7 +112,6 @@ test	  AWS
 	   -> use pegDown or pull from gitHub?
 	 - owner should be twitter account
 	 - MVC w/servlets, stateless sessions with HMAC?
-	 - simple process admin?
 	 - limits (size, tweets, # processes, CPU time, transfer)
 	 
 	 git stash save diffaccs
@@ -233,7 +233,7 @@ Because computers can't change the world. We can.
 
 
 
-I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising/orchestrating human activity.
+I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising / orchestrating human activity.
 
 
 
