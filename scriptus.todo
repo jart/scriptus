@@ -4,6 +4,7 @@
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
 	mvn -Dtest=ResearchCase_PostgreSQLProxyTesting -PT1 test-compile surefire:test
 
+	must check timestamp on MC, correlation
 X	message correlations not saved
 X aargh	twitter checking not working
 X no	wake not working?
