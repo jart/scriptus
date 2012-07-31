@@ -60,6 +60,7 @@ public class TwitterClientImpl implements TwitterClient {
 			for(Status s : mentions) {
 			    Tweet t = new Tweet(s.getId(), s.getText(), s.getUser().getScreenName());
 			    t.setInReplyToId(s.getInReplyToStatusId());
+			    t.setCreation(s.getCreatedAt().getTime());
 				result.add(t);
 			}
 			//mentions should be fixed now?

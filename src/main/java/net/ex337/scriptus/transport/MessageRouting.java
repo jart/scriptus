@@ -51,6 +51,8 @@ public class MessageRouting {
             
             scheduler.execute(pid);
         } catch(Exception e) {
+            //DO NOT COMMIT!
+            //datastore.deleteProcess(pid);
             LOG.error("could not run process "+pid, e);
             //continue
         }
@@ -61,19 +63,27 @@ public class MessageRouting {
 
         for(Message s : messages) {
             
-            if(s.getInReplyToMessageId() != null){
-                //then it could be a reply to an ask();
-                Set<MessageCorrelation> cc = datastore.getMessageCorrelations(s.getInReplyToMessageId(), s.getFrom());
+            //then it could be a reply to an ask();
+            Set<MessageCorrelation> cc = datastore.getMessageCorrelations(s.getInReplyToMessageId(), s.getFrom());
 
+            /*
+             * if I've setup scriptus with my own account,
+             * we need to make sure that 'request' and 'reply'
+             * tweets don't get mixed up
+             */
+            for(MessageCorrelation c : cc) {
                 /*
-                 * if I've setup scriptus with my own account,
-                 * we need to make sure that 'request' and 'reply'
-                 * tweets don't get mixed up
+                 * the message has to arrive after the correlation is registered,
+                 * otherwise a script could "hear" stuff before it was created.
+                 * 
+                 * However, if transports never set the timestamp,
+                 * or datastores don't restore it, then we don't compare.
                  */
-                for(MessageCorrelation c : cc) {
-                    executeWithMessage(c.getPid(), s);
-                    datastore.unregisterMessageCorrelation(c);
+                if(s.getCreation() != 0L && c.getTimestamp() != 0L && c.getTimestamp() > s.getCreation()){
+                    continue;
                 }
+                executeWithMessage(c.getPid(), s);
+                datastore.unregisterMessageCorrelation(c);
             }
             
         }

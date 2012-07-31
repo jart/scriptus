@@ -123,17 +123,25 @@ public class TwitterTransportImpl implements Transport {
          */
 
         @SuppressWarnings("unchecked")
-        List<String> lastMentions;
+        List<String> lastMentions = new ArrayList<String>();
         try {
-            lastMentions = (List<String>)SerializableUtils.deserialiseObject(datastore.getTransportCursor(TransportType.Twitter).getBytes(Charset.forName("UTF-8")));
+            String cursor = datastore.getTransportCursor(TransportType.Twitter);
+            if(cursor != null) {
+                lastMentions = (List<String>)SerializableUtils.deserialiseObject(cursor.getBytes(Charset.forName("UTF-8")));
+            }
         } catch (IOException e) {
-            throw new ScriptusRuntimeException(e);
+            LOG.warn("couldn't get twitter cursor", e);
         } catch (ClassNotFoundException e) {
-            throw new ScriptusRuntimeException(e);
+            LOG.warn("couldn't get twitter cursor", e);
         }
         
-        String lastMentionStr = lastMentions.get(lastMentions.size()-1);
-        Long lastMention = Long.parseLong(lastMentionStr.substring(lastMentionStr.indexOf(":")+1));
+        Long lastMention = Long.MIN_VALUE;
+        
+        if( ! lastMentions.isEmpty()) {
+            String lastMentionStr = lastMentions.get(lastMentions.size()-1);
+            lastMention = Long.parseLong(lastMentionStr.substring(lastMentionStr.indexOf(":")+1));
+        }
+        
 
         LOG.debug("lastm:" + (lastMention == null ? "null" : snowflakeDate(getSecond(lastMention))));
 
@@ -181,6 +189,7 @@ public class TwitterTransportImpl implements Transport {
             if (s.getInReplyToId() != -1) {
                 m.setInReplyToMessageId("tweet:" + s.getInReplyToId());
             }
+            m.setCreation(s.getCreation());
 
             incomings.add(m);
 

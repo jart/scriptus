@@ -102,7 +102,8 @@ public abstract class ScriptusDatastoreFileImpl extends BaseScriptusDatastore {
 	public void deleteProcess(UUID pid) {
 		File process = new File(processDir, pid.toString());
 		if( ! process.exists()) {
-			throw new ScriptusRuntimeException("Process not found: "+pid);
+			return;
+			//throw new ScriptusRuntimeException("Process not found: "+pid);
 		}
 		if( ! process.delete()) {
 			throw new ScriptusRuntimeException("Could not delete process: "+pid);

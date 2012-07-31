@@ -72,8 +72,10 @@ public class CommandLineTransport implements Transport {
 		r = new BufferedReader(new InputStreamReader(System.in));
 		
 		String lastCursor = datastore.getTransportCursor(TransportType.CommandLine);
-		if(lastCursor != null) {
+		if(lastCursor != null) try {
 		    ctr.set(Long.parseLong(lastCursor)+1);
+		} catch(NumberFormatException nfe) {
+		    //then it's not a number and we'll replace it.
 		}
 		
 		sentMessages = new MapMaker().makeMap();

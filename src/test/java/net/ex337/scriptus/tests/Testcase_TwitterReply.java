@@ -1,9 +1,7 @@
 package net.ex337.scriptus.tests;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,8 +10,8 @@ import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.model.api.functions.Ask;
+import net.ex337.scriptus.model.api.functions.Listen;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 import net.ex337.scriptus.scheduler.ProcessSchedulerImpl;
 import net.ex337.scriptus.transport.Transport;
@@ -43,7 +41,11 @@ public class Testcase_TwitterReply extends BaseTestCase {
     private static final Map<String, String> testSources = new HashMap<String, String>() {
         {
             put("ask.js",
-                    "var f = scriptus.ask(\"give me your number please\", {to:\"ianso\"}); return f;");
+                "var f = scriptus.ask(\"give me your number please\", {to:\"ianso\"}); " +
+                "return f;");
+            put("listen.js",
+                "var s = scriptus.listen({timeout:\"1m\"});" +
+                "return \"s=\"+s;");
         }
     };
 
@@ -102,9 +104,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         r.visit(f, p); // sould say
 
-        List<Message> incomings = new ArrayList<Message>();
-
-        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(tweetId.get(), null);
+        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(tweetId.get(), "ianso");
 
         assertEquals("1 correlation", 1, ccc.size());
 
@@ -118,15 +118,69 @@ public class Testcase_TwitterReply extends BaseTestCase {
         //should find & process the reply
         twitter.checkMessages();
        
-//        boolean found = false;
-//        
-//        for(String s : clientMock.statusUpdates) {
-//            if(s.equals("@owner reply")) {
-//                found = true; break;
-//            }
-//        }
-//       
-//        assertTrue("found reply sent to owner", found);
+        boolean found = false;
+        
+        for(String s : clientMock.statusUpdates) {
+            if(s.equals("@owner reply")) {
+                found = true; break;
+            }
+        }
+       
+        assertTrue("found reply sent to owner", found);
+        
+        //check that the next execution leads to normal termination with value "reply"
+        
+
+    }
+
+    public void test_listen() throws IOException {
+
+        ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", "", "owner");
+
+        ScriptAction r = p.call();
+
+        assertTrue("listened correctly", r instanceof Listen);
+        assertTrue("listened correctly to no-one", ((Listen) r).getWho() == null);
+
+        p.save();
+
+//        final ThreadLocal<String> tweetId = new ThreadLocal<String>();
+
+        ScriptusFacade f = new ScriptusFacade(datastore, c, m) {
+
+            @Override
+            public void registerMessageCorrelation(MessageCorrelation cid) {
+//                tweetId.set(cid.getMessageId());
+                super.registerMessageCorrelation(cid);
+            }
+
+        };
+
+        r.visit(f, p); // sould say
+
+        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(null, "ianso");
+
+        assertEquals("1 correlation", 1, ccc.size());
+
+        assertEquals("correct pid registered", ccc.iterator().next().getPid(), ccc.iterator().next().getPid());
+        assertEquals("correct user registered", null, ccc.iterator().next().getUser());
+
+        Tweet t = new Tweet(123, "reply", "ianso");
+
+        clientMock.getMentions().add(t);
+        
+        //should find & process the reply
+        twitter.checkMessages();
+       
+        boolean found = false;
+        
+        for(String s : clientMock.statusUpdates) {
+            if(s.contains("s=reply")) {
+                found = true; break;
+            }
+        }
+       
+        assertTrue("found reply sent to owner", found);
         
         //check that the next execution leads to normal termination with value "reply"
         

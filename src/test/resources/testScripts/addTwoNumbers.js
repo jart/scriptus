@@ -2,15 +2,17 @@
 var pid = scriptus.fork();
 
 if(pid == 0) {
-	return scriptus.ask("foo", "give me your number");
+	return ask("foo", "give me your number");
 }
 
-var second = scriptus.ask("bar", "give me second number");
+sleep("1Y");
+
+var second = ask("bar", "give me second number");
 
 var first;
 
-var waitedfor = scriptus.wait(function(result) {
-	scriptus.say("bar", "in result fn, response from foo: "+result);
+var waitedfor = wait(function(result) {
+	say("bar", "in result fn, response from foo: "+result);
 	first = result;
 });
 /*
@@ -31,8 +33,8 @@ pipe(function(in, out) {
 
 })
 */
-scriptus.say("foo", "parent waited for pid "+waitedfor);
+say("foo", "parent waited for pid "+waitedfor);
 
-scriptus.say("foo", "response from bar="+second+", from="+second.from+", cid="+second.cid);
+say("foo", "response from bar="+second+", from="+second.from+", cid="+second.cid);
 
-scriptus.say("foo", "foo and bar="+(new Number(first) + Number(second)));
+say("foo", "foo and bar="+(new Number(first) + Number(second)));

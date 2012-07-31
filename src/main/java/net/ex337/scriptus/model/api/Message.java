@@ -13,7 +13,8 @@ public class Message implements Serializable, ConvertsToScriptable {
 	
 	private String from;
 	private String msg;
-	private String inReplyToMessageId;
+    private String inReplyToMessageId;
+    private long creation;;
 	
 	public Message(String from, String msg) {
 		super();
@@ -55,6 +56,14 @@ public class Message implements Serializable, ConvertsToScriptable {
 
     public void setInReplyToMessageId(String inReplyToMessageId) {
         this.inReplyToMessageId = inReplyToMessageId;
+    }
+
+    public long getCreation() {
+        return creation;
+    }
+
+    public void setCreation(long creation) {
+        this.creation = creation;
     }
 	
 }

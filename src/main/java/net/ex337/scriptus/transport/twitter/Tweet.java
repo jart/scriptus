@@ -3,7 +3,8 @@ package net.ex337.scriptus.transport.twitter;
 
 public class Tweet implements Comparable<Tweet> {
 
-	private long snowflake;
+    private long snowflake;
+    private long creation;
 	private long inReplyToId;
 	private String text;
 	private String screenName;
@@ -66,6 +67,14 @@ public class Tweet implements Comparable<Tweet> {
 
     public void setInReplyToId(long inReplyToId) {
         this.inReplyToId = inReplyToId;
+    }
+
+    public long getCreation() {
+        return creation;
+    }
+
+    public void setCreation(long creation) {
+        this.creation = creation;
     }
 
 	
