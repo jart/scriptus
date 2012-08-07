@@ -7,17 +7,7 @@
 	
 	programming on a human timescale
 
-test	message routing broken for listen()
-test	must check timestamp on MC, correlation
-X	message correlations not saved
-X aargh	twitter checking not working
-X no	wake not working?
 
-.Thread.run(Thread.java:636)
-Caused by: java.io.InvalidClassException: org.mozilla.javascript.ScriptableObject; local class incompatible: stream classdesc serialVersionUID = 7335823325303937252, local class serialVersionUID = 2829861078851942586
-	at java.io.ObjectStreamClass.initNonProxy(ObjectStreamClass.java:579)
-	at java.io.Objec
-	
 The latest series of commits changes nothing on the 'user' end of Scriptus but has affected quite a lot of the internals.
 
 The biggest change is that the command line transport is now more of an interactive console. You now have far more flexibility in testing scripts locally, because the command-line tool can do anything that the Twitter transport can do.
@@ -64,12 +54,6 @@ In addition, the wake is not unregistered on receipt of a message, causing a nee
 	       --> it should pause and ask the user to re-authenticate
 	       --> depends on user checking UI or having alternate auth mechanism
 	SOLUTIONS
-test	 - twitter 
-X test	 & cmd
-X test	  - needs to take normal messages, for listen()
-X test	 & mock should use generic asynch queueing mechanism
-test	 listen() should use MessageCorrelation in all cases	 
-X	 correlation storage doesn't allow multiple listeners to the same messge ID
 	 
 	 test
 	 two processes listening
@@ -77,15 +61,15 @@ X	 correlation storage doesn't allow multiple listeners to the same messge ID
 	 two processes listening to a message ID
 	  --> 6 responses to one reply
 	  
-test	 for each response
-test	  --> select pid where cid = ?
-test	  union
-test	  --> select pid where to= :=response.from and cid is null and ts < response.time /*i.e. listened first*/
-test	  union
-test	  --> select pid where to is null and cid is null and ts < response.time	  
+X test	 for each response
+X test	  --> select pid where cid = ?
+X test	  union
+X test	  --> select pid where to= :=response.from and cid is null and ts < response.time /*i.e. listened first*/
+X test	  union
+X test	  --> select pid where to is null and cid is null and ts < response.time	  
 X test	  memory
 X test	  file
-test	  AWS
+X test	  AWS
 	-- ask && listen put MessageCorrelationDeletingTansportCheckingWake extends Wake
 	  --> unregister correlation on wake,
 	  --> check transports on wake.
@@ -240,7 +224,7 @@ Because computers can't change the world. We can.
 
 I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising / orchestrating human activity.
 
-
+On the other hand, the instant the project does have users, it is no longer about me.
 
 	 		 	
 **running track of compromises & known bugs
@@ -664,4 +648,15 @@ X test	   --> on cmdLine, use for sequence number of correlationIds
 X	 - generalise listeners 
 X no	 + random start interval?
 X check	add nav links to posts pages	
+X test	message routing broken for listen()
+X test	must check timestamp on MC, correlation
+X	message correlations not saved
+X aargh	twitter checking not working
+X no	wake not working?
+X test	 - twitter 
+X test	 & cmd
+X test	  - needs to take normal messages, for listen()
+X test	 & mock should use generic asynch queueing mechanism
+X test	 listen() should use MessageCorrelation in all cases	 
+X	 correlation storage doesn't allow multiple listeners to the same messge ID
 

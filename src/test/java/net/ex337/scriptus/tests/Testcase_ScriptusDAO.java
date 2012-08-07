@@ -73,15 +73,13 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	public void testCorrelationIDs() throws InterruptedException {
 		
 //		String postfix = Integer.toString(this.hashCode());
-		    
-		UUID pid = UUID.randomUUID();
 		
 		Random r = new Random();
 		
 		String c = "tweet:"+Math.abs(r.nextInt());
 		String u = "user:"+Math.abs(r.nextInt());
 		
-		MessageCorrelation m = new MessageCorrelation(pid, u, c, System.currentTimeMillis());
+		MessageCorrelation m = new MessageCorrelation(UUID.randomUUID(), u, c, System.currentTimeMillis());
 		
 		datastore.registerMessageCorrelation(m);
 
@@ -94,13 +92,13 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		assertTrue("nothing left", ! datastore.getMessageCorrelations(c, u).contains(m));
 
 		//listen({to:"user", messageId:"foo"})
-        MessageCorrelation both      = new MessageCorrelation(pid, u,    c,    System.currentTimeMillis());
+        MessageCorrelation both      = new MessageCorrelation(UUID.randomUUID(), u,    c,    System.currentTimeMillis());
         //listen({to:"user"})
-        MessageCorrelation byuser    = new MessageCorrelation(pid, u,    null, System.currentTimeMillis());
+        MessageCorrelation byuser    = new MessageCorrelation(UUID.randomUUID(), u,    null, System.currentTimeMillis());
         //listen({messageId:"foo"})
-        MessageCorrelation messageId = new MessageCorrelation(pid, null, c,    System.currentTimeMillis());
+        MessageCorrelation messageId = new MessageCorrelation(UUID.randomUUID(), null, c,    System.currentTimeMillis());
         //listen()
-        MessageCorrelation byNull    = new MessageCorrelation(pid, null, null, System.currentTimeMillis());
+        MessageCorrelation byNull    = new MessageCorrelation(UUID.randomUUID(), null, null, System.currentTimeMillis());
         
         datastore.registerMessageCorrelation(both);
         datastore.registerMessageCorrelation(byuser);

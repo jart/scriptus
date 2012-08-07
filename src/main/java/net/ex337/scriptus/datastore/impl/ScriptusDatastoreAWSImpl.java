@@ -71,7 +71,12 @@ import com.amazonaws.services.simpledb.model.SelectResult;
  */
 public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore implements ScriptusDatastore {
 	
-	private static final Log LOG = LogFactory.getLog(ScriptusDatastoreAWSImpl.class);
+	private static final String PID = "pid";
+    private static final String TIMESTAMP = "timestamp";
+    private static final String MESSAGE_ID = "messageId";
+    private static final String USER_ID = "userId";
+
+    private static final Log LOG = LogFactory.getLog(ScriptusDatastoreAWSImpl.class);
 	
     private static final String CORRELATION_IDS = "scriptus-correlation-ids";
     private static final String TRANSPORT_CURSORS = "scriptus-transport-cursors";
@@ -256,7 +261,7 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	public void saveScheduledTask(final ScheduledScriptAction task) {
 		
 		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
-			add(new ReplaceableAttribute("pid", task.getPid().toString(), false));
+			add(new ReplaceableAttribute(PID, task.getPid().toString(), false));
 			//not padding number because all system.currentTimeMillis() is always the same,
 			//At least until the year 2286...
             add(new ReplaceableAttribute("when", Long.toString(task.getWhen()), false));
@@ -269,17 +274,16 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 
 	@Override
 	public void registerMessageCorrelation(final MessageCorrelation correlation) {
-		
-		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>(){{
-            add(new ReplaceableAttribute("pid", correlation.getPid().toString(), false));
-            add(new ReplaceableAttribute("timestamp", Long.toString(correlation.getTimestamp()), false));
-			if(correlation.getUser() != null) {
-	            add(new ReplaceableAttribute("user", correlation.getUser(), false));
-			}
-			if(correlation.getMessageId() != null) {
-                add(new ReplaceableAttribute("messageId", correlation.getMessageId(), false));
-			}
-		}};
+
+		List<ReplaceableAttribute> atts = new ArrayList<ReplaceableAttribute>();
+		atts.add(new ReplaceableAttribute(PID, correlation.getPid().toString(), false));
+		atts.add(new ReplaceableAttribute(TIMESTAMP, Long.toString(correlation.getTimestamp()), false));
+		if(correlation.getUser() != null) {
+		    atts.add(new ReplaceableAttribute(USER_ID, correlation.getUser(), false));
+		}
+		if(correlation.getMessageId() != null) {
+		    atts.add(new ReplaceableAttribute(MESSAGE_ID, correlation.getMessageId(), false));
+		}
 		PutAttributesRequest r = new PutAttributesRequest(CORRELATION_IDS, correlation.getPid().toString(), atts);
 
 		sdb.putAttributes(r);
@@ -291,16 +295,19 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
 	    List<String> selects = new ArrayList<String>();
 	    
         selects.add( 
-            "select * from `"+CORRELATION_IDS+"` where "+
-            "     (messageId is null and userId is null) ");
+                "select * from `"+CORRELATION_IDS+"` where "+
+                "     ("+MESSAGE_ID+" is null and "+USER_ID+" is null) ");
+        selects.add( 
+                "select * from `"+CORRELATION_IDS+"` where "+
+                "     ("+MESSAGE_ID+" is null and "+USER_ID+" = :user)");
         
         
         //FIXME parallelise
         //FIXME RDBS!
         //too many predicates if we do it all at once
         if(messageId != null) {
-            selects.add("select * from `"+CORRELATION_IDS+"` where messageId = :msgId and userId is null");
-            selects.add("select * from `"+CORRELATION_IDS+"` where messageId = :msgId and userId = :user");
+            selects.add("select * from `"+CORRELATION_IDS+"` where "+MESSAGE_ID+" = :msgId and "+USER_ID+" is null");
+            selects.add("select * from `"+CORRELATION_IDS+"` where "+MESSAGE_ID+" = :msgId and "+USER_ID+" = :user");
         }
         
         Set<MessageCorrelation> result = new HashSet<MessageCorrelation>();
@@ -326,13 +333,13 @@ public abstract class ScriptusDatastoreAWSImpl extends BaseScriptusDatastore imp
                 long timestamp = 0;
                 
                 for(Attribute a : i.getAttributes()) {
-                    if("pid".equals(a.getName())) {
+                    if(PID.equals(a.getName())) {
                         pid = UUID.fromString(a.getValue());
-                    } else if("user".equals(a.getName())) {
+                    } else if(USER_ID.equals(a.getName())) {
                         foundUser = a.getValue();
-                    } else if("messageId".equals(a.getName())) {
+                    } else if(MESSAGE_ID.equals(a.getName())) {
                         foundMessageId = a.getValue();
-                    } else if("timestamp".equals(a.getName())) {
+                    } else if(TIMESTAMP.equals(a.getName())) {
                         timestamp = Long.parseLong(a.getValue());
                     }
                 }
