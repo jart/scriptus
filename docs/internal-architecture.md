@@ -12,9 +12,9 @@ The transport object is used by the script process (via the API) to interact wit
 The transport and datastore have three separate implementations each, and which one is used at runtime is configured in `ScriptusConfig`
  and the property file backing it. Scriptus is reloaded when the settings are changed via the admin interface.
 
-The process scheduler is responsible for executing script processes, and administering the task scheduler used for waking sleeping processes and managing timeouts.
+There are two dedicated classes, ProcessLocks and MessageRouting, that are responsible for global per-process locks and routing messages from transports to the correct processes.
 
-The process scheduler has two subordinate classes, which are responsible for the waking and global per-process locking.
+The process scheduler is responsible for executing script processes, and administering the task scheduler used for waking sleeping processes and managing timeouts.
 
 The `ScriptProcess` object contains the logic used to execute the scripts, persist the process as a continuation, and interact with the API.
 

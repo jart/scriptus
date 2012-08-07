@@ -61,15 +61,6 @@ In addition, the wake is not unregistered on receipt of a message, causing a nee
 	 two processes listening to a message ID
 	  --> 6 responses to one reply
 	  
-X test	 for each response
-X test	  --> select pid where cid = ?
-X test	  union
-X test	  --> select pid where to= :=response.from and cid is null and ts < response.time /*i.e. listened first*/
-X test	  union
-X test	  --> select pid where to is null and cid is null and ts < response.time	  
-X test	  memory
-X test	  file
-X test	  AWS
 	-- ask && listen put MessageCorrelationDeletingTansportCheckingWake extends Wake
 	  --> unregister correlation on wake,
 	  --> check transports on wake.
@@ -659,4 +650,13 @@ X test	  - needs to take normal messages, for listen()
 X test	 & mock should use generic asynch queueing mechanism
 X test	 listen() should use MessageCorrelation in all cases	 
 X	 correlation storage doesn't allow multiple listeners to the same messge ID
+X test	 for each response
+X test	  --> select pid where cid = ?
+X test	  union
+X test	  --> select pid where to= :=response.from and cid is null and ts < response.time /*i.e. listened first*/
+X test	  union
+X test	  --> select pid where to is null and cid is null and ts < response.time	  
+X test	  memory
+X test	  file
+X test	  AWS
 

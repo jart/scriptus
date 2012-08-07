@@ -1,5 +1,11 @@
 #Future directions for Scriptus
 
+##As of 2012-08-07
+
+All the below stuff, which is still interesting to me, has been put back a little by two big intermediate goals: firstly, migrate to an RDBMS to make schema evolution easier, and secondly, make Scriptus a multi-user install by default, see "Architecture" down below. Once I've done that I intend to improve the look & feel with [bootstrap](https://twitter.github.com/bootstrap/).
+
+##As of 2011-11-12
+
 In the short-term I'm intending to continue adding examples and minor functionality (pipe, read, write etc.). However there are several major functional areas, with each of which there are major concerns or possibilities. I will enumerate these below.
 
 ##Transports
