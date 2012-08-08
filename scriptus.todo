@@ -7,6 +7,34 @@
 	
 	programming on a human timescale
 
+	tbl_scripts
+		id
+		user_id
+		script_name
+		script_source
+		
+	process
+	 -children
+	 
+	tbl_tasks
+		id
+		pid
+		nonce
+		when
+		what
+	
+	message_correlation
+		id
+		pid
+		timestamp
+		user_id
+		message_id
+	
+	cursors
+		transport
+		cursor
+	
+		
 
 The latest series of commits changes nothing on the 'user' end of Scriptus but has affected quite a lot of the internals.
 
@@ -89,7 +117,7 @@ In addition, the wake is not unregistered on receipt of a message, causing a nee
 	 - inline documentation / QRC? 
 	 - use bootstrap
 	 - , convert docs to HTML
-	   -> use pegDown or pull from gitHub?
+	   -> use pegDown or pull from gitHub?	
 	 - owner should be twitter account
 	 - MVC w/servlets, stateless sessions with HMAC?
 	 - limits (size, tweets, # processes, CPU time, transfer)
