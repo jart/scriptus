@@ -9,7 +9,7 @@ public class MessageCorrelationDAO {
 
     @Column(name="pid")
     private String pid;
-    @Column(name="user")
+    @Column(name="user_id")
     private String user;
     @Column(name="message_id")
     private String messageId;

@@ -9,7 +9,7 @@ public class TransportCursorDAO {
   
     @Column(name="transport")
     public String transport;
-    @Column(name="cursor")
+    @Column(name="cursor_data")
     public String cursor;
     @Version
     @Column(name="version")

@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
@@ -36,7 +33,7 @@ public class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJPAImpl {
     @PostConstruct
     public void init() throws SQLException, IOException {
 
-        File configFile = new File(config.getConfigLocation());
+        File configFile = new File(config.getConfigLocation()).getAbsoluteFile();
         
         //fFIXME configlocation is thee  config file path
         System.setProperty("derby.system.home", configFile.getParent());
@@ -55,14 +52,20 @@ public class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJPAImpl {
                 String dbName = "scriptus"; // the name of the database
                 conn = DriverManager.getConnection(protocol + dbName+ ";create=true", props);
                 
-                String schema = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("scriptus.derbydb.sql"), "UTF-8");
+//                conn.setAutoCommit(false);
+                
+                String schema = IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("sql/scriptus.derbydb.sql"), "UTF-8");
                 
                 s = conn.createStatement();
                 
                 for(String st : StringUtils.split(schema, ";")) {
-                    s.execute(st);
+                    LOG.debug(st);
+                    s.execute(st.trim());
                 }
                 
+            } catch(SQLException e) {
+                System.out.println("e.getSQLState()="+e.getSQLState());
+                throw e;
             } finally {
                 
                 if(s != null){
@@ -103,6 +106,14 @@ public class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJPAImpl {
                 LOG.error("did not shut down normally", se);
             }
         }
+    }
+
+    public ScriptusConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(ScriptusConfig config) {
+        this.config = config;
     }
 
 }
