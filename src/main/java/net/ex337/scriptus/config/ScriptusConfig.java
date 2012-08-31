@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
-import com.amazonaws.auth.AWSCredentials;
-
 /**
  * Acts as the interface to the configuration store.
  * 
@@ -38,12 +36,12 @@ import com.amazonaws.auth.AWSCredentials;
  * @author ian
  *
  */
-public class ScriptusConfig implements AWSCredentials {
+public class ScriptusConfig {
 
 	public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
 
     public static enum TransportType {Twitter, CommandLine, Dummy};
-	public static enum DatastoreType {Aws, File, Memory};
+	public static enum DatastoreType {Db, Embedded, Memory};
 
 	public static final String DURATION_FORMAT="([0-9]+)[\\ ,]*([smhdwMqyDC])";
 
@@ -61,17 +59,12 @@ public class ScriptusConfig implements AWSCredentials {
 	private int SCHEDULER_POLL_INTERVAL = 1;
 	private TimeUnit SCHEDULER_TIME_UNIT=TimeUnit.MINUTES;
 	
-	private String awsAccessKeyId="";
-	private String awsSecretKey="";
-	
 	private String twitterConsumerKey="";
 	private String twitterConsumerSecret="";
 
 	private String twitterAccessToken="";
 	private String twitterAccessTokenSecret="";
 
-	private String s3Bucket;//232942e7-fac3-4363-baa1-ce2bcdc84a78
-	
 	private TransportType transportType;
 	
 	private DatastoreType datastoreType;
@@ -177,7 +170,8 @@ public class ScriptusConfig implements AWSCredentials {
 		 * Try not to touch the local filesystem unless we know we're 
 		 * going to  need to.
 		 */
-		if(configLocation.equals(defaultConfigLocation) || datastoreType == DatastoreType.File) {
+		//put DB initialisatoin here
+		if(configLocation.equals(defaultConfigLocation) || datastoreType == DatastoreType.Db) {
 			
 			if( ! scriptusDir.exists()) {
 				scriptusDir.mkdir();
@@ -189,13 +183,10 @@ public class ScriptusConfig implements AWSCredentials {
 	}
 	
 	private void load(Properties props) {
-		awsAccessKeyId = props.getProperty("awsAccessKeyId");
-		awsSecretKey = props.getProperty("awsSecretKey");
 		twitterConsumerKey = props.getProperty("twitterConsumerKey");
 		twitterConsumerSecret = props.getProperty("twitterConsumerSecret");
 		twitterAccessToken = props.getProperty("twitterAccessToken");
 		twitterAccessTokenSecret = props.getProperty("twitterAccessTokenSecret");
-		s3Bucket = props.getProperty("s3Bucket");
 		datastoreType = DatastoreType.valueOf(props.getProperty("datastore"));
 		transportType = TransportType.valueOf(props.getProperty("transport"));
 		disableOpenID = Boolean.parseBoolean(props.getProperty("disableOpenID"));
@@ -205,13 +196,10 @@ public class ScriptusConfig implements AWSCredentials {
 		
 		Properties props = new Properties();
 		
-		props.put("awsAccessKeyId",				awsAccessKeyId);
-		props.put("awsSecretKey",				awsSecretKey);
 		props.put("twitterConsumerKey",			twitterConsumerKey);
 		props.put("twitterConsumerSecret",		twitterConsumerSecret);
 		props.put("twitterAccessToken",			twitterAccessToken);
 		props.put("twitterAccessTokenSecret",	twitterAccessTokenSecret);
-		props.put("s3Bucket", 					s3Bucket);
 		props.put("transport",       			transportType.toString());
 		props.put("datastore", 					datastoreType.toString());
 		/*
@@ -228,28 +216,7 @@ public class ScriptusConfig implements AWSCredentials {
 		fout.close();
 		
 	}
-	
-	@Override
-	public String getAWSAccessKeyId() {
-		return awsAccessKeyId;
-	}
 
-	@Override
-	public String getAWSSecretKey() {
-		return awsSecretKey;
-	}
-
-	public void setAwsAccessKeyId(String awsAccessKey) {
-		this.awsAccessKeyId = awsAccessKey;
-	}
-
-	public String getAwsSecretKey() {
-		return awsSecretKey;
-	}
-
-	public void setAwsSecretKey(String awsSecretKey) {
-		this.awsSecretKey = awsSecretKey;
-	}
 
 	public String getTwitterConsumerKey() {
 		return twitterConsumerKey;
@@ -300,13 +267,6 @@ public class ScriptusConfig implements AWSCredentials {
 		this.datastoreType = datastoreType;
 	}
 
-	public String getS3Bucket() {
-		return s3Bucket;
-	}
-
-	public void setS3Bucket(String s3Bucket) {
-		this.s3Bucket = s3Bucket;
-	}
 
 	public boolean isCleanInstall() {
 		return cleanInstall;

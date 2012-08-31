@@ -55,8 +55,6 @@
     </bean>
 
      <bean id="memoryDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.ScriptusDatastoreMemoryImpl" />
-     <bean id="fileDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.ScriptusDatastoreFileImpl" />
-	 <bean id="awsDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.ScriptusDatastoreAWSImpl" />
 
 	<bean id="datastore" class="net.ex337.scriptus.datastore.ScriptusDatastoreSwitch" />
 

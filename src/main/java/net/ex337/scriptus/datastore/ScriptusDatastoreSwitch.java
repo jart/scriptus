@@ -31,11 +31,11 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 	@Resource(name = "memoryDatastore")
 	private ScriptusDatastore memory;
 
-	@Resource(name = "fileDatastore")
-	private ScriptusDatastore file;
+    @Resource(name = "dbDatastore")
+    private ScriptusDatastore db;
 
-	@Resource(name = "awsDatastore")
-	private ScriptusDatastore aws;
+    @Resource(name = "embeddedDatastore")
+    private ScriptusDatastore embedded;
 
 	private ScriptusDatastore activeImpl;
 
@@ -50,10 +50,10 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 	private void switchDAO(DatastoreType datastore) {
 		if (datastore == DatastoreType.Memory) {
 			activeImpl = memory;
-		} else if (datastore == DatastoreType.File) {
-			activeImpl = file;
-		} else if (datastore == DatastoreType.Aws) {
-			activeImpl = aws;
+        } else if (datastore == DatastoreType.Db) {
+            activeImpl = db;
+        } else if (datastore == DatastoreType.Embedded) {
+            activeImpl = embedded;
 		}
 	}
 

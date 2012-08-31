@@ -34,6 +34,13 @@
 		transport
 		cursor
 	
+
+JPADatastore
+ -> em
+ -> datasource in config
+EmbeddedDBJPADatastore extendfs JPADatastore
+ -> init() checks freshness, creates if necessary?
+
 		
 
 The latest series of commits changes nothing on the 'user' end of Scriptus but has affected quite a lot of the internals.

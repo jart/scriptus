@@ -31,8 +31,8 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 <p>
 	<label for="datastore">Data storage:</label>
 	<select id="datastore" name="datastore">
-		<option <%=cfg.getDatastoreType() == DatastoreType.Aws? "selected=\"selected\"" : "" %> value="Aws">Amazon AWS (S3+SDB)</option>
-		<option <%=cfg.getDatastoreType() == DatastoreType.File? "selected=\"selected\"" : "" %> value="File">Local file-system (under home directory)</option>
+		<option <%=cfg.getDatastoreType() == DatastoreType.Embedded? "selected=\"selected\"" : "" %> value="Embedded">Embedded database</option>
+		<option <%=cfg.getDatastoreType() == DatastoreType.Db? "selected=\"selected\"" : "" %> value="Db">Database (external)</option>
 		<option <%=cfg.getDatastoreType() == DatastoreType.Memory? "selected=\"selected\"" : "" %> value="Memory">In memory (transient)</option>
 	</select>
 </p>
@@ -46,21 +46,6 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 	</select>
 </p>
 
-<p>
-	<label for="awsAccessKeyId">AWS Access key:</label>
-	<input type="text" name="awsAccessKeyId" id="awsAccessKeyId" value="<%=cfg.getAWSAccessKeyId()%>"/>
-</p>
-
-<p>
-	<label for="awsSecretKey">AWS Secret key:</label>
-	<input type="text" name="awsSecretKey" id="awsSecretKey" />
-</p>
-
-<p>
-	<label for="s3Bucket">S3 bucket (must be globally unique):</label>
-	<input type="text" name="s3Bucket" id="s3Bucket" value="<%=cfg.getS3Bucket() == null ? "scriptus"+java.util.UUID.randomUUID() : cfg.getS3Bucket() %>" />
-	<%= (cfg.getS3Bucket() == null ? "suggested" : "")%>
-</p>
 
 <p>Important note concerning Twitter: the permissions of the application 
 must be read-write <em>before</em> you generate the access token, and the

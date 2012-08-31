@@ -62,9 +62,6 @@ public class SettingsServlet extends HttpServlet {
 
 		ScriptusConfig cfg = (ScriptusConfig) ctx.getBean("config");
 		
-		cfg.setAwsAccessKeyId(req.getParameter("awsAccessKeyId"));
-		cfg.setAwsSecretKey(req.getParameter("awsSecretKey"));
-		cfg.setS3Bucket(req.getParameter("s3Bucket"));
 		cfg.setTwitterAccessToken(req.getParameter("twitterAccessToken"));
 		cfg.setTwitterAccessTokenSecret(req.getParameter("twitterAccessTokenSecret"));
 		cfg.setTwitterConsumerKey(req.getParameter("twitterConsumerKey"));
