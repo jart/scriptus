@@ -1,6 +1,10 @@
 package net.ex337.scriptus.datastore.impl.jpa.dao;
 
+import java.util.List;
+
 import javax.persistence.Column;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -19,8 +23,8 @@ public class ProcessDAO {
     public String userId;
     @Column(name="source")
     public String source;
-    @Column(name="id_source")
-    public int id_source;
+    @Column(name="sourceId")
+    public String sourceId;
     @Column(name="args")
     public String args;
     @Column(name="owner")
@@ -37,5 +41,6 @@ public class ProcessDAO {
     @Column(name="global_scope")
     public byte[] globalScope;
 
-    
+    @OneToMany(mappedBy="parent")
+    public List<ChildProcessPIDDAO> children;
 }
