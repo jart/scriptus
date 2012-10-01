@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+               http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0">
+ -->
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+  version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+ 
+  <persistence-unit name="jpa-pu" transaction-type="RESOURCE_LOCAL">
+  
+   <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+ 
+    <class>net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO</class>
+    <class>net.ex337.scriptus.datastore.impl.jpa.dao.MessageCorrelationDAO</class>
+    <class>net.ex337.scriptus.datastore.impl.jpa.dao.TransportCursorDAO</class>
+    <class>net.ex337.scriptus.datastore.impl.jpa.dao.ChildProcessPIDDAO</class>
+    <class>net.ex337.scriptus.datastore.impl.jpa.dao.ProcessDAO</class>
+    <class>net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO</class>
+
+         <!-- Scan for annotated classes -->
+    <!--jar-file>MyOrderApp.jar</jar-file>
+    <property name="hibernate.archive.autodetection" value="class"/-->
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    
+    
+	<!-- 
+	2nd level cache: only if @Cacheable(true)
+	see http://docs.jboss.org/hibernate/entitymanager/3.5/reference/en/html/configuration.html for more info 
+ 	<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+ -->
+	<properties>
+		<property name="eclipselink.weaving" value="false"/>
+<!--          <property name="hibernate.show_sql" value="true" />
+         <property name="hibernate.format_sql" value="false" />
+         <property name="hibernate.jdbc.batch_size" value="50" />
+         <property name="hibernate.use_sql_comments" value="false" />
+         <property name="hibernate.generate_statistics" value="false" />
+ -->         
+ <!-- 2nd level cache -->
+  
+  	<!-- since hibernate 4, provider/region factory class must be org.hibernate.cache.ehcache
+  	Note: need ehcache 2.6  -->
+   	<!-- 	 <property name="hibernate.cache.provider_class"   value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+   		 <property name="net.sf.ehcache.configurationResourceName"   value="/ehcache.xml" />
+   		 <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory"/>
+   		 
+   		 
+   		 
+         <property name="hibernate.cache.use_second_level_cache" value="true" />
+   		 <property name="hibernate.cache.use_query_cache" value="true"/>
+     -->        
+         <!-- property name="hibernate.dialect"
+          	value="HSQLDialect" /    org.hibernate.dialect.PostgreSQLDialect -->
+         <!-- property name="hibernate.dialect"
+          	value="ORACLE" /-->
+
+         <!-- 
+         	org.hibernate.ejb.AbstractEntityManagerImpl throwPersistenceException Unable to mark for rollback on PersistenceException: 
+            java.lang.UnsupportedOperationException
+				at org.hibernate.transaction.WebSphereExtendedJTATransactionLookup$TransactionManagerAdapter.setRollbackOnly
+					(WebSphereExtendedJTATransactionLookup.java:161)
+				at org.hibernate.ejb.AbstractEntityManagerImpl.markAsRollback(AbstractEntityManagerImpl.java:440)
+				
+         	property name="hibernate.transaction.manager_lookup_class"
+         	value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup" /-->
+         <!-- property name="hibernate.transaction.manager_lookup_class"
+         	value="org.hibernate.transaction.WebSphereTransactionManagerLookup" />
+
+         <property name="transaction.factory_class"
+         	value="org.hibernate.transaction.JTATransactionFactory" /-->
+        
+         <!-- before_completion cache synchronization that Hibernate was doing was being called twice, this resolves it -->
+        <!--  <property name="hibernate.transaction.flush_before_completion" value="false" />
+         -->
+         <!-- property name="hibernate.cache.provider_class"
+         	value="org.hibernate.cache.EhCacheProvider" /-->   
+
+		 <!-- The following property resolves
+		 	  java.lang.IllegalArgumentException: org.hibernate.QueryException:
+		 	  ClassNotFoundException: org.hibernate.hql.ast.HqlToken.
+		 	  No need to add it, better solution is to ensure Antlr in your EAR file
+		 	  is loaded before WAS Antlr (in 'Developer Edition') is loaded first. This issue
+		 	  does not exist in WAS AIX edition. -->         
+         <!-- property name="hibernate.query.factory_class" value="org.hibernate.hql.classic.ClassicQueryTranslatorFactory" / -->
+    </properties>
+    
+    
+<!-- 	
+ --><!-- Add the following to work around exception issue -->
+
+  
+  </persistence-unit>
+</persistence>

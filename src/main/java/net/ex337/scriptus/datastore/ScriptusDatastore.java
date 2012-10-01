@@ -38,20 +38,9 @@ public interface ScriptusDatastore {
 	 */
 	public ScriptProcess getProcess(UUID uuid);
 
-	/**
-	 * Low-level CRUD methods to for serialised processes 
-	 * in the datastore.
-	 */
-	public void writeProcess(UUID pid, byte[] serialisedProcess);
 	
 	/**
-	 * @see #writeProcess(UUID, byte[])
-	 */
-	public byte[] loadProcess(UUID pid);
-
-	
-	/**
-	 * @see #writeProcess(UUID, byte[])
+	 * deletes a process
 	 */
 	public void deleteProcess(UUID pid);
 
@@ -138,5 +127,7 @@ public interface ScriptusDatastore {
 	 * 
 	 */
     public void updateProcessState(UUID pid, Object o);
+
+    public void writeProcess(ScriptProcess p);
 	
 }

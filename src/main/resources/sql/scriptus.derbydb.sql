@@ -16,7 +16,8 @@ create table tbl_scheduled_actions (
 	version int not null,
 	pid varchar(36) not null,
 	nonce bigint not null,
-	action varchar(300) not null 
+	action varchar(300) not null,
+	when bigint not null
 );
 
 create table tbl_script (
@@ -40,4 +41,9 @@ create table tbl_process (
 	root boolean not null,
 	continuation blob,
 	global_scope blob
+)
+
+create table tbl_process_child (
+	parent varchar(36) not null,
+	child varchar(36) not null,
 )

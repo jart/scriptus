@@ -300,7 +300,9 @@ public class ScriptusConfig {
 		return SCHEDULER_TIME_UNIT;
 	}
 
-	
+	public String getMemoryStoreClass() {
+	    return "net.ex337.scriptus.datastore.impl.ScriptusDatastoreMemoryImpl";
+	}
 	
 	
 }

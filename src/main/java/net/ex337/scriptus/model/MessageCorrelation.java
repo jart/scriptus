@@ -37,7 +37,10 @@ public class MessageCorrelation implements Serializable {
 		this.timestamp = timestamp;
 	}
 	
-	public UUID getPid() {
+	public MessageCorrelation() {
+    }
+
+    public UUID getPid() {
 		return pid;
 	}
 	public void setPid(UUID pid) {
@@ -75,5 +78,9 @@ public class MessageCorrelation implements Serializable {
     
     public boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

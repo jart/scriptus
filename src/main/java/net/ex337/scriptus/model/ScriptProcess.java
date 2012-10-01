@@ -85,74 +85,6 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	}
 
 	/**
-	 * Sets the state from DAO using the supplied process ID (pid).
-	 * 
-	 * TODO storage must be versioned, since scripts can have a long life-span.
-	 * 
-	 * @param pid
-	 */
-	public void load(final UUID pid) {
-
-//		this.datastore = datastore;// not set when deserialising below
-
-		if (pid == null) {
-			throw new ScriptusRuntimeException("Cannot load null pid");
-		}
-
-		LOG.debug("loading " + pid.toString().substring(30));
-
-		Context cx = Context.enter();
-		cx.setClassShutter(new ScriptusClassShutter());
-		cx.setOptimizationLevel(-1); // must use interpreter mode
-		
-		try {
-
-			byte[] process = datastore.loadProcess(pid);
-			
-			if(process == null) {
-				throw new ProcessNotFoundException(pid.toString());
-			}
-			
-			InputStream bais = new ByteArrayInputStream(process);
-
-//			ScriptusAPI tmpScriptusApi = new ScriptusAPI(config);
-//			Scriptable tmpGlobalScope = tmpScriptusApi.createScope(cx);
-
-			ObjectInputStream in = new ObjectInputStream(bais);
-
-			ScriptProcess p = (ScriptProcess) in.readObject();
-			
-			this.pid = p.pid;
-			this.waiterPid = p.waiterPid;
-			this.source = p.source;
-			this.sourceName = p.sourceName;
-			this.userId = p.userId;
-			this.args = p.args;
-			this.state = p.state;
-			this.children = p.children;
-			this.compiled = p.compiled;
-			this.owner = p.owner;
-			this.isRoot = p.isRoot;
-			this.version = p.version;
-			
-			p = null;
-
-			this.setGlobalScope((ScriptableObject) in.readObject());
-			this.setContinuation(in.readObject());
-
-			in.close();
-		} catch (ScriptusRuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ScriptusRuntimeException(e);
-		} finally {
-			Context.exit();
-		}
-		
-
-	}
-
-	/**
 	 * 
 	 * Initialises a process using the supplied source from the given user ID.
 	 * 
@@ -202,35 +134,8 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 * Writes the script state to DAO. If the pid is null we assign a new one.
 	 */
 	public void save() {
-		if (getPid() == null) {
-			setPid(UUID.randomUUID());
-		} else {
-			version++;
-		}
-
-		LOG.debug("saving " + getPid().toString().substring(30));
-
-		Context cx = Context.enter();
-		cx.setClassShutter(new ScriptusClassShutter());
-		cx.setOptimizationLevel(-1); // must use interpreter mode
-		
-		try {
-			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			ObjectOutputStream out = new ObjectOutputStream(bout);
-			out.writeObject(this);
-			out.writeObject(getGlobalScope());
-			out.writeObject(getContinuation());
-			out.close();
-
-			datastore.writeProcess(getPid(), bout.toByteArray());
-				
-		} catch (ScriptusRuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ScriptusRuntimeException(e);
-		} finally {
-			Context.exit();
-		}
+	    
+	    datastore.writeProcess(this);
 
 	}
 
@@ -487,5 +392,29 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	public String getSourceName() {
 		return sourceName;
 	}
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public Function getCompiled() {
+        return compiled;
+    }
+
+    public void setCompiled(Function compiled) {
+        this.compiled = compiled;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
 
 }

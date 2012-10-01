@@ -1,6 +1,11 @@
 package net.ex337.scriptus.datastore.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -16,11 +21,17 @@ import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.exceptions.ProcessNotFoundException;
+import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
+import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * 
@@ -56,16 +67,6 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 			return;
 		}
 		
-	}
-	
-	@Override
-	public void writeProcess(UUID pid, byte[] script) {
-		processes.put(pid, script);
-	}
-
-	@Override
-	public byte[] loadProcess(UUID pid) {
-		return processes.get(pid);
 	}
 
 	@Override
@@ -177,5 +178,106 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
     public void updateTransportCursor(TransportType transport, String cursor) {
         cursors.put(transport, cursor);
     }
+
+    @Override
+    public void writeProcess(ScriptProcess p) {
+
+        if (p.getPid() == null) {
+            p.setPid(UUID.randomUUID());
+        } else {
+            p.setVersion(p.getVersion()+1);
+        }
+
+        LOG.debug("saving " + p.getPid().toString().substring(30));
+
+        Context cx = Context.enter();
+        cx.setClassShutter(new ScriptusClassShutter());
+        cx.setOptimizationLevel(-1); // must use interpreter mode
+        
+        try {
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bout);
+            out.writeObject(p);
+            out.writeObject(p.getGlobalScope());
+            out.writeObject(p.getContinuation());
+            out.close();
+
+            processes.put(p.getPid(), bout.toByteArray());
+                
+        } catch (ScriptusRuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ScriptusRuntimeException(e);
+        } finally {
+            Context.exit();
+        }
+
+        
+    }
+    
+    @Override
+    public ScriptProcess getProcess(UUID pid) {
+
+        if (pid == null) {
+            throw new ScriptusRuntimeException("Cannot load null pid");
+        }
+
+        LOG.debug("loading " + pid.toString().substring(30));
+
+        Context cx = Context.enter();
+        cx.setClassShutter(new ScriptusClassShutter());
+        cx.setOptimizationLevel(-1); // must use interpreter mode
+        
+        try {
+
+            byte[] process = processes.get(pid);
+            
+            if(process == null) {
+                throw new ProcessNotFoundException(pid.toString());
+            }
+            
+            InputStream bais = new ByteArrayInputStream(process);
+
+//          ScriptusAPI tmpScriptusApi = new ScriptusAPI(config);
+//          Scriptable tmpGlobalScope = tmpScriptusApi.createScope(cx);
+
+            ObjectInputStream in = new ObjectInputStream(bais);
+
+            ScriptProcess p = (ScriptProcess) in.readObject();
+            
+            ScriptProcess result = createScriptProcess();
+            
+            result.setPid(p.getPid());
+            result.setWaiterPid(p.getWaiterPid());
+            result.setSource(p.getSource());
+            result.setSourceName(p.getSourceName());
+            result.setUserId(p.getUserId());
+            result.setArgs(p.getArgs());
+            result.setState(p.getState());
+            result.setChildren(p.getChildren());
+            result.setCompiled(p.getCompiled());
+            result.setOwner(p.getOwner());
+            result.setRoot(p.isRoot());
+            result.setVersion(p.getVersion());
+            
+            p = null;
+
+            result.setGlobalScope((ScriptableObject) in.readObject());
+            result.setContinuation(in.readObject());
+
+            in.close();
+            
+            return result;
+            
+        } catch (ScriptusRuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ScriptusRuntimeException(e);
+        } finally {
+            Context.exit();
+        }
+
+    }
+
 
 }

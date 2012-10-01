@@ -31,8 +31,8 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 	@Resource(name = "memoryDatastore")
 	private ScriptusDatastore memory;
 
-    @Resource(name = "dbDatastore")
-    private ScriptusDatastore db;
+//    @Resource(name = "dbDatastore")
+//    private ScriptusDatastore db;
 
     @Resource(name = "embeddedDatastore")
     private ScriptusDatastore embedded;
@@ -50,19 +50,11 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 	private void switchDAO(DatastoreType datastore) {
 		if (datastore == DatastoreType.Memory) {
 			activeImpl = memory;
-        } else if (datastore == DatastoreType.Db) {
-            activeImpl = db;
+//        } else if (datastore == DatastoreType.Db) {
+//            activeImpl = db;
         } else if (datastore == DatastoreType.Embedded) {
             activeImpl = embedded;
 		}
-	}
-
-	public void writeProcess(UUID pid, byte[] script) {
-		activeImpl.writeProcess(pid, script);
-	}
-
-	public byte[] loadProcess(UUID pid) {
-		return activeImpl.loadProcess(pid);
 	}
 
 	public Set<String> listScripts(String userId) {
@@ -133,6 +125,10 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 
     public void updateTransportCursor(TransportType transport, String cursor) {
         activeImpl.updateTransportCursor(transport, cursor);
+    }
+
+    public void writeProcess(ScriptProcess p) {
+        activeImpl.writeProcess(p);
     }
 
 }

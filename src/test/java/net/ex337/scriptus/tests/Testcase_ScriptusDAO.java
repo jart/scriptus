@@ -30,7 +30,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		
-//		System.setProperty("scriptus.config", "test-scriptus.properties");
+		System.setProperty("scriptus.config", "test-scriptus.properties");
 //		System.setProperty("scriptus.config", "filesystem-based-scriptus.properties");
 		
 		super.setUp();

@@ -59,17 +59,6 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 		}
 	}
 
-	@Override
-	public final ScriptProcess getProcess(UUID pid) {
-		
-		ScriptProcess result = createScriptProcess();
-		
-		result.load(pid);
-		
-		return result;
-		
-	}
-
 
 
 	@Override
