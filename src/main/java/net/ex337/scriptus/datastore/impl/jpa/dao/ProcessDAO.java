@@ -3,14 +3,17 @@ package net.ex337.scriptus.datastore.impl.jpa.dao;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.ManyToOne;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+@Entity
 @Table(name="tbl_process")
 public class ProcessDAO {
-    
+
+    @Id
     @Column(name="pid")
     public String pid;
     @Version

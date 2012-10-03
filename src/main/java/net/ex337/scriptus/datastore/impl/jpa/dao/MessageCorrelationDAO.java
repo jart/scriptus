@@ -1,10 +1,12 @@
 package net.ex337.scriptus.datastore.impl.jpa.dao;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+@Entity
 @Table(name="tbl_message_correlation")
 public class MessageCorrelationDAO {
 

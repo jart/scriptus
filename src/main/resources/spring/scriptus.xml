@@ -18,6 +18,7 @@
   <tx:annotation-driven/>
 
     <context:annotation-config/>
+<context:component-scan base-package="net.ex337.scriptus.datastore.impl.jpa.dao" />
 
     <bean id="config" class="net.ex337.scriptus.config.ScriptusConfig" />
 
@@ -76,9 +77,9 @@
 		<property name="persistenceUnitName" value="jpa-pu" />
 		<property name="jpaVendorAdapter">
 			<bean
- 				class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
-<!-- 				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"> -->
- 				<property name="databasePlatform" value="derby" />
+-  				class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
+<!--  				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+ --> 				<property name="databasePlatform" value="org.hibernate.dialect.DerbyDialect" />
 			</bean>
 		</property>
 	</bean>

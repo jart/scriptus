@@ -1,9 +1,12 @@
 package net.ex337.scriptus.datastore.impl.jpa.dao;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+@Entity
 @Table(name="tbl_process_child")
 public class ChildProcessPIDDAO {
 
@@ -17,11 +20,11 @@ public class ChildProcessPIDDAO {
         this.parent = parent;
     }
 
+    @Id
     @Column(name="child")
     public String child;
     
     @ManyToOne()
-    @Column(name="parent")
     public ProcessDAO parent;
 
     

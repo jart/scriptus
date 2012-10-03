@@ -11,8 +11,10 @@
  
   <persistence-unit name="jpa-pu" transaction-type="RESOURCE_LOCAL">
   
-   <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
- 
+ <!--   <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+  -->
+<provider>org.hibernate.ejb.HibernatePersistence</provider>
+  
     <class>net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO</class>
     <class>net.ex337.scriptus.datastore.impl.jpa.dao.MessageCorrelationDAO</class>
     <class>net.ex337.scriptus.datastore.impl.jpa.dao.TransportCursorDAO</class>
@@ -52,8 +54,8 @@
          <property name="hibernate.cache.use_second_level_cache" value="true" />
    		 <property name="hibernate.cache.use_query_cache" value="true"/>
      -->        
-         <!-- property name="hibernate.dialect"
-          	value="HSQLDialect" /    org.hibernate.dialect.PostgreSQLDialect -->
+         <property name="hibernate.dialect"
+          	value="org.hibernate.dialect.DerbyDialect" />
          <!-- property name="hibernate.dialect"
           	value="ORACLE" /-->
 

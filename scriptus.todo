@@ -10,6 +10,7 @@
 	schema creation (if necessary)
 	 - constraints
 	 - will need to hand-wire entityManagerFactory etc.
+	 - fix bad @Ids
 	 
 	JPA testing
 	 - move serialisation out of ScriptProcess  and into memory store

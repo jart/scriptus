@@ -330,7 +330,7 @@
 			<scope>compile</scope>
 		</dependency>
 
- 		<dependency>
+  		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>org.eclipse.persistence.jpa</artifactId>
 			<version>2.4.0</version>
@@ -343,6 +343,7 @@
 		</dependency>
  
  
+
 
 
 			<!-- Start Hibernate -->
@@ -441,25 +442,25 @@
 			<url>http://ianso.github.com/scriptus/m2repo</url>
 		</repository>
 
-        <repository>
+ <!--        <repository>
             <id>JBoss Repository</id>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
             <layout>default</layout>
         </repository>
-		
-<!-- 		  <repository>
+ -->		
+ 		  <repository>
 		     <id>EclipseLink Repo</id>
-		     note that ampersands in this URL are escaped because this is in an xml file -
+<!-- 		     note that ampersands in this URL are escaped because this is in an xml file -
 			    un-escape them to use in browser 
-		    
-		     url>http://download.eclipse.org/rt/eclipselink/maven.repos</url
-		     <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
-		     use this for javax.persistence
-		     <snapshots>
+ -->		    
+<!-- 		     url>http://download.eclipse.org/rt/eclipselink/maven.repos</url
+ -->		     <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+	<!-- 	     use this for javax.persistence
+	 -->	     <snapshots>
 			<enabled>true</enabled>
 		     </snapshots>
 		  </repository>    
- -->	</repositories>
+ 	</repositories>
 
 
 	<profiles>
