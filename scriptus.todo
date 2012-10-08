@@ -7,14 +7,19 @@
 	
 	programming on a human timescale
 	
+	freedom of assembly
+	
 	schema creation (if necessary)
 	 - constraints
-	 - will need to hand-wire entityManagerFactory etc.
+X no	 - will need to hand-wire entityManagerFactory etc.
 	 - fix bad @Ids
+	 - DB location needs checking
+	 - don't hardcode embedded db names?
+	 - test sources duplicated, create unique id
 	 
 	JPA testing
-	 - move serialisation out of ScriptProcess  and into memory store
-	 - process children
+test	 - move serialisation out of ScriptProcess  and into memory store
+test	 - process children
 
 	/**
 	 * Writes the script state to DAO. If the pid is null we assign a new one.

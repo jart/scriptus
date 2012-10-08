@@ -68,7 +68,9 @@ public class ScriptusConfig {
 	private TransportType transportType;
 	
 	private DatastoreType datastoreType;
-	
+
+	public static boolean FORCE_CLEAN_INSTALL = false;
+
 	/**
 	 * Set to true during init() iff no config file exists
 	 * at specified (or default) location.
@@ -269,6 +271,9 @@ public class ScriptusConfig {
 
 
 	public boolean isCleanInstall() {
+	    if(FORCE_CLEAN_INSTALL) {
+	        return true;
+	    }
 		return cleanInstall;
 	}
 

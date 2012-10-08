@@ -25,8 +25,8 @@ public class ProcessDAO {
     @Column(name="user_id")
     public String userId;
     @Column(name="source")
-    public String source;
-    @Column(name="sourceId")
+    public byte[] source;
+    @Column(name="id_source")
     public String sourceId;
     @Column(name="args")
     public String args;

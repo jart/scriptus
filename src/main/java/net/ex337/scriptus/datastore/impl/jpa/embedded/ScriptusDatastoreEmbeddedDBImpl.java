@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -23,8 +22,8 @@ import org.apache.commons.logging.LogFactory;
 
 public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJPAImpl {
     
-//    @Resource
-//    private DataSource embeddedDB;
+    @Resource
+    private DataSource embeddedDB;
 
     private static final Log LOG = LogFactory.getLog(ScriptusDatastoreEmbeddedDBImpl.class);
 
@@ -37,23 +36,20 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
         File configFile = new File(config.getConfigLocation()).getAbsoluteFile();
         
         //fFIXME configlocation is thee  config file path
-        System.setProperty("derby.system.home", configFile.getParent());
+//        System.setProperty("derby.system.home", configFile.getParent());
         
 //        new jdbcte
 
         if(config.isCleanInstall()) {
 
+            
+            
             Connection conn = null;
             Statement s = null;
             
             
             try{
-                Properties props = new Properties(); // connection properties
-                props.put("user", "scriptus");
-                props.put("password", "scriptus");
-
-                String dbName = "scriptus"; // the name of the database
-                conn = DriverManager.getConnection("jdbc:derby:" + dbName+ ";create=true", props);
+                conn = embeddedDB.getConnection();
                 
 //                conn.setAutoCommit(false);
                 
@@ -67,7 +63,6 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
                 }
                 
             } catch(SQLException e) {
-                System.out.println("e.getSQLState()="+e.getSQLState());
                 throw e;
             } finally {
                 

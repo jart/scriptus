@@ -12,7 +12,7 @@ public class ScriptDAO {
 
     @Id
     @Column(name="script_src")
-    public String source;
+    public byte[] source;
     @Column(name="script_name")
     public String name;
     @Column(name="user_id")

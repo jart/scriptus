@@ -1,10 +1,7 @@
 package net.ex337.scriptus.datastore.impl.jpa;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -15,18 +12,10 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-
 import net.ex337.scriptus.SerializableUtils;
+import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.datastore.impl.BaseScriptusDatastore;
@@ -44,6 +33,13 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ScriptableObject;
+import org.springframework.transaction.annotation.Transactional;
+
 public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore implements ScriptusDatastore {
     
     private static final Log LOG = LogFactory.getLog(ScriptusDatastoreJPAImpl.class);
@@ -52,6 +48,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     private EntityManager em;
 
     @Override
+    @Transactional(readOnly=true)
     public ScriptProcess getProcess(UUID pid) {
         if (pid == null) {
             throw new ScriptusRuntimeException("Cannot load null pid");
@@ -75,7 +72,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             
             result.setPid(UUID.fromString(d.pid));
             result.setWaiterPid(UUID.fromString(d.waitingPid));
-            result.setSource(d.source);
+            result.setSource(new String(d.source, Charset.forName(ScriptusConfig.CHARSET)));
             result.setSourceName(d.sourceId);
             result.setUserId(d.userId);
             result.setArgs(d.args);
@@ -98,7 +95,9 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
 
         } catch (ScriptusRuntimeException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
+            throw new ScriptusRuntimeException(e);
+        } catch (ClassNotFoundException e) {
             throw new ScriptusRuntimeException(e);
         } finally {
             Context.exit();
@@ -107,6 +106,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
     
     @Override
+    @Transactional(readOnly=false)
     public void writeProcess(ScriptProcess p) {
         
         if (p.getPid() == null) {
@@ -126,6 +126,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             
             if(p.getVersion() == 0) {
                 d = new ProcessDAO();
+                d.pid = p.getPid().toString();
             } else {
                 d = em.find(ProcessDAO.class, p.getPid());
                 if(d == null) {
@@ -139,11 +140,13 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             d.globalScope = SerializableUtils.serialiseObject(p.getGlobalScope());
             d.isRoot = p.isRoot();
             d.owner = p.getOwner();
-            d.source = p.getSource();
+            d.source = p.getSource().getBytes(Charset.forName(ScriptusConfig.CHARSET));
             d.sourceId = p.getSourceName();
             d.state = SerializableUtils.serialiseObject(p.getState());
             d.userId = p.getUserId();
-            d.waitingPid = p.getWaiterPid().toString();
+            if(p.getWaiterPid() != null) {
+                d.waitingPid = p.getWaiterPid().toString();
+            }
             
             if(p.getChildren() != null && ! p.getChildren().isEmpty()) {
                 if(d.children == null) {
@@ -170,7 +173,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
                 
         } catch (ScriptusRuntimeException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new ScriptusRuntimeException(e);
         } finally {
             Context.exit();
@@ -179,6 +182,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=false)
     public void deleteProcess(UUID pid) {
         
         Query q = em.createQuery("delete from ProcessDAO d where d.pid = :pid");
@@ -189,6 +193,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Set<String> listScripts(String userId) {
         
         Query q = em.createQuery("select name from ScriptDAO d where d.userId = :userId");
@@ -206,15 +211,16 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=true)
     public String loadScriptSource(String userId, String name) {
         
-        Query q = em.createQuery("select s from ScriptDAO s where s.userId = :user and s.name = :name");
+        Query q = em.createQuery("select s from ScriptDAO s where s.userId = :userId and s.name = :name");
         q.setParameter("userId", userId);
         q.setParameter("name", name);
         
         try {
             ScriptDAO d = (ScriptDAO) q.getSingleResult();
-            return d.source;
+            return new String(d.source, Charset.forName(ScriptusConfig.CHARSET));
         } catch(NoResultException nre) {
             return null;
         }
@@ -222,17 +228,19 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=false)
     public void saveScriptSource(String userId, String name, String source) {
         
         ScriptDAO d = new ScriptDAO();
         d.name = name;
         d.userId = userId;
-        d.source = source;
+        d.source = source.getBytes(Charset.forName(ScriptusConfig.CHARSET));
         em.persist(d);
 
     }
 
     @Override
+    @Transactional(readOnly=false)
     public void deleteScript(String userId, String name) {
         
         Query q = em.createQuery("delete from ScriptDAO d where d.userId = :userId and d.name = :name");
@@ -244,6 +252,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<ScheduledScriptAction> getScheduledTasks(Calendar dueDate) {
         
         Query q = em.createQuery("select s from ScheduledScriptActionDAO s where s.when <= :when");
@@ -262,6 +271,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=false)
     public void deleteScheduledTask(UUID pid, long nonce) {
         
         Query q = em.createQuery("delete from ScheduledScriptActionDAO s where s.pid  = :pid and s.nonce = :nonce");
@@ -273,6 +283,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=false)
     public void saveScheduledTask(ScheduledScriptAction task) {
         if(task instanceof Wake) {
             Wake w = (Wake) task;
@@ -292,6 +303,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=false)
     public void registerMessageCorrelation(MessageCorrelation cid) {
         MessageCorrelationDAO d = new MessageCorrelationDAO();
         d.pid = cid.getPid().toString();
@@ -302,6 +314,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser) {
         
         StringBuilder b = new StringBuilder(
@@ -311,9 +324,13 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
         if(inReplyToMessageId != null) {
             b.append(" or (d.messageId = :messageId and d.user is null)" +
-            		 " or (d.messageId = :messageId and d.user = :user");
+            		 " or (d.messageId = :messageId and d.user = :user)");
         }
         Query q = em.createQuery(b.toString());
+        q.setParameter("user", fromUser);
+        if(inReplyToMessageId != null) {
+            q.setParameter("messageId", inReplyToMessageId);
+        }
         
         List<MessageCorrelationDAO> dd = q.getResultList();
         
@@ -327,6 +344,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=false)
     public void unregisterMessageCorrelation(MessageCorrelation correlation) {
         
         MessageCorrelationDAO d = em.find(MessageCorrelationDAO.class, correlation.getPid().toString());
@@ -337,6 +355,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
+    @Transactional(readOnly=true)
     public String getTransportCursor(TransportType transport) {
         TransportCursorDAO d = em.find(TransportCursorDAO.class, transport.toString());
         if(d == null){
@@ -346,7 +365,8 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
-    public void updateTransportCursor(TransportType transport, String cursor) {
+    @Transactional(readOnly=false)
+   public void updateTransportCursor(TransportType transport, String cursor) {
         TransportCursorDAO d = em.find(TransportCursorDAO.class, transport.toString());
         if(d == null){
             d = new TransportCursorDAO();
@@ -380,5 +400,12 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
         return r;
     }
+    
+    @Override
+    @Transactional(readOnly=false)
+    public void createTestSources() {
+        super.createTestSources();        
+    }
+
 
 }

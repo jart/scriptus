@@ -1,39 +1,44 @@
 package net.ex337.scriptus.tests;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.datastore.impl.jpa.embedded.ScriptusDatastoreEmbeddedDBImpl;
-import net.ex337.scriptus.model.ScriptProcess;
-import net.ex337.scriptus.transport.impl.DummyTransport;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
 
 public class Testcase_EmbeddedSchemaCreation extends BaseTestCase {
 
-    ScriptusConfig c;
-    
+    private ScriptusDatastore datastore;
+
     @Override
     public void setUp() throws Exception {
-        System.setProperty("scriptus.config", "test-scriptus-clean.properties");
+        
+        ScriptusConfig.FORCE_CLEAN_INSTALL = true;
+        
+        System.setProperty("scriptus.config", "test-scriptus.properties");
         
         super.setUp();
-        
-        c = (ScriptusConfig) getAppContext().getBean("config");
+
+        datastore = (ScriptusDatastore) appContext.getBean("datastore");
 
     }
     
     @Override
     public void tearDown() {
-        new File(c.getConfigLocation()).delete();
+
     }
     
-	public void test_createSchema() throws IOException, SQLException {
-	    
-	    ScriptusDatastoreEmbeddedDBImpl d = (ScriptusDatastoreEmbeddedDBImpl) super.getAppContext().getBean("embedded");
-	    
-	}
+    public void testCursors() {
+        
+        UUID s = UUID.randomUUID();
+        
+        datastore.updateTransportCursor(TransportType.CommandLine, s.toString());
+        
+        UUID t  = UUID.fromString(datastore.getTransportCursor(TransportType.CommandLine));
+        
+        assertEquals("cursor updated", s, t);
+        
+    }
 
 
 }

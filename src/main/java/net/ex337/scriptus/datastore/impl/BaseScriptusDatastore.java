@@ -37,7 +37,7 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 	public abstract ScriptProcess createScriptProcess();
 
 	@Override
-	public final void createTestSources() {
+	public void createTestSources() {
 		URL u = this.getClass().getClassLoader().getResource("testScripts");
 
 		if(u == null) {

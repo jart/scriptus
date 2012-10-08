@@ -76,12 +76,11 @@
 		<property name="dataSource" ref="embeddedDB" />
 		<property name="persistenceUnitName" value="jpa-pu" />
 		<property name="jpaVendorAdapter">
-			<bean
--  				class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
-<!--  				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
- --> 				<property name="databasePlatform" value="org.hibernate.dialect.DerbyDialect" />
-			</bean>
-		</property>
+			<bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter"/>
+<!---  				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+< 				<property name="databasePlatform" value="org.hibernate.dialect.DerbyDialect" />
+ 			</bean>
+ -->		</property>
 	</bean>
 
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
