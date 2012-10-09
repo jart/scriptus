@@ -1,7 +1,6 @@
 package net.ex337.scriptus.transport.twitter;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -127,7 +126,7 @@ public class TwitterTransportImpl implements Transport {
         try {
             String cursor = datastore.getTransportCursor(TransportType.Twitter);
             if(cursor != null) {
-                lastMentions = (List<String>)SerializableUtils.deserialiseObject(cursor.getBytes(Charset.forName("UTF-8")));
+                lastMentions = (List<String>)SerializableUtils.deserialiseObject(cursor.getBytes(ScriptusConfig.CHARSET));
             }
         } catch (IOException e) {
             LOG.warn("couldn't get twitter cursor", e);
@@ -201,7 +200,7 @@ public class TwitterTransportImpl implements Transport {
 
         if (!processedIncomings.isEmpty()) {
             try {
-                datastore.updateTransportCursor(TransportType.Twitter, new String(SerializableUtils.serialiseObject(processedIncomings), Charset.forName("UTF-8")));
+                datastore.updateTransportCursor(TransportType.Twitter, new String(SerializableUtils.serialiseObject(processedIncomings), ScriptusConfig.CHARSET));
             } catch (IOException e) {
                 throw new ScriptusRuntimeException(e);
             }

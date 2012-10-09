@@ -1,7 +1,6 @@
 package net.ex337.scriptus.datastore.impl.jpa;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -10,7 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -75,7 +73,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             if(d.waitingPid != null) {
                 result.setWaiterPid(UUID.fromString(d.waitingPid));
             }
-            result.setSource(new String(d.source, Charset.forName(ScriptusConfig.CHARSET)));
+            result.setSource(new String(d.source, ScriptusConfig.CHARSET));
             result.setSourceName(d.sourceId);
             result.setUserId(d.userId);
             result.setArgs(d.args);
@@ -143,7 +141,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             d.globalScope = SerializableUtils.serialiseObject(p.getGlobalScope());
             d.isRoot = p.isRoot();
             d.owner = p.getOwner();
-            d.source = p.getSource().getBytes(Charset.forName(ScriptusConfig.CHARSET));
+            d.source = p.getSource().getBytes(ScriptusConfig.CHARSET);
             d.sourceId = p.getSourceName();
             d.state = SerializableUtils.serialiseObject(p.getState());
             d.userId = p.getUserId();
@@ -217,17 +215,18 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=true)
     public String loadScriptSource(String userId, String name) {
         
-        Query q = em.createQuery("select s from ScriptDAO s where s.userId = :userId and s.name = :name");
-        q.setParameter("userId", userId);
-        q.setParameter("name", name);
+        ScriptIdDAO d = new ScriptIdDAO();
+        d.userId = userId;
+        d.name = name;
         
-        try {
-            ScriptDAO d = (ScriptDAO) q.getSingleResult();
-            return new String(d.source, Charset.forName(ScriptusConfig.CHARSET));
-        } catch(NoResultException nre) {
-            return null;
+        ScriptDAO s = em.find(ScriptDAO.class, d);
+        
+        if(s != null) {
+            return new String(s.source, ScriptusConfig.CHARSET);
         }
-
+        
+        return null;
+        
     }
 
     @Override
@@ -244,7 +243,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             s = new ScriptDAO();
             s.id = id;
         }
-        s.source = source.getBytes(Charset.forName(ScriptusConfig.CHARSET));
+        s.source = source.getBytes(ScriptusConfig.CHARSET);
         em.persist(s);
 
     }

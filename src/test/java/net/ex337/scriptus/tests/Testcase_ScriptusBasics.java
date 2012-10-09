@@ -24,7 +24,6 @@ import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 import net.ex337.scriptus.transport.Transport;
-import net.ex337.scriptus.transport.impl.DummyTransport;
 
 /**
  * Tests the Scriptus API calls.

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +48,9 @@ public class ScriptusConfig {
 
 	public static final String DATE_FORMAT="yyyy-MM-dd HH:mm";
 
-	public static final String CHARSET = "UTF-8";
+	public static final String CHARSET_STR = "UTF-8";
+	
+	public static final Charset CHARSET = Charset.forName(ScriptusConfig.CHARSET_STR);
 	
 	public static final String SCRIPTUS_DIR = System.getProperty("user.home")+"/.scriptus";
 
