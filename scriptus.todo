@@ -12,10 +12,11 @@
 	schema creation (if necessary)
 	 - constraints
 X no	 - will need to hand-wire entityManagerFactory etc.
-	 - fix bad @Ids
+X	 - fix bad @Ids on scriptDAO
 	 - DB location needs checking
 	 - don't hardcode embedded db names?
-	 - test sources duplicated, create unique id
+X	 - test sources duplicated, create unique id
+	 - docment getting to a SQL console
 	 
 	JPA testing
 test	 - move serialisation out of ScriptProcess  and into memory store

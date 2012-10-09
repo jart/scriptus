@@ -24,6 +24,7 @@ import net.ex337.scriptus.datastore.impl.jpa.dao.MessageCorrelationDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ProcessDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptIdDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.TransportCursorDAO;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
@@ -71,7 +72,9 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             ScriptProcess result = createScriptProcess();
             
             result.setPid(UUID.fromString(d.pid));
-            result.setWaiterPid(UUID.fromString(d.waitingPid));
+            if(d.waitingPid != null) {
+                result.setWaiterPid(UUID.fromString(d.waitingPid));
+            }
             result.setSource(new String(d.source, Charset.forName(ScriptusConfig.CHARSET)));
             result.setSourceName(d.sourceId);
             result.setUserId(d.userId);
@@ -231,11 +234,18 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=false)
     public void saveScriptSource(String userId, String name, String source) {
         
-        ScriptDAO d = new ScriptDAO();
-        d.name = name;
-        d.userId = userId;
-        d.source = source.getBytes(Charset.forName(ScriptusConfig.CHARSET));
-        em.persist(d);
+        ScriptIdDAO id = new ScriptIdDAO();
+        id.name = name;
+        id.userId = userId;
+        
+        ScriptDAO s = em.find(ScriptDAO.class, id);
+        
+        if(s == null) {
+            s = new ScriptDAO();
+            s.id = id;
+        }
+        s.source = source.getBytes(Charset.forName(ScriptusConfig.CHARSET));
+        em.persist(s);
 
     }
 
