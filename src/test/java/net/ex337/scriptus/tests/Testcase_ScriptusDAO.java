@@ -196,4 +196,39 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	    
 	}
 	
+	public void testChildren() {
+	    
+	    UUID parent = UUID.randomUUID();
+	    UUID ch1 = UUID.randomUUID();
+	    UUID ch2 = UUID.randomUUID();
+	    UUID ch3 = UUID.randomUUID();
+	    
+        datastore.addChild(parent, ch1, 1);
+        datastore.addChild(parent, ch2, 4);
+        datastore.addChild(parent, ch3, 10);
+	    
+        List<UUID> ch = datastore.getChildren(parent);
+        
+        assertEquals("correct size", 3, ch.size());
+        assertEquals("ch1 ok", ch1, ch.get(0));
+        assertEquals("ch2 ok", ch2, ch.get(1));
+        assertEquals("ch3 ok", ch3, ch.get(2));
+        
+        UUID l = datastore.getLastChild(parent);
+        
+        assertEquals("last pid ok", ch3, l);
+        
+        datastore.removeChild(parent, ch3);
+        
+        l = datastore.getLastChild(parent);
+        
+        assertEquals("last pid ok", ch2, l);
+        
+        ch = datastore.getChildren(parent);
+        
+        assertEquals("removed for good", 2, ch.size());
+        
+        assertTrue("see?", ! ch.contains(ch3));
+	}
+	
 }

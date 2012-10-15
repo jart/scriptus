@@ -1,12 +1,6 @@
 package net.ex337.scriptus.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -15,7 +9,6 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.api.ScriptusAPI;
 import net.ex337.scriptus.model.api.Termination;
@@ -23,7 +16,6 @@ import net.ex337.scriptus.model.api.output.ErrorTermination;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +24,6 @@ import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 /**
  * Represents one script process. The source of the process
@@ -63,7 +54,6 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	private String owner;
 	private Object state;
 	private int version;
-	private List<UUID> children = new ArrayList<UUID>();
 	private Function compiled;
 	private boolean isRoot;
 	
@@ -136,7 +126,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	public void save() {
 	    
 	    datastore.writeProcess(this);
-
+	    version++;
 	}
 
 	/**
@@ -276,7 +266,6 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		r.version = 0;
 		r.pid = null;
 		r.waiterPid = null;
-		r.children = new ArrayList<UUID>();
 
 		return r;
 
@@ -312,10 +301,6 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		this.state = state;
 	}
 
-	public List<UUID> getChildren() {
-		return children;
-	}
-
 	public void setArgs(String args) {
 		this.args = args;
 	}
@@ -342,10 +327,6 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 	public void setContinuation(Object continuation) {
 		this.continuation = continuation;
-	}
-
-	public void setChildren(List<UUID> children) {
-		this.children = children;
 	}
 
 	public void setGlobalScope(Scriptable globalScope) {
@@ -415,6 +396,18 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
+    }
+
+    public UUID getLastChild() {
+        return datastore.getLastChild(this.pid);
+    }
+
+    public void addChild(UUID childPid) {
+        /*
+         * since the version is incremented when we save, this means it's
+         * OK to use as a child sequence - they don't have to be contiguous
+         */
+        datastore.addChild(this.pid, childPid, version);
     }
 
 }

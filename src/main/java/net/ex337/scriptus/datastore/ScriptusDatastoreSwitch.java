@@ -131,4 +131,22 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
         activeImpl.writeProcess(p);
     }
 
+    public List<UUID> getChildren(UUID parent) {
+        return activeImpl.getChildren(parent);
+    }
+
+    public void removeChild(UUID parent, UUID child) {
+        activeImpl.removeChild(parent, child);
+    }
+
+    public void addChild(UUID parent, UUID newChild, int seq) {
+        activeImpl.addChild(parent, newChild, seq);
+    }
+
+    public UUID getLastChild(UUID pid) {
+        return activeImpl.getLastChild(pid);
+    }
+    
+    
+
 }

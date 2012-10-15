@@ -30,7 +30,9 @@ public class Wait extends ScriptAction implements Serializable {
 		
 		LOG.debug("waiting for "+childPid.toString().substring(30));
 		
-		if( ! process.getChildren().contains(childPid)) {
+		final UUID parentPid = process.getPid();
+		
+        if( ! scriptus.getChildren(parentPid).contains(childPid)) {
 			throw new ScriptusRuntimeException("not a child: "+childPid);
 		}
 
@@ -47,18 +49,18 @@ public class Wait extends ScriptAction implements Serializable {
 					if(child.getState() instanceof Termination) {
 
 						//FIXME we should delete child & remove from list of children
-						scriptus.updateProcessState(process.getPid(), ((Termination)child.getState()).getResult());
+						scriptus.updateProcessState(parentPid, ((Termination)child.getState()).getResult());
 
-						scriptus.execute(process.getPid());
+						scriptus.execute(parentPid);
 
 						return;
 						
 					}
 					
 					LOG.debug("registering waiter for " + childPid.toString().substring(30) + ", waiterpid="
-							+ process.getPid().toString().substring(30));
+							+ parentPid.toString().substring(30));
 					
-					child.setWaiterPid(process.getPid());
+					child.setWaiterPid(parentPid);
 					child.save();
 					
 				}

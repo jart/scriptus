@@ -50,6 +50,8 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	
 	private final Map<UUID,byte[]> processes = new HashMap<UUID,byte[]>();
 
+	private final Map<UUID,List<UUID>> children = new HashMap<UUID,List<UUID>>();
+
 	private final Map<String,String> sources = new HashMap<String,String>();
 	
     private Set<MessageCorrelation> correlations = new HashSet<MessageCorrelation>();
@@ -254,7 +256,6 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
             result.setUserId(p.getUserId());
             result.setArgs(p.getArgs());
             result.setState(p.getState());
-            result.setChildren(p.getChildren());
             result.setCompiled(p.getCompiled());
             result.setOwner(p.getOwner());
             result.setRoot(p.isRoot());
@@ -278,6 +279,40 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
         }
 
     }
+
+    @Override
+    public List<UUID> getChildren(UUID parent) {
+        if(children.get(parent) == null) {
+            children.put(parent, new ArrayList<UUID>());
+        }
+        return children.get(parent);
+    }
+
+    @Override
+    public void removeChild(UUID parent, UUID child) {
+        if(children.get(parent) != null){
+            children.get(parent).remove(child);
+        }
+        
+    }
+
+    @Override
+    public void addChild(UUID parent, UUID newChild, int seq) {
+        if(children.get(parent) == null) {
+            children.put(parent, new ArrayList<UUID>());
+        }
+        children.get(parent).add(newChild);
+    }
+
+    @Override
+    public UUID getLastChild(UUID pid) {
+        List<UUID> l;
+        if((l = children.get(pid)) == null) {
+            return null;
+        }
+        return l.get(l.size()-1);
+    }
+    
 
 
 }

@@ -47,5 +47,6 @@ create table scriptus.tbl_process (
 
 create table scriptus.tbl_process_child (
 	parent varchar(36) not null,
-	child varchar(36) not null
+	child varchar(36) not null,
+	seq int not null
 );

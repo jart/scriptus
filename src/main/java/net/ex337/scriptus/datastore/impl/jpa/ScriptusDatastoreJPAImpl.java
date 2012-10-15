@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -78,12 +79,6 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             result.setUserId(d.userId);
             result.setArgs(d.args);
             result.setState(SerializableUtils.deserialiseObject(d.state));
-            if(result.getChildren() == null) {
-                result.setChildren(new ArrayList<UUID>());
-            }
-            if(d.children != null) for(ChildProcessPIDDAO c : d.children) {
-                result.getChildren().add(UUID.fromString(c.child));
-            }
             result.setCompiled((Function)SerializableUtils.deserialiseObject(d.compiled));
             result.setOwner(d.owner);
             result.setRoot(d.isRoot);
@@ -129,7 +124,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
                 d = new ProcessDAO();
                 d.pid = p.getPid().toString();
             } else {
-                d = em.find(ProcessDAO.class, p.getPid());
+                d = em.find(ProcessDAO.class, p.getPid().toString());
                 if(d == null) {
                     throw new ScriptusRuntimeException("Process not found for pid "+p.getPid());
                 }
@@ -149,17 +144,6 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
                 d.waitingPid = p.getWaiterPid().toString();
             }
             
-            if(p.getChildren() != null && ! p.getChildren().isEmpty()) {
-                if(d.children == null) {
-                    d.children = new ArrayList<ChildProcessPIDDAO>();
-                } else {
-                    d.children.clear();
-                }
-                for(UUID c : p.getChildren()) {
-                    d.children.add(new ChildProcessPIDDAO(d, c.toString()));
-                    
-                }
-            }
             
 //            ByteArrayOutputStream bout = new ByteArrayOutputStream();
 //            ObjectOutputStream out = new ObjectOutputStream(bout);
@@ -414,6 +398,54 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=false)
     public void createTestSources() {
         super.createTestSources();        
+    }
+
+    @Override
+    public List<UUID> getChildren(UUID parent) {
+        Query q = em.createQuery("select r from ChildProcessPIDDAO r where r.parent = :parent order by r.seq");
+        q.setParameter("parent", parent.toString());
+        
+        List<ChildProcessPIDDAO> c = q.getResultList();
+        List<UUID> result = new ArrayList<UUID>(c.size());
+        for(ChildProcessPIDDAO cc : c) {
+            result.add(UUID.fromString(cc.child));
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public void removeChild(UUID parent, UUID child) {
+        Query q = em.createQuery("delete from ChildProcessPIDDAO p where parent = :parent and child = :child");
+        q.setParameter("parent", parent.toString());
+        q.setParameter("child", child.toString());
+       q.executeUpdate();
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public void addChild(UUID parent, UUID newChild, int seq) {
+        ChildProcessPIDDAO p = new ChildProcessPIDDAO();
+        p.child = newChild.toString();
+        p.parent = parent.toString();
+        p.seq = seq;
+        
+        em.persist(p);
+        
+    }
+
+    @Override
+    public UUID getLastChild(UUID parent) {
+        
+        Query q = em.createQuery("select r from ChildProcessPIDDAO r where r.parent = :parent and r.seq = (select max(rr.seq) from ChildProcessPIDDAO rr where rr.parent = :parent)");
+        q.setParameter("parent", parent.toString());
+                
+        try{    
+            ChildProcessPIDDAO r = (ChildProcessPIDDAO) q.getSingleResult();
+            return UUID.fromString(r.child);
+        } catch(NoResultException nre) {
+            return null;
+        }
     }
 
 

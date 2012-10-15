@@ -34,7 +34,9 @@ public class Kill extends ScriptAction implements Serializable {
 	@Override
 	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 	
-		if( process.getChildren().contains(pid)) {
+	    final UUID parent = process.getPid();
+	    
+		if( scriptus.getChildren(parent).contains(pid)) {
 			/*
 			 * FIXME if the child process is running at this very instant, the child is recreated...
 			 */
@@ -52,7 +54,7 @@ public class Kill extends ScriptAction implements Serializable {
 						scriptus.markAsKilledIfRunning(pid);
 						
 						child.delete();
-						process.getChildren().remove(pid);
+						scriptus.removeChild(parent, pid);
 						process.save();
 
 					} catch(ProcessNotFoundException sre) {

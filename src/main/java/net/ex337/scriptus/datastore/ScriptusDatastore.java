@@ -9,6 +9,7 @@ import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
+import net.ex337.scriptus.tests.Testcase_ScriptusDAO;
 
 /**
  * 
@@ -37,6 +38,10 @@ public interface ScriptusDatastore {
 	 * @param uuid the PID of the process to retrieve.
 	 */
 	public ScriptProcess getProcess(UUID uuid);
+	
+    public List<UUID> getChildren(UUID parent);
+    public void removeChild(UUID parent, UUID child);
+    public void addChild(UUID parent, UUID newChild, int seq);
 
 	
 	/**
@@ -129,5 +134,7 @@ public interface ScriptusDatastore {
     public void updateProcessState(UUID pid, Object o);
 
     public void writeProcess(ScriptProcess p);
+
+    public UUID getLastChild(UUID pid);
 	
 }

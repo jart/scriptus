@@ -358,7 +358,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 
 	public Object _intern_getLastPid() {
 		ScriptProcess process = (ScriptProcess) Context.getCurrentContext().getThreadLocal("process");
-		return process.getChildren().get(process.getChildren().size() - 1).toString();
+		return process.getLastChild();
 	}
 
 }

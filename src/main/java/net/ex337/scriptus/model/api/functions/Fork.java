@@ -25,8 +25,8 @@ public class Fork extends ScriptAction implements Serializable {
 			@Override
 			public void run() {
 				parent.setState(childPid.toString());
-				parent.getChildren().add(childPid);
-				parent.save();
+                parent.save();
+				parent.addChild(childPid);
 			}
 		});
 

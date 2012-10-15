@@ -1,5 +1,6 @@
 package net.ex337.scriptus;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -111,6 +112,18 @@ public class ScriptusFacade {
 
     public void scheduleTask(ScheduledScriptAction action) {
         scheduler.scheduleTask(action);
+    }
+
+    public List<UUID> getChildren(UUID parent) {
+        return datastore.getChildren(parent);
+    }
+
+    public void removeChild(UUID parent, UUID child) {
+        datastore.removeChild(parent, child);
+    }
+
+    public void addChild(int seq, UUID parent, UUID newChild) {
+        datastore.addChild(parent, newChild, seq);
     }
 
 }
