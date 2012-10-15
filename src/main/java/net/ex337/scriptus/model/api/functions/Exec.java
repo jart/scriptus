@@ -33,7 +33,6 @@ public class Exec extends ScriptAction implements Serializable {
 	@Override
 	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 
-		//TODO add script not found exception
 		ScriptProcess p = scriptus.newProcess(process.getUserId(), script, args, process.getOwner());
 		
 		p.setPid(process.getPid());

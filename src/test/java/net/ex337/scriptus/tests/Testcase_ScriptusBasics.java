@@ -270,7 +270,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_exec() throws IOException {
 		
-		final ScriptProcess p = datastore.newProcess(TEST_USER, "exec.js", "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "exec.js", "ags", "owner");
 		
 		ScriptAction r = p.call();
 		

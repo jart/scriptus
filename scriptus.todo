@@ -8,23 +8,12 @@
 	programming on a human timescale
 	
 	freedom of assembly
-	
-	schema creation (if necessary)
-	 - constraints
-X no	 - will need to hand-wire entityManagerFactory etc.
-X	 - fix bad @Ids on scriptDAO
-	 - DB location needs checking
-	 - don't hardcode embedded db names?
-X	 - test sources duplicated, create unique id
-	 - docment getting to a SQL console
 
-	
-IdScriptableObject
+	JPA	
+later	 - DB location needs checking
+later	 - constraints
+	 - document getting to a SQL console
 
-
-In addition to this change, a new page has been added to the documentation, [HOWTO extend Scriptus with custom functionality](). Inspired by some conversations with Nela & Emil at xxx, who've been using Scriptus to run a questionnaire for their followers on Twitter, I've documented the best way to add new functionalities to Scriptus.
-
-In the example, a poll is taken and the poll results are stored in a MySQL database. The MySQL DB is accessed separately to the Scriptus storage system, which is still used exclusively for script state. [Check it out]() if you like Scriptus but want it to do extra things that are really specific to your needs.
 
 	 - simple process admin?
 	 - API
@@ -42,6 +31,13 @@ However, if the user 'speaks' after the last poll but before the timeout, then t
 
 In addition, the wake is not unregistered on receipt of a message, causing a needless process load & nonce check.
 
+	
+IdScriptableObject
+
+
+In addition to this change, a new page has been added to the documentation, [HOWTO extend Scriptus with custom functionality](). Inspired by some conversations with Nela & Emil at xxx, who've been using Scriptus to run a questionnaire for their followers on Twitter, I've documented the best way to add new functionalities to Scriptus.
+
+In the example, a poll is taken and the poll results are stored in a MySQL database. The MySQL DB is accessed separately to the Scriptus storage system, which is still used exclusively for script state. [Check it out]() if you like Scriptus but want it to do extra things that are really specific to your needs.
 	
 	PROBLEMS
 	DOCS + can use other correlations
@@ -665,4 +661,9 @@ X	 -> init() checks freshness, creates if necessary?
 X	JPA testing
 X test	 - move serialisation out of ScriptProcess  and into memory store
 X test	 - process children
+X	schema creation (if necessary)
+X no	 - will need to hand-wire entityManagerFactory etc.
+X	 - fix bad @Ids on scriptDAO
+X no	 - don't hardcode embedded db names?
+X	 - test sources duplicated, create unique id
 
