@@ -107,8 +107,6 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
         if (p.getPid() == null) {
             p.setPid(UUID.randomUUID());
-        } else {
-            p.setVersion(p.getVersion()+1);
         }
 
         LOG.debug("saving " + p.getPid().toString().substring(30));
@@ -124,6 +122,9 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
                 d = new ProcessDAO();
                 d.pid = p.getPid().toString();
             } else {
+                
+                p.setVersion(p.getVersion()+1);
+                
                 d = em.find(ProcessDAO.class, p.getPid().toString());
                 if(d == null) {
                     throw new ScriptusRuntimeException("Process not found for pid "+p.getPid());

@@ -17,15 +17,6 @@ X	 - fix bad @Ids on scriptDAO
 	 - don't hardcode embedded db names?
 X	 - test sources duplicated, create unique id
 	 - docment getting to a SQL console
-	 
-	JPA testing
-test	 - move serialisation out of ScriptProcess  and into memory store
-X test	 - process children
-
-
-
-
-
 
 	
 IdScriptableObject
@@ -671,4 +662,7 @@ X	 -> em
 X	 -> datasource in config
 X	EmbeddedDBJPADatastore extendfs JPADatastore
 X	 -> init() checks freshness, creates if necessary?
+X	JPA testing
+X test	 - move serialisation out of ScriptProcess  and into memory store
+X test	 - process children
 
