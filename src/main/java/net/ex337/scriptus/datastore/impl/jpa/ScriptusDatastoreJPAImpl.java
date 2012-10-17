@@ -1,10 +1,16 @@
 package net.ex337.scriptus.datastore.impl.jpa;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +39,7 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
@@ -44,12 +51,15 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     
     private static final Log LOG = LogFactory.getLog(ScriptusDatastoreJPAImpl.class);
     
+    private final Map<UUID,byte[]> processes = new HashMap<UUID,byte[]>();
+
     @PersistenceContext(unitName="jpa-pu")
     private EntityManager em;
 
     @Override
     @Transactional(readOnly=true)
     public ScriptProcess getProcess(UUID pid) {
+        
         if (pid == null) {
             throw new ScriptusRuntimeException("Cannot load null pid");
         }
@@ -69,7 +79,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             }
 
             ScriptProcess result = createScriptProcess();
-            
+
             result.setPid(UUID.fromString(d.pid));
             if(d.waitingPid != null) {
                 result.setWaiterPid(UUID.fromString(d.waitingPid));
@@ -78,15 +88,44 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             result.setSourceName(d.sourceId);
             result.setUserId(d.userId);
             result.setArgs(d.args);
+            
+            {
+                ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(d.continuation));
+
+//                ScriptProcess p = (ScriptProcess) in.readObject();
+
+//                ScriptProcess result = createScriptProcess();
+                
+//                result.setPid(p.getPid());
+//                result.setWaiterPid(p.getWaiterPid());
+//                result.setSource(p.getSource());
+//                result.setSourceName(p.getSourceName());
+//                result.setUserId(p.getUserId());
+//                result.setArgs(p.getArgs());
+//                result.setState(p.getState());
+//                result.setCompiled(p.getCompiled());
+//                result.setOwner(p.getOwner());
+//                result.setRoot(p.isRoot());
+//                result.setVersion(p.getVersion());
+                
+//                p = null;
+
+//                in.readObject();
+                result.setCompiled((Function) in.readObject());
+                result.setGlobalScope((ScriptableObject) in.readObject());
+                result.setContinuation(in.readObject());
+                
+            }
+            
             result.setState(SerializableUtils.deserialiseObject(d.state));
-            result.setCompiled((Function)SerializableUtils.deserialiseObject(d.compiled));
+//            result.setCompiled((Function)SerializableUtils.deserialiseObject(d.compiled));
+//          result.setGlobalScope((ScriptableObject) SerializableUtils.deserialiseObject(d.globalScope));
+//          result.setContinuation(SerializableUtils.deserialiseObject(d.continuation));
             result.setOwner(d.owner);
             result.setRoot(d.isRoot);
             result.setVersion(d.version);
             
-            result.setGlobalScope((ScriptableObject) SerializableUtils.deserialiseObject(d.globalScope));
-            result.setContinuation(SerializableUtils.deserialiseObject(d.continuation));
-            
+
             return result;
 
         } catch (ScriptusRuntimeException e) {
@@ -105,8 +144,11 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=false)
     public void writeProcess(ScriptProcess p) {
         
+        boolean newProcess = false;
+        
         if (p.getPid() == null) {
             p.setPid(UUID.randomUUID());
+            newProcess = true;
         }
 
         LOG.debug("saving " + p.getPid().toString().substring(30));
@@ -118,12 +160,10 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         try {
             ProcessDAO d = null;
             
-            if(p.getVersion() == 0) {
+            if(newProcess) {
                 d = new ProcessDAO();
                 d.pid = p.getPid().toString();
             } else {
-                
-                p.setVersion(p.getVersion()+1);
                 
                 d = em.find(ProcessDAO.class, p.getPid().toString());
                 if(d == null) {
@@ -132,26 +172,32 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             }
             
             d.args = p.getArgs();
+            
+            {
+                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                ObjectOutputStream out = new ObjectOutputStream(bout);
+                out.writeObject(p.getCompiled());
+                out.writeObject(p.getGlobalScope());
+                out.writeObject(p.getContinuation());
+                out.close();
+                d.continuation = bout.toByteArray();
+            }
+
+            
             d.compiled = SerializableUtils.serialiseObject(p.getCompiled());
-            d.continuation = SerializableUtils.serialiseObject(p.getContinuation());
+            d.state = SerializableUtils.serialiseObject(p.getState());
+//            d.continuation = SerializableUtils.serialiseObject(p.getContinuation());
             d.globalScope = SerializableUtils.serialiseObject(p.getGlobalScope());
             d.isRoot = p.isRoot();
             d.owner = p.getOwner();
             d.source = p.getSource().getBytes(ScriptusConfig.CHARSET);
             d.sourceId = p.getSourceName();
-            d.state = SerializableUtils.serialiseObject(p.getState());
             d.userId = p.getUserId();
             if(p.getWaiterPid() != null) {
                 d.waitingPid = p.getWaiterPid().toString();
             }
             
             
-//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-//            ObjectOutputStream out = new ObjectOutputStream(bout);
-//            out.writeObject(this);
-//            out.writeObject(getGlobalScope());
-//            out.writeObject(getContinuation());
-//            out.close();
             
             em.persist(d);
 

@@ -39,7 +39,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	private Transport m;
 	
 	private static final Map<String,String> testSources = new HashMap<String,String>() {{
-		put("return.js", "return \"result\";");
+        put("return.js", "return \"result\";");
+        put("returnArgs.js", "return args;");
 		put("log.js", "log(\"this is a log statement\"); return \"result\";");
 		put("prototypes.js", "Number.prototype.faargh = function(){return 'foo'}; say('foo');return new Number().faargh();");
 		put("syntaxError.js", "return nonexitent()");
@@ -128,21 +129,41 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	
 	
-	public void test_return() throws IOException {
-		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "return.js", "", "owner");
-		
-		ScriptAction r = p.call();
-		
-		assertTrue("Correct result", r instanceof NormalTermination);
-		
-		NormalTermination n = (NormalTermination) r;
+    public void test_return() throws IOException {
+        
+        ScriptProcess p = datastore.newProcess(TEST_USER, "return.js", "", "owner");
+        
+        ScriptAction r = p.call();
+        
+        assertTrue("Correct result", r instanceof NormalTermination);
+        
+        NormalTermination n = (NormalTermination) r;
 
-		r.visit(new ScriptusFacade(datastore, c, m), p); //sould say
+        r.visit(new ScriptusFacade(datastore, c, m), p); //sould say
 
-		assertEquals("Correct result", "result", n.getResult());
-		
-	}
+        assertEquals("Correct result", "result", n.getResult());
+        
+    }
+
+    public void test_returnArgs() throws IOException {
+        
+        ScriptProcess p = datastore.newProcess(TEST_USER, "returnArgs.js", "aaarghs", "owner");
+        
+        p.save();
+        
+        p = datastore.getProcess(p.getPid());
+        
+        ScriptAction r = p.call();
+        
+        assertTrue("Correct result", r instanceof NormalTermination);
+        
+        NormalTermination n = (NormalTermination) r;
+
+        r.visit(new ScriptusFacade(datastore, c, m), p); //sould say
+
+        assertEquals("Correct result", "aaarghs", n.getResult());
+        
+    }
 
 	public void test_log() throws IOException {
 		

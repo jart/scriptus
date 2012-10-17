@@ -191,7 +191,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
 			state = cp.getApplicationState();
 
-			LOG.error("script continuation, state obj=" + state.getClass());
+			LOG.info("script continuation, state obj=" + state.getClass());
 
 			if (state instanceof ScriptAction) {
 				return (ScriptAction) state;

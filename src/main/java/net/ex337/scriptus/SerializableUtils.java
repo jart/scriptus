@@ -21,7 +21,7 @@ public class SerializableUtils {
 	public static Object deserialiseObject(byte[] b) throws IOException,
 			ClassNotFoundException {
 
-		if (b.length == 0 || b == null)
+		if (b == null || b.length == 0)
 			return null;
 
 		ByteArrayInputStream bais = new ByteArrayInputStream(b);
