@@ -2,7 +2,6 @@ package net.ex337.scriptus.datastore.impl.jpa;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -51,8 +50,6 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     
     private static final Log LOG = LogFactory.getLog(ScriptusDatastoreJPAImpl.class);
     
-    private final Map<UUID,byte[]> processes = new HashMap<UUID,byte[]>();
-
     @PersistenceContext(unitName="jpa-pu")
     private EntityManager em;
 
@@ -90,27 +87,8 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             result.setArgs(d.args);
             
             {
-                ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(d.continuation));
+                ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(d.script_state));
 
-//                ScriptProcess p = (ScriptProcess) in.readObject();
-
-//                ScriptProcess result = createScriptProcess();
-                
-//                result.setPid(p.getPid());
-//                result.setWaiterPid(p.getWaiterPid());
-//                result.setSource(p.getSource());
-//                result.setSourceName(p.getSourceName());
-//                result.setUserId(p.getUserId());
-//                result.setArgs(p.getArgs());
-//                result.setState(p.getState());
-//                result.setCompiled(p.getCompiled());
-//                result.setOwner(p.getOwner());
-//                result.setRoot(p.isRoot());
-//                result.setVersion(p.getVersion());
-                
-//                p = null;
-
-//                in.readObject();
                 result.setCompiled((Function) in.readObject());
                 result.setGlobalScope((ScriptableObject) in.readObject());
                 result.setContinuation(in.readObject());
@@ -118,9 +96,6 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             }
             
             result.setState(SerializableUtils.deserialiseObject(d.state));
-//            result.setCompiled((Function)SerializableUtils.deserialiseObject(d.compiled));
-//          result.setGlobalScope((ScriptableObject) SerializableUtils.deserialiseObject(d.globalScope));
-//          result.setContinuation(SerializableUtils.deserialiseObject(d.continuation));
             result.setOwner(d.owner);
             result.setRoot(d.isRoot);
             result.setVersion(d.version);
@@ -146,9 +121,21 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
         boolean newProcess = false;
         
+        /*
+         * The semantics are as follows:
+         * 
+         * fork() sends a new process with a pid
+         * normal exec() etc. sends a new process with no pid
+         * so we use the version to tell if we are updating
+         * or inserting a new record.
+         */
+        
+        if(p.getVersion() == 0) {
+            newProcess = true;
+        }
+        
         if (p.getPid() == null) {
             p.setPid(UUID.randomUUID());
-            newProcess = true;
         }
 
         LOG.debug("saving " + p.getPid().toString().substring(30));
@@ -180,14 +167,11 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
                 out.writeObject(p.getGlobalScope());
                 out.writeObject(p.getContinuation());
                 out.close();
-                d.continuation = bout.toByteArray();
+                d.script_state = bout.toByteArray();
             }
 
             
-            d.compiled = SerializableUtils.serialiseObject(p.getCompiled());
             d.state = SerializableUtils.serialiseObject(p.getState());
-//            d.continuation = SerializableUtils.serialiseObject(p.getContinuation());
-            d.globalScope = SerializableUtils.serialiseObject(p.getGlobalScope());
             d.isRoot = p.isRoot();
             d.owner = p.getOwner();
             d.source = p.getSource().getBytes(ScriptusConfig.CHARSET);

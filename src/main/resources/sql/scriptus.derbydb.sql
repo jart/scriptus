@@ -39,10 +39,8 @@ create table scriptus.tbl_process (
 	args varchar(3000),
 	owner varchar(3000),
 	state blob,
-	compiled blob,
 	root boolean not null,
-	continuation blob,
-	global_scope blob
+	script_state blob
 );
 
 create table scriptus.tbl_process_child (

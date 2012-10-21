@@ -58,6 +58,10 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
                 s = conn.createStatement();
                 
                 for(String st : StringUtils.split(schema, ";")) {
+                    
+                    if(StringUtils.isEmpty(st.trim())) {
+                        continue;
+                    }
                     LOG.debug(st);
                     s.execute(st.trim());
                 }

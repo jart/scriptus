@@ -187,6 +187,10 @@ public class Testcase_ContinuationWierdness extends TestCase {
 		}
 		
 	}
+	
+	public void test_3_testSerialising() {
+	    
+	}
 
 	//	public void testInlineFunctionsSerializationContinuationsOhMy() throws IOException, ClassNotFoundException {
 //

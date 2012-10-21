@@ -21,24 +21,26 @@ public class ProcessDAO {
     
     @Column(name="user_id")
     public String userId;
+
     @Column(name="source")
     public byte[] source;
+    
     @Column(name="id_source")
     public String sourceId;
+    
     @Column(name="args")
     public String args;
+    
     @Column(name="owner")
     public String owner;
+    
     @Column(name="state")
     public byte[] state;
-    @Column(name="compiled")
-    public byte[] compiled;
+    
     @Column(name="root")
     public boolean isRoot;
     
-    @Column(name="continuation")
-    public byte[] continuation;
-    @Column(name="global_scope")
-    public byte[] globalScope;
+    @Column(name="script_state")
+    public byte[] script_state;
 
 }
