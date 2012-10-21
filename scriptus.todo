@@ -9,6 +9,27 @@
 	
 	freedom of assembly
 
+	Scriptus on the web.
+	
+	Current GUI components
+	Login, logout, 
+	scripts crudl
+	settings
+	docs
+	
+	new GUI components
+	HIGH
+	  per-user Twitter linking
+	  bootstrapified
+	  better openId login (copy stackoverflow)
+	  simple process admin
+	LOW
+	  news?
+	  local copy of docs?
+	  
+
+
+
 	JPA	
 later	 - DB location needs checking
 later	 - constraints
