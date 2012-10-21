@@ -39,8 +39,23 @@ create table scriptus.tbl_process (
 	args varchar(3000),
 	owner varchar(3000),
 	state blob,
+	state_label varchar(3000),
 	root boolean not null,
-	script_state blob
+	script_state blob,
+	created bigint not null,
+	lastmod bigint not null
+);
+
+create view scriptus.v_proclist as (
+	select 
+		pid, 
+		user_id,
+		version, 
+		state_label, 
+		length(script_state)+length(source)+length(state) size,
+		lastmod,
+		created
+	from scriptus.tbl_process
 );
 
 create table scriptus.tbl_process_child (

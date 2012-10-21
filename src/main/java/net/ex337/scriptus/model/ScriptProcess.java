@@ -1,6 +1,7 @@
 package net.ex337.scriptus.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -61,6 +62,9 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	private transient Scriptable globalScope;
 	
 	private boolean isKilled;
+	
+    private Date lastmod;
+    private Date created;
 	
 	@Resource(name="datastore")
 	private transient ScriptusDatastore datastore;
@@ -172,6 +176,9 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 				cx.setClassShutter(new ScriptusClassShutter());
 				cx.putThreadLocal("process", this);
 				try {
+//				    if(state != null) {
+//	                    System.out.println("state class="+state.getClass());
+//				    }
 					result = cx.resumeContinuation(continuation, globalScope, state);
 				} finally {
 					Context.exit();
@@ -408,6 +415,22 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
          * OK to use as a child sequence - they don't have to be contiguous
          */
         datastore.addChild(this.pid, childPid, version);
+    }
+
+    public Date getLastmod() {
+        return lastmod;
+    }
+
+    public void setLastmod(Date lastmod) {
+        this.lastmod = lastmod;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
 }

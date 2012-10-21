@@ -24,6 +24,7 @@ import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
@@ -312,7 +313,32 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
         }
         return l.get(l.size()-1);
     }
+
+    @Override
+    public List<ProcessListItem> getProcessesForUser(String uid) {
+        
+        List<ProcessListItem> result = new ArrayList<ProcessListItem>();
+        
+        for(byte[] b : this.processes.values()) {
+            ObjectInputStream i;
+            try {
+                i = new ObjectInputStream(new ByteArrayInputStream(b));
+                ScriptProcess p = (ScriptProcess) i.readObject();
+                if(p.getUserId().equals(uid)){
+                    result.add(new ProcessListItem(p.getPid().toString(), uid, "state", p.getVersion(), 111, System.currentTimeMillis(), System.currentTimeMillis()));
+                }
+                i.close();
+            } catch (IOException e) {
+                throw new ScriptusRuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new ScriptusRuntimeException(e);
+            }
+        }
+        
+        return result;
+    }
     
 
+    
 
 }

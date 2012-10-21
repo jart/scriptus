@@ -42,5 +42,14 @@ public class ProcessDAO {
     
     @Column(name="script_state")
     public byte[] script_state;
+    
+    @Column(name="state_label")
+    public String state_label;
+    
+    @Column(name="created")
+    public long created;
+
+    @Column(name="lastmod")
+    public long lastmod;
 
 }

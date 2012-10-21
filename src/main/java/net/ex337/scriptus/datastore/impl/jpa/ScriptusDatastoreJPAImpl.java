@@ -6,9 +6,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -30,10 +32,13 @@ import net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptIdDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.TransportCursorDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.views.ProcessListItemDAO;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.api.HasStateLabel;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
@@ -150,12 +155,15 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             if(newProcess) {
                 d = new ProcessDAO();
                 d.pid = p.getPid().toString();
+                d.created = d.lastmod = System.currentTimeMillis();
             } else {
                 
                 d = em.find(ProcessDAO.class, p.getPid().toString());
                 if(d == null) {
                     throw new ScriptusRuntimeException("Process not found for pid "+p.getPid());
                 }
+                
+                d.lastmod = System.currentTimeMillis();
             }
             
             d.args = p.getArgs();
@@ -477,6 +485,52 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         } catch(NoResultException nre) {
             return null;
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateProcessState(final UUID pid, final Object o) {
+        super.locks.runWithLock(pid, new Runnable() {
+            @Override
+            public void run() {
+                
+                String label = null;
+                
+                if(o instanceof HasStateLabel) {
+                    //TODO locale should be of user
+                    label = ((HasStateLabel)o).getStateLabel(Locale.getDefault());
+                }
+
+                Query q = em.createQuery("update ProcessDAO d set d.state = :state, d.state_label = :label where d.pid= :pid");
+                try {
+                    q.setParameter("state", SerializableUtils.serialiseObject(o));
+                } catch (IOException e) {
+                    throw new ScriptusRuntimeException(e);
+                }
+                q.setParameter("pid", pid.toString());
+                q.setParameter("label", label);
+
+                q.executeUpdate();
+            }
+            
+        });
+    }
+    
+    @Override
+    public List<ProcessListItem> getProcessesForUser(String uid) {
+        
+        List<ProcessListItem> result = new ArrayList<ProcessListItem>();
+        
+        Query q = em.createNamedQuery("select p from ProcessListItemDAO p where p.uid = :uid");
+        q.setParameter("uid", uid);
+        
+        List<ProcessListItemDAO> dd = q.getResultList();
+        
+        for(ProcessListItemDAO d : dd) {
+            result.add(new ProcessListItem(d.pid, d.uid, d.stateLabel, d.version, d.sizeOnDisk, d.created, d.lastmod));
+        }
+        
+        return result;
     }
 
 

@@ -1,18 +1,20 @@
 package net.ex337.scriptus.model.api.functions;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.UUID;
 
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.api.HasStateLabel;
 import net.ex337.scriptus.model.api.Termination;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class Wait extends ScriptAction implements Serializable {
+public class Wait extends ScriptAction implements Serializable, HasStateLabel {
 	
 	private static final Log LOG = LogFactory.getLog(Wait.class);
 	
@@ -35,6 +37,8 @@ public class Wait extends ScriptAction implements Serializable {
         if( ! scriptus.getChildren(parentPid).contains(childPid)) {
 			throw new ScriptusRuntimeException("not a child: "+childPid);
 		}
+        
+        scriptus.updateProcessState(parentPid, this);
 
 		try {
 			
@@ -72,5 +76,10 @@ public class Wait extends ScriptAction implements Serializable {
 		}
 		
 	}
+	
+    @Override
+    public String getStateLabel(Locale locale) {
+        return "Waiting for "+childPid;
+    }
 	
 }

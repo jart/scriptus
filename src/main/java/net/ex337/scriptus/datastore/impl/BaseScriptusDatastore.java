@@ -29,7 +29,7 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 	private static final Log LOG = LogFactory.getLog(BaseScriptusDatastore.class);
 	
 	@Resource
-	private ProcessLocks locks;
+	protected ProcessLocks locks;
 
 	/**
 	 * to be overridden by Spring to do autowiring
@@ -75,7 +75,7 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
      * @see net.ex337.scriptus.ProcessScheduler#updateProcessState(java.util.UUID, java.lang.Object)
      */
     @Override
-    public final void updateProcessState(final UUID pid, final Object o) {
+    public void updateProcessState(final UUID pid, final Object o) {
         locks.runWithLock(pid, new Runnable() {
             @Override
             public void run() {

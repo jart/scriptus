@@ -23,10 +23,22 @@
 	  bootstrapified
 	  better openId login (copy stackoverflow)
 	  simple process admin
+test	   dao
+X	    pid
+X	    v
+X	    state (only serialised right now)
+X	    size on disk
+X	    timestamps
+X	    kill
+	   servlet
+	
 	LOW
 	  news?
 	  local copy of docs?
-	  
+	  version checking?
+	   -> GitHub intefgration
+	   -> checkout API
+	   -> per-release branch?
 
 
 
@@ -34,6 +46,7 @@
 later	 - DB location needs checking
 later	 - constraints
 	 - document getting to a SQL console
+	   -> add ij maven jar to scriptus so we can get to SQL by passing parameter
 
 
 	 - simple process admin?
