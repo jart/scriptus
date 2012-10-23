@@ -10,6 +10,7 @@ import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
@@ -229,6 +230,24 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         assertEquals("removed for good", 2, ch.size());
         
         assertTrue("see?", ! ch.contains(ch3));
+	}
+	
+	public void testProcessListItem() {
+	    
+	    String uid = UUID.randomUUID().toString();
+	    
+	    ScriptProcess p = datastore.newProcess(uid, "addTwoNumbers.js", "aarfgs", uid);
+	    p.setSource("");
+	    datastore.writeProcess(p);
+	    
+	    List<ProcessListItem> i = datastore.getProcessesForUser(uid);
+	    
+	    assertEquals("good size", 1, i.size());
+	    
+	    ProcessListItem l = i.get(0);
+	    
+	    assertEquals("good pid", p.getPid(), l.getPid());
+	    assertEquals("uid", uid, l.getUid());
 	}
 	
 }

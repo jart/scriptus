@@ -22,6 +22,7 @@
 	  per-user Twitter linking
 	  bootstrapified
 	  better openId login (copy stackoverflow)
+	   -> google, facebook, yahoo
 	  simple process admin
 test	   dao
 X	    pid
@@ -30,7 +31,8 @@ X	    state (only serialised right now)
 X	    size on disk
 X	    timestamps
 X	    kill
-	   servlet
+	   load servlet
+	   delete function
 	
 	LOW
 	  news?

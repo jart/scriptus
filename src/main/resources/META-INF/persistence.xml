@@ -21,7 +21,7 @@
     <class>net.ex337.scriptus.datastore.impl.jpa.dao.ChildProcessPIDDAO</class>
     <class>net.ex337.scriptus.datastore.impl.jpa.dao.ProcessDAO</class>
     <class>net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO</class>
-
+	<class>net.ex337.scriptus.datastore.impl.jpa.dao.views.ProcessListItemDAO</class>
          <!-- Scan for annotated classes -->
     <!--jar-file>MyOrderApp.jar</jar-file>
     <property name="hibernate.archive.autodetection" value="class"/-->

@@ -521,7 +521,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
         List<ProcessListItem> result = new ArrayList<ProcessListItem>();
         
-        Query q = em.createNamedQuery("select p from ProcessListItemDAO p where p.uid = :uid");
+        Query q = em.createQuery("select p from ProcessListItemDAO p where p.uid = :uid");
         q.setParameter("uid", uid);
         
         List<ProcessListItemDAO> dd = q.getResultList();
