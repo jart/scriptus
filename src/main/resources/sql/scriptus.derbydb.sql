@@ -52,6 +52,7 @@ create view scriptus.v_proclist as (
 		user_id,
 		version, 
 		state_label, 
+		id_source,
 		length(script_state)+length(source)+length(state) size,
 		lastmod,
 		created

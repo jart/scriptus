@@ -220,7 +220,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=true)
     public Set<String> listScripts(String userId) {
         
-        Query q = em.createQuery("select name from ScriptDAO d where d.userId = :userId");
+        Query q = em.createQuery("select d.id.name from ScriptDAO d where d.id.userId = :userId");
         q.setParameter("userId", userId);
         
         List<Object> oo = q.getResultList();
@@ -527,7 +527,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         List<ProcessListItemDAO> dd = q.getResultList();
         
         for(ProcessListItemDAO d : dd) {
-            result.add(new ProcessListItem(d.pid, d.uid, d.stateLabel, d.version, d.sizeOnDisk, d.created, d.lastmod));
+            result.add(new ProcessListItem(d.pid, d.uid, d.stateLabel, d.sourceName, d.version, d.sizeOnDisk, d.created, d.lastmod));
         }
         
         return result;

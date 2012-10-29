@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,8 +11,6 @@ import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 
 /**
  * 
@@ -24,31 +21,12 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
  * @author ian
  *
  */
-public class ScriptsServlet extends HttpServlet {
+public class ScriptsServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 50869801033071491L;
-
-	private XmlWebApplicationContext ctx;
-
-	@Override
-	public void init() {
-
-	    ctx = (XmlWebApplicationContext) WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-	}
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		if(req.getSession(false) == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		if(req.getSession().getAttribute("openid") == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		
-		String openid=(String) req.getSession().getAttribute("openid");
+	protected void doAuthGet(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException {
 		
 		String path = req.getPathInfo();
 
@@ -96,18 +74,8 @@ public class ScriptsServlet extends HttpServlet {
 
 	//saveScript
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doAuthPost(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException {
 
-		if(req.getSession(false) == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		if(req.getSession().getAttribute("openid") == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		
-		String openid=(String) req.getSession().getAttribute("openid");
 
 		String path = req.getPathInfo();
 

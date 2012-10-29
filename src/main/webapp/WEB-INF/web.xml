@@ -12,8 +12,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<!-- TODO: Add <servlet> tags for each servlet here. -->
 	
 	<servlet>
-		<servlet-name>scriptus</servlet-name>
+		<servlet-name>scripts</servlet-name>
 		<servlet-class>net.ex337.scriptus.server.frontend.ScriptsServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>processes</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.ProcessAdminServlet</servlet-class>
 	</servlet>
 	
 	<servlet>
@@ -25,8 +30,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
 	
 	<servlet-mapping>
-		<servlet-name>scriptus</servlet-name>
+		<servlet-name>scripts</servlet-name>
 		<url-pattern>/scripts/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>processes</servlet-name>
+		<url-pattern>/processes/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>

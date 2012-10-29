@@ -22,6 +22,9 @@ public class ProcessListItemDAO {
     @Column(name="state_label")
     public String stateLabel;
     
+    @Column(name="id_source")
+    public String sourceName;
+    
     @Column(name="size")
     public int sizeOnDisk;
     

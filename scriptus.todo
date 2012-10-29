@@ -9,6 +9,9 @@
 	
 	freedom of assembly
 
+	JPA stuff
+	change embedded db name to scriptusDB
+
 	Scriptus on the web.
 	
 	Current GUI components
@@ -23,16 +26,16 @@
 	  bootstrapified
 	  better openId login (copy stackoverflow)
 	   -> google, facebook, yahoo
-	  simple process admin
-test	   dao
+test	  simple process admin
+X test	   dao
 X	    pid
 X	    v
 X	    state (only serialised right now)
 X	    size on disk
 X	    timestamps
 X	    kill
-	   load servlet
-	   delete function
+test	   load servlet
+test	   delete function
 	
 	LOW
 	  news?

@@ -325,7 +325,7 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
                 i = new ObjectInputStream(new ByteArrayInputStream(b));
                 ScriptProcess p = (ScriptProcess) i.readObject();
                 if(p.getUserId().equals(uid)){
-                    result.add(new ProcessListItem(p.getPid().toString(), uid, "state", p.getVersion(), 111, System.currentTimeMillis(), System.currentTimeMillis()));
+                    result.add(new ProcessListItem(p.getPid().toString(), uid, "state", p.getSourceName(), p.getVersion(), 111, System.currentTimeMillis(), System.currentTimeMillis()));
                 }
                 i.close();
             } catch (IOException e) {

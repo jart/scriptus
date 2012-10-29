@@ -8,15 +8,17 @@ public class ProcessListItem {
     private UUID pid;
     private String uid;
     private String stateLabel;
+    private String sourceName;
     private int version;
     private int size;
     private Date created;
     private Date lastmod;
     
-    public ProcessListItem(String pid, String uid, String stateLabel, int version, int size, long created, long lastmod) {
+    public ProcessListItem(String pid, String uid, String stateLabel, String sourceName, int version, int size, long created, long lastmod) {
         this.pid = UUID.fromString(pid);
         this.uid = uid;
         this.stateLabel = stateLabel;
+        this.sourceName = sourceName;
         this.version = version;
         this.size = size;
         this.created = new Date(created);
@@ -77,6 +79,14 @@ public class ProcessListItem {
 
     public void setLastmod(Date lastmod) {
         this.lastmod = lastmod;
+    }
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 
 }
