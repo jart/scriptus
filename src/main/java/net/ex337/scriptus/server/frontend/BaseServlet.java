@@ -49,7 +49,10 @@ public abstract class BaseServlet extends HttpServlet {
 		}
 		
 		String openid=(String) req.getSession().getAttribute("openid");
-		
+
+	      req.setAttribute("pageLabel", getPageLabel());
+
+
 		doAuthGet(req, resp, openid);
 		
 	}
@@ -68,11 +71,14 @@ public abstract class BaseServlet extends HttpServlet {
 		
 		String openid=(String) req.getSession().getAttribute("openid");
 		
+		req.setAttribute("pageLabel", getPageLabel());
+		
 		doAuthPost(req, resp, openid);
 
 	}
 
     protected abstract void doAuthGet(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException;
     protected abstract void doAuthPost(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException;
+    protected abstract String getPageLabel();
 
 }

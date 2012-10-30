@@ -1,5 +1,7 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head><title>Scriptus - user scripts</title>
+<%@include file="head.jsp"%>
 <%@page import="net.ex337.scriptus.config.ScriptusConfig"%>
 <%
 ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
@@ -28,8 +30,6 @@ function del(id) {
 </head>
 <body>
 <%@include file="header.jsp"%>
-
-<h1>Scriptus - user scripts</h1>
 
 <%
 java.util.Set<String> scripts = (java.util.Set<String>) request.getAttribute("scripts");

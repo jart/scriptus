@@ -1,5 +1,6 @@
 <html>
 <head><title>Scriptus - settings</title>
+<%@include file="head.jsp"%>
 <%@page import="net.ex337.scriptus.config.ScriptusConfig, net.ex337.scriptus.config.ScriptusConfig.DatastoreType, net.ex337.scriptus.config.ScriptusConfig.TransportType"%>
 <%
 ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
@@ -7,7 +8,6 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 </head><body>
 <%@include file="header.jsp"%>
 
-<h1>Scriptus - settings</h1>
 <%if(cfg.isCleanInstall()){%>
 <div style="background-color:yellow">
 	<h2>Welcome!</h2>

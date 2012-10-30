@@ -1,5 +1,6 @@
 <html>
 <head><title>Scriptus - active processes</title>
+<%@include file="head.jsp"%>
 <%@page import="java.util.List"%>
 <%@page import="net.ex337.scriptus.config.ScriptusConfig"%>
 <%@page import="net.ex337.scriptus.model.ProcessListItem"%>
@@ -24,13 +25,11 @@ function kill(pid) {
 <body>
 <%@include file="header.jsp"%>
 
-<h1>Scriptus - active processes</h1>
-
 <%
 List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("processes");
 %>
 
-<table><caption></caption>
+<table class="table"><caption></caption>
 <thead>
 <!--    private UUID pid;
     private String uid;
@@ -41,10 +40,10 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
     private Date lastmod;-->
 	<tr>
 		<th>PID</th>
-		<th>program</th>
-		<th>version</th>
-		<th>state</th>
-		<th>Approx size on disk (kb)</th>
+		<th>Program</th>
+		<th>Version</th>
+		<th>State</th>
+		<th>Size (kb)</th>
 		<th>Created</th>
 		<th>Modified</th>
 		<th>Delete?</th>

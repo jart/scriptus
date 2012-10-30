@@ -72,4 +72,9 @@ public class ProcessAdminServlet extends BaseServlet {
 		resp.sendError(404);
 	}
 
+    @Override
+    protected String getPageLabel() {
+        return "processes";
+    }
+
 }

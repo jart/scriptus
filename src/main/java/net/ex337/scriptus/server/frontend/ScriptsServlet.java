@@ -111,4 +111,9 @@ public class ScriptsServlet extends BaseServlet {
 		resp.sendError(404);
 	}
 
+    @Override
+    protected String getPageLabel() {
+        return "scripts";
+    }
+
 }
