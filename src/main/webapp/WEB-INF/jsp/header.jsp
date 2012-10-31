@@ -20,6 +20,8 @@ if(pageLabel == null) pageLabel = "";
 			</li>
 		</ul>
 		<ul class="nav pull-right">
+		
+			<li><a href="<%=request.getContextPath()%>/you/"><%= session.getAttribute("name") %></a></li>
 			<li><a href="<%=request.getContextPath()%>/?logout">Logout</a></li>
 		</ul>
 	</div>

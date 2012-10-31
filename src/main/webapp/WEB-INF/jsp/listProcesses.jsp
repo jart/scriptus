@@ -73,8 +73,6 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 	<input type="hidden" name="killpid" id="killpid"/>
 </form>
 
-<p>Logged in as <%= session.getAttribute("openid") %>. <a href="<%=request.getContextPath()%>?logout"></a></p>
-
 
 </body></html>
 

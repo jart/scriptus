@@ -48,14 +48,13 @@ org.openid4java.consumer.InMemoryNonceVerifier" %>
             AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
 
             // Attribute Exchange example: fetching the 'email' attribute
-            //FetchRequest fetch = FetchRequest.createFetchRequest();
-            //fetch.addAttribute("email",
-                    // attribute alias
-             //       "http://schema.openid.net/contact/email",   // type URI
-             //       true);                                      // required
+            FetchRequest fetch = FetchRequest.createFetchRequest();
+            fetch.addAttribute("email", "http://schema.openid.net/contact/email", true);
+			fetch.addAttribute("FirstName", "http://schema.openid.net/namePerson/first", true);
+			fetch.addAttribute("LastName", "http://schema.openid.net/namePerson/last", true);
 
             // attach the extension to the authentication request
-            //authReq.addExtension(fetch);
+            authReq.addExtension(fetch);
 
 /*            if (! discovered.isVersion2() )
             {*/

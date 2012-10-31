@@ -17,13 +17,15 @@
 	Current GUI components
 	Login, logout, 
 	scripts crudl
-	settings
-	docs
+X	settings
+X	docs
+
+	listScripts not in testDAO
 	
 	new GUI components
 	HIGH
 	  per-user Twitter linking
-	  bootstrapified
+more	  bootstrapified
 	  better openId login (copy stackoverflow)
 	   -> google, facebook, yahoo
 test	  simple process admin

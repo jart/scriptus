@@ -34,24 +34,34 @@ function del(id) {
 <%
 java.util.Set<String> scripts = (java.util.Set<String>) request.getAttribute("scripts");
 
-if(cfg.isCleanInstall() || scripts.isEmpty()){%>
-<div style="background-color:yellow">
-
-	<p><strong>Welcome to Scriptus!</strong> You don't have any scripts saved on this installation yet.</p>
+if(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()){%>
+	<div class="alert alert-success">
+		<button type="button" class="close" data-dismiss="alert">x</button>
+		<h4>Welcome to Scriptus!</h4>
+		<p>You don't have any scripts saved on this installation yet.</p>
 	
-	<p>You can <a href="edit">create a new script here</a>, or you might like to try one of the <a href="https://github.com/ianso/scriptus/tree/master/scripts/">the examples</a>, which are <a href="https://github.com/ianso/scriptus/blob/master/docs/examples.md">explained and documented here.</a></p>
+		<p>You can <a href="edit">create a new script here</a>, or you might like to try one of the <a href="https://github.com/ianso/scriptus/tree/master/scripts/">the examples</a>, which are <a href="https://github.com/ianso/scriptus/blob/master/docs/examples.md">explained and documented here.</a></p>
 	
-	<p>You can access <a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">the settings page here</a>, provided you are using the installation from localhost.</a>
+		<p>You can access <a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">the settings page here</a>, provided you are using the installation from localhost.</a>
+    </div>
 
-</div>
 
-<%} else {%>
+<%
+}
+%>
 
-	<p><a href="edit">new script</a></p>
 
+    <ul class="nav nav-pills">
+	    <li>
+		    <a href="#">Your scripts</a>
+	    </li>
+	    <li class="<%=(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()) ? "active" : ""%>">
+	    	<a href="#">Sample scripts</a>
+	    </li>
+	    <li><a href="edit">New script</a></li>
 	<ul><%
 
-	for(String s : scripts) {
+	if(scripts != null) for(String s : scripts) {
 		%><li>
 	
 		<a href="edit?script=<%=s%>"><%=s%></a> 
@@ -61,7 +71,6 @@ if(cfg.isCleanInstall() || scripts.isEmpty()){%>
 		</li><%
 	}
 	%></ul>
-<%}%>
 
 
 
@@ -89,8 +98,6 @@ if(cfg.isCleanInstall() || scripts.isEmpty()){%>
 <form action="delete" method="POST" style="display:none" id="deleteform">
 	<input type="hidden" name="deleteid" id="deleteid"/>
 </form>
-
-<p>Logged in as <%= session.getAttribute("openid") %>. <a href="<%=request.getContextPath()%>?logout"></a></p>
 
 
 </body></html>
