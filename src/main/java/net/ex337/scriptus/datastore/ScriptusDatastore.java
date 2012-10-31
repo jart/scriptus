@@ -9,7 +9,6 @@ import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
-import net.ex337.scriptus.tests.Testcase_ScriptusDAO;
 
 /**
  * 
