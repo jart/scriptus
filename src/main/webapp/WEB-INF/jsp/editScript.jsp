@@ -29,23 +29,24 @@ function saveScript() {
     position: relative;
     width: 100%;
     height: 50%;
+    margin-bottom:1ex;
 }
 </style>
 </head>
 <body>
 <%@include file="header.jsp"%>
-	<h1><%= (scriptId == null ? "New Script" : "Edit script "+scriptId) %></h1>
-<!--fixme escaping-->
-	
-<form method="POST" action="edit">
+
+<form method="POST" action="edit" class="form-inline">
 <p>
 	<label for="scriptid">Script name:</label>
 	<input type="text" id="scriptid" name="scriptid" value="<%=scriptId == null ? "" : scriptId %>"/>
+	<input type="submit" value="Save" onClick="saveScript()" class="btn btn-primary"/>	
 </p>
 <textarea id="source" name="source" style="display:none"></textarea> 
-<input type="submit" value="Save" onClick="saveScript()"/>
-</form>	
+
 <div id="editor"><%=scriptSource == null ? "" : scriptSource%></div>
+
+</form>
 
 </body>
 </html>

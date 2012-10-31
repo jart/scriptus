@@ -59,9 +59,13 @@ if(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()){%>
 	    	<a href="#">Sample scripts</a>
 	    </li>
 	    <li><a href="edit">New script</a></li>
-	<ul><%
+	</ul>
 
-	if(scripts != null) for(String s : scripts) {
+<div class="row">
+
+	<div class="span9">
+
+<%	if(scripts != null) for(String s : scripts) {
 		%><li>
 	
 		<a href="edit?script=<%=s%>"><%=s%></a> 
@@ -72,28 +76,33 @@ if(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()){%>
 	}
 	%></ul>
 
+	</div>
 
+	<div class="span3" id="runScriptDiv" style="display:none">
+	
+	<form action="run" method="POST">
+		<fieldset>
+			<legend>Run script</legend>
+			<p>
+				<label for="runid">Script:</label>
+				<input type="text" name="runid" id="runid"/>
+			</p>
+			<p>
+				<label for="owner">Owner (twitter name):</label>
+				<input type="text" name="owner" id="owner"/>
+			</p>
+			<p>
+				<label for="args">Arguments:</label>
+				<input type="text" name="args" id="args"/>
+			</p>
+			<p>
+				<input type="submit" id="submit" value="Run"/>
+			</p>
+		</fieldset>
+	</form>
 
-<form action="run" method="POST">
-	<fieldset>
-		<legend>Run script</legend>
-		<p>
-			<label for="runid">Script:</label>
-			<input type="text" name="runid" id="runid"/>
-		</p>
-		<p>
-			<label for="owner">Owner (twitter name):</label>
-			<input type="text" name="owner" id="owner"/>
-		</p>
-		<p>
-			<label for="args">Arguments:</label>
-			<input type="text" name="args" id="args"/>
-		</p>
-		<p>
-			<input type="submit" id="submit" value="Run"/>
-		</p>
-	</fieldset>
-</form>
+	</div>
+</div>
 
 <form action="delete" method="POST" style="display:none" id="deleteform">
 	<input type="hidden" name="deleteid" id="deleteid"/>
