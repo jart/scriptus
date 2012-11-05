@@ -9,6 +9,7 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 <script type="text/javascript">
 function run(id) {
 
+	document.getElementById("runScriptDiv").style.display="";
 	document.getElementById("runid").value = id;
 	document.getElementById("owner").focus();
 
@@ -17,7 +18,7 @@ function run(id) {
 
 function del(id) {
 
-	if( ! confirm("sure?") ) {
+if( ! confirm("Are you sure?") ) {
 		return false;
 	}
 	
@@ -32,9 +33,12 @@ function del(id) {
 <%@include file="header.jsp"%>
 
 <%
+
 java.util.Set<String> scripts = (java.util.Set<String>) request.getAttribute("scripts");
 
-if(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()){%>
+boolean clean = cfg.isCleanInstall() || scripts == null || scripts.isEmpty();
+
+if(clean){%>
 	<div class="alert alert-success">
 		<button type="button" class="close" data-dismiss="alert">x</button>
 		<h4>Welcome to Scriptus!</h4>
@@ -52,10 +56,10 @@ if(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()){%>
 
 
     <ul class="nav nav-pills">
-	    <li>
+	    <li class="<%=clean ? "" : "active"%>">
 		    <a href="#">Your scripts</a>
 	    </li>
-	    <li class="<%=(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()) ? "active" : ""%>">
+	    <li class="<%=clean ? "active" : ""%>">
 	    	<a href="#">Sample scripts</a>
 	    </li>
 	    <li><a href="edit">New script</a></li>
@@ -65,16 +69,28 @@ if(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()){%>
 
 	<div class="span9">
 
-<%	if(scripts != null) for(String s : scripts) {
-		%><li>
-	
-		<a href="edit?script=<%=s%>"><%=s%></a> 
-		&nbsp; [<a href="#" onClick="run('<%=s%>')">run</a>] 
-		&nbsp; [<a href="#" onClick="del('<%=s%>')">delete</a>]
+<%	if(scripts != null) {
 
-		</li><%
-	}
-	%></ul>
+	%><table class="table table-hover table-striped"><thead>
+		<tr>
+			<th style="width:70%">Script</th>
+			<th>&nbsp;</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+	<%	
+	for(String s : scripts) {
+			%><tr>
+				<td><a href="edit?script=<%=s%>"><%=s%></a></td>
+				<td><a class="btn btn-primary" onClick="run('<%=s%>')">Run</a></td>
+				<td><a class="btn btn-danger" onClick="del('<%=s%>')">Delete</a></td>
+			</tr>
+			<%
+		}
+	%></tbody></table><%	
+}
+	%>
 
 	</div>
 
@@ -96,7 +112,7 @@ if(cfg.isCleanInstall() || scripts == null || scripts.isEmpty()){%>
 				<input type="text" name="args" id="args"/>
 			</p>
 			<p>
-				<input type="submit" id="submit" value="Run"/>
+				<input type="submit" id="submit" value="Run" class="btn btn-primary"/>
 			</p>
 		</fieldset>
 	</form>

@@ -35,6 +35,8 @@ public class ScriptsServlet extends BaseServlet {
 		if("/list".equals(path)){
 
 			Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(openid);
+			
+			req.setAttribute("scripts", scripts);
 
 			getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
 			

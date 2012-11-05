@@ -275,7 +275,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=false)
     public void deleteScript(String userId, String name) {
         
-        Query q = em.createQuery("delete from ScriptDAO d where d.userId = :userId and d.name = :name");
+        Query q = em.createQuery("delete from ScriptDAO d where d.id.userId = :userId and d.id.name = :name");
         q.setParameter("userId", userId);
         q.setParameter("name", name);
         

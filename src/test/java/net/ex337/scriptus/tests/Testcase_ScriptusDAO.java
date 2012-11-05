@@ -250,4 +250,33 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	    assertEquals("uid", uid, l.getUid());
 	}
 	
+	public void testScriptEditing() {
+	    
+	    String uid = UUID.randomUUID().toString();
+        String name = UUID.randomUUID().toString();
+        String src = UUID.randomUUID().toString();
+	    
+	    datastore.saveScriptSource(uid, name, src);
+	    
+	    Set<String> s = datastore.listScripts(uid);
+	    
+	    assertTrue("script found", s.contains(name)); 
+	    
+	    String retrievedSrc = datastore.loadScriptSource(uid, name);
+	    
+	    assertEquals("source saved OK", src, retrievedSrc);
+	    
+	    datastore.saveScriptSource(uid, name, src+src);
+	    
+        retrievedSrc = datastore.loadScriptSource(uid, name);
+        
+        assertEquals("source saved OK", src+src, retrievedSrc);
+        
+        datastore.deleteScript(uid, name);
+        
+        s = datastore.listScripts(uid);
+        
+        assertFalse("script deleted", s.contains(name));
+	}
+	
 }

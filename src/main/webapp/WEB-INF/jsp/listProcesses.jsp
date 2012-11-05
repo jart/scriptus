@@ -29,7 +29,7 @@ function kill(pid) {
 List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("processes");
 %>
 
-<table class="table"><caption></caption>
+<table class="table table-striped"><caption></caption>
 <thead>
 <!--    private UUID pid;
     private String uid;
@@ -46,7 +46,7 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 		<th>Size (kb)</th>
 		<th>Created</th>
 		<th>Modified</th>
-		<th>Delete?</th>
+		<th>&nbsp;</th>
 	</tr>
 </thead>
 <tbody>
@@ -55,13 +55,13 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 %>
 	<tr>
 		<td title="<%=p.getPid().toString()%>"><%=p.getPid().toString().substring(0,10)%>...</td>
-		<td><%=p.getSourceName()%></td>
+		<td><a href="edit?script=<%=p.getSourceName()%>"><%=p.getSourceName()%></a></td>
 		<td><%=p.getVersion()%></td>
 		<td><%=p.getStateLabel()%></td>
 		<td><%=p.getSize()/1024%></td>
 		<td><%=p.getCreated()%></td>
 		<td><%=p.getLastmod()%></td>
-		<td><a onclick="kill('<%=p.getPid().toString()%>')">X</a></td>
+		<td><a class="btn btn-danger" onclick="kill('<%=p.getPid().toString()%>')">Delete</a></td>
 	</tr>
 <%}%>
 </tbody>
