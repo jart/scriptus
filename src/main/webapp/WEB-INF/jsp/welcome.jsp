@@ -4,7 +4,7 @@
 <%@include file="head.jsp"%>
 <%@page import="net.ex337.scriptus.config.ScriptusConfig"%>
 <%
-ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
+//ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 %>
 <script type="text/javascript">
 </script>
@@ -14,29 +14,38 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 
 <%
 
-boolean clean = cfg.isCleanInstall();
-
+//boolean clean = cfg.isCleanInstall();
+%>
 
 <div class="row">
+	<div class="span12">
+		<h1>Welcome to Scriptus!</h1>		
+	</div>
+</div>
 
-	<div class="span9">
+<div class="row">
+	<div class="span8">
+		<br />
 	
-		<h1>Welcome to Scriptus!</h1>
-		
-		<h2>Scriptus is <strong>Programming on a human timescale.</strong></h2>
+		<p>Scriptus is <strong>programming on a human timescale.</strong></p>
 		
 		<p>Scriptus programs can run for days, months or years, so you can think long-term.</p>
+		<br />
+		<p>Scriptus is <strong>freedom of assembly.</strong></p>
 		
-		<h2>Scriptus is <strong>freedom of assembly.</strong></h2>
-		
-		<p>Scriptus communicates via social networks like you do.</p>
+		<p>Scriptus communicates via social networks like you do, and helps groups organise better.</p>
 
 	</div>
 
-	<div class="span3" id="runScriptDiv">
-		<p><code>var goal = ask("where do you want to be a year from now?);
-		<br />sleep("1y"); //"1y" is 1 year
-		<br />say("Remember this? "+goal+" How's it going?");</code>
+	<div class="span4" id="runScriptDiv">
+<pre class="code">var goal = ask(
+  "where do you want to be,"
+  +" a year from now?);
+  
+sleep("1y"); //"1y" is 1 year
+
+say("Remember this? "+goal+
+    " How's it going?");</pre>
 	</div>
 </div>
 

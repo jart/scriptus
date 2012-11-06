@@ -7,7 +7,8 @@ if(pageLabel == null) pageLabel = "";
 		<ul class="nav">
 			<li class="<%=pageLabel.equals("scripts") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/scripts/list">Scripts</a></li>
 			<li class="<%=pageLabel.equals("processes") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>
-			<li class="<%=pageLabel.equals("settings") ? "active" : "" %>"><a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">Settings (local access only)</a></li>
+			<li class="<%=pageLabel.equals("settings") ? "active" : "" %>"><a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">Settings (local access)</a></li>
+			<li class="<%=pageLabel.equals("feedback") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/feedback">Feedback</a></li>
 		    <li class="dropdown">
 			    <a class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">Documentation
 			    <b class="caret"></b></a>

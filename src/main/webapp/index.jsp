@@ -50,16 +50,10 @@ if(f.getDisableOpenID()) {
 				<input id="openid_submit" type="submit" value="Sign-In"/>
 			</div>
 			<noscript>
-				<p>OpenID is service that allows you to log-on to many different websites using a single indentity.
+				<p>OpenID is service that allows you to log-on to many different websites using a single identity.
 				Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
 			</noscript>
 		</fieldset>
 </form>
-<%	
-} else {
-
-response.sendRedirect(request.getContextPath()+"/scripts/list");
-
- } %>
 </body>
 </html>

@@ -15,15 +15,12 @@
 	Scriptus on the web.
 	
 	Current GUI components
-more	  bootstrapified
-	   settings
-X test	  simple process admin
-X test	fix tabs
+	better colour scheme?
 	feedback form
 	sample scripts
+	remove settings page
 	isTerminated flag
 	Login, 
-	settings
 X	docs
 
 	
@@ -713,4 +710,8 @@ X	 - test sources duplicated, create unique id
 X	scripts crudl
 X	listScripts not in testDAO
 X	logout, 
+X more	  bootstrapified
+X	   settings
+X test	  simple process admin
+X test	fix tabs
 
