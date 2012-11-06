@@ -36,7 +36,9 @@ if( ! confirm("Are you sure?") ) {
 
 java.util.Set<String> scripts = (java.util.Set<String>) request.getAttribute("scripts");
 
-boolean clean = cfg.isCleanInstall() || scripts == null || scripts.isEmpty();
+boolean clean = cfg.isCleanInstall();
+
+boolean samples = (request.getAttribute("samples") != null);
 
 if(clean){%>
 	<div class="alert alert-success">
@@ -56,13 +58,13 @@ if(clean){%>
 
 
     <ul class="nav nav-pills">
-	    <li class="<%=clean ? "" : "active"%>">
-		    <a href="#">Your scripts</a>
+	    <li class="<%=samples ? "" : "active"%>">
+		    <a href="<%=request.getContextPath()%>/scripts/list/yours">Your scripts</a>
 	    </li>
-	    <li class="<%=clean ? "active" : ""%>">
-	    	<a href="#">Sample scripts</a>
+	    <li class="<%=samples ? "active" : ""%>">
+	    	<a href="<%=request.getContextPath()%>/scripts/list/samples">Sample scripts</a>
 	    </li>
-	    <li><a href="edit">New script</a></li>
+	    <li><a href="<%=request.getContextPath()%>/scripts/edit">New script</a></li>
 	</ul>
 
 <div class="row">
@@ -82,7 +84,7 @@ if(clean){%>
 	<%	
 	for(String s : scripts) {
 			%><tr>
-				<td><a href="edit?script=<%=s%>"><%=s%></a></td>
+				<td><a href="<%=request.getContextPath()%>/scripts/edit?script=<%=s%>"><%=s%></a></td>
 				<td><a class="btn btn-primary" onClick="run('<%=s%>')">Run</a></td>
 				<td><a class="btn btn-danger" onClick="del('<%=s%>')">Delete</a></td>
 			</tr>

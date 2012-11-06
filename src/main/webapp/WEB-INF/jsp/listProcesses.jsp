@@ -15,7 +15,7 @@ function kill(pid) {
 		return false;
 	}
 	
-	document.getElementById("killpid").value = pid;
+	document.getElementById("pid").value = pid;
 	document.getElementById("killform").submit();
 
 	return false;
@@ -70,7 +70,7 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 
 
 <form action="kill" method="POST" style="display:none" id="killform">
-	<input type="hidden" name="killpid" id="killpid"/>
+	<input type="hidden" name="pid" id="pid"/>
 </form>
 
 

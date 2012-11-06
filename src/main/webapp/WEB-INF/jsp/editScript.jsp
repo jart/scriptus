@@ -36,6 +36,16 @@ function saveScript() {
 <body>
 <%@include file="header.jsp"%>
 
+    <ul class="nav nav-pills">
+	    <li>
+		    <a href="<%=request.getContextPath()%>/scripts/list/yours">Your scripts</a>
+	    </li>
+	    <li>
+	    	<a href="<%=request.getContextPath()%>/scripts/list/samples">Sample scripts</a>
+	    </li>
+	    <li class="active"><a href="#"><%=scriptId == null ? "New " : "Edit" %> script</a></li>
+	</ul>
+
 <form method="POST" action="edit" class="form-inline">
 <p>
 	<label for="scriptid">Script name:</label>

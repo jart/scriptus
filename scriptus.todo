@@ -15,20 +15,22 @@
 	Scriptus on the web.
 	
 	Current GUI components
-	Login, logout, 
-	scripts crudl
-X	settings
+more	  bootstrapified
+	   settings
+X test	  simple process admin
+X test	fix tabs
+	sample scripts
+	isTerminated flag
+	Login, 
+	settings
 X	docs
 
-	listScripts not in testDAO
 	
 	new GUI components
 	HIGH
 	  per-user Twitter linking
-more	  bootstrapified
 	  better openId login (copy stackoverflow)
 	   -> google, facebook, yahoo
-test	  simple process admin
 X test	   dao
 X	    pid
 X	    v
@@ -707,4 +709,7 @@ X no	 - will need to hand-wire entityManagerFactory etc.
 X	 - fix bad @Ids on scriptDAO
 X no	 - don't hardcode embedded db names?
 X	 - test sources duplicated, create unique id
+X	scripts crudl
+X	listScripts not in testDAO
+X	logout, 
 

@@ -1,6 +1,7 @@
 package net.ex337.scriptus.server.frontend;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jetty.server.session.HashSessionIdManager;
 
 /**
  * 
@@ -32,19 +34,40 @@ public class ScriptsServlet extends BaseServlet {
 
         req.setAttribute("config", ctx.getBean("config"));
 
-		if("/list".equals(path)){
+		if("/list/yours".equals(path) || "/list".equals(path)){
 
 			Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(openid);
 			
-			req.setAttribute("scripts", scripts);
+			if(scripts == null || scripts.isEmpty()){
+			    
+	            resp.sendRedirect(req.getContextPath()+"/scripts/list/samples");
+	            
+			} else {
+			    
+                req.setAttribute("scripts", scripts);
 
-			getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
+	            getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
+			}
+			
 			
 			return;
-			
-		} else if("/edit".equals(path)) {
+
+		} else if("/list/samples".equals(path)){
 		    
-	        req.setAttribute("pageLabel", "edit");
+		    /*
+		     * web service?
+		     */
+
+            Set<String> scripts = new HashSet<String>();
+            scripts.add("test.js");
+            
+            req.setAttribute("scripts", scripts);
+            req.setAttribute("samples", Boolean.TRUE);
+
+            getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
+		    
+
+		} else if("/edit".equals(path)) {
 			
 			String scriptId = req.getParameter("script");
 			
