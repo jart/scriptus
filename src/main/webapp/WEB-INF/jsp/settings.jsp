@@ -20,7 +20,7 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 
 <p><code><%=cfg.getConfigLocation()%></code></p>
 
-<p>If you want to start scriptus with another config file, you can pass a URL (file:// or http://, file-name, etc.) via the <code>scriptus.config</code> system property when starting.</p>
+<p>If you want to start scriptus with another config file, you can pass a URL (file:// or http://, file-name, etc.) via the <code>scriptus.config</code> system property, or  via the <code>-c <em>xxx</em></code> flag, when starting.</p>
 
 <form action="settings" method="POST">
 
@@ -74,7 +74,7 @@ check the log files for errors.</p>
 	<input type="text" name="twitterAccessTokenSecret" id="twitterAccessTokenSecret" />
 </p>
 
-<input type="submit" value="Save"/>
+<input type="submit" value="Save" class="btn btn-primary"/>
 
 </form>
 

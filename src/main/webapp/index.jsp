@@ -32,7 +32,10 @@ if(f.getDisableOpenID()) {
     Logged out!<p>
 <%
     }
-	if (session.getAttribute("openid")==null) {
+	if (session.getAttribute("openid") != null) {
+		response.sendRedirect(request.getContextPath()+"/home");
+		return;
+	 }
 %>
 <h1>Scriptus - openID login</h1>
 <form method="POST" action="consumer_redirect.jsp" id="openid_form">
@@ -51,11 +54,6 @@ if(f.getDisableOpenID()) {
 				Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
 			</noscript>
 		</fieldset>
-<!--<p>
-<strong>OpenID:</strong>
-<input type="text" name="openid" size="60" value="https://www.google.com/accounts/o8/id"/><br>
-<input type="submit"/>
-</p-->
 </form>
 <%	
 } else {

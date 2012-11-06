@@ -26,6 +26,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-class>net.ex337.scriptus.server.frontend.SettingsServlet</servlet-class>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>welcome</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.WelcomeServlet</servlet-class>
+	</servlet>
+	
 	
 	<!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
 	
@@ -42,6 +47,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>settings</servlet-name>
 		<url-pattern>/settings</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>welcome</servlet-name>
+		<url-pattern>/welcome</url-pattern>
 	</servlet-mapping>
 	
 	<!-- TODO: Optionally add a <welcome-file-list> tag to display a welcome file. -->
