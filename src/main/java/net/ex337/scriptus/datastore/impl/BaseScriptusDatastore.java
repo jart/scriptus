@@ -37,22 +37,22 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 	public abstract ScriptProcess createScriptProcess();
 
 	@Override
-	public void createTestSources() {
-		URL u = this.getClass().getClassLoader().getResource("testScripts");
+	public void createSamples() {
+		URL u = this.getClass().getClassLoader().getResource("samples");
 
 		if(u == null) {
-			return;
+			throw new ScriptusRuntimeException("cannot find samples resource");
 		}
 		
-		File testSources = new File(u.getFile());
+		File samples = new File(u.getFile());
 		
-		if( ! testSources.exists()) {
-			return;
+		if( ! samples.exists()) {
+            throw new ScriptusRuntimeException("samples file doesn't exist");
 		}
 
-		for(File f : testSources.listFiles()) {
+		for(File f : samples.listFiles()) {
 			try {
-				saveScriptSource("test", f.getName(), FileUtils.readFileToString(f));
+				saveScriptSource(ScriptusDatastore.SAMPLE_USER, f.getName(), FileUtils.readFileToString(f));
 			} catch (IOException e) {
 				throw new ScriptusRuntimeException(e);
 			}

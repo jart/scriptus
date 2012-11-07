@@ -84,9 +84,9 @@ if(clean){%>
 	<%	
 	for(String s : scripts) {
 			%><tr>
-				<td><a href="<%=request.getContextPath()%>/scripts/edit?script=<%=s%>"><%=s%></a></td>
-				<td><a class="btn btn-primary" onClick="run('<%=s%>')">Run</a></td>
-				<td><a class="btn btn-danger" onClick="del('<%=s%>')">Delete</a></td>
+				<td><a href="<%=request.getContextPath()%>/scripts/edit?script=<%=s%><%=samples ? "&sample=true" : ""%>"><%=s%></a></td>
+				<td><a class="btn btn-primary" onClick="run('<%=s%>', <%=samples%>)">Run</a></td>
+				<td><%=if(!samples){%><a class="btn btn-danger" onClick="del('<%=s%>')">Delete</a><%}%></td>
 			</tr>
 			<%
 		}

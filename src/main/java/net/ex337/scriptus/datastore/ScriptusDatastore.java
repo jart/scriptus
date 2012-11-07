@@ -22,7 +22,9 @@ import net.ex337.scriptus.tests.Testcase_ScriptusDAO;
  */
 public interface ScriptusDatastore {
 
-	/**
+	public static final String SAMPLE_USER = "sample";
+
+    /**
 	 * Create a new {@link ScriptProcess} using the supplied parameters
 	 * 
 	 * @param userId the openID user that owns the source
@@ -124,9 +126,9 @@ public interface ScriptusDatastore {
 
 	/**
 	 * Loads under a user "test" all scripts found under the
-	 * directory "testScripts", if it exists.
+	 * directory "samples", if it exists.
 	 */
-	public void createTestSources();
+	public void createSamples();
 
 	/**
 	 * Updates the process state, under lock, to the supplied object.
@@ -139,5 +141,7 @@ public interface ScriptusDatastore {
     public UUID getLastChild(UUID pid);
     
     public List<ProcessListItem> getProcessesForUser(String uid);
+
+    public void markProcessFinished(UUID pid);
 	
 }

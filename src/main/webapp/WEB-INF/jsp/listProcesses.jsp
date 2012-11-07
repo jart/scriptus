@@ -43,6 +43,7 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 		<th>Program</th>
 		<th>Version</th>
 		<th>State</th>
+		<th>Alive?</th>
 		<th>Size (kb)</th>
 		<th>Created</th>
 		<th>Modified</th>
@@ -58,6 +59,7 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 		<td><a href="edit?script=<%=p.getSourceName()%>"><%=p.getSourceName()%></a></td>
 		<td><%=p.getVersion()%></td>
 		<td><%=p.getStateLabel()%></td>
+		<td><%=p.isAlive() ? "Yes" : "No"%></td>
 		<td><%=p.getSize()/1024%></td>
 		<td><%=p.getCreated()%></td>
 		<td><%=p.getLastmod()%></td>

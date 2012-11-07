@@ -104,7 +104,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             result.setOwner(d.owner);
             result.setRoot(d.isRoot);
             result.setVersion(d.version);
-            
+            result.setAlive(d.isAlive);
 
             return result;
 
@@ -185,6 +185,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             d.source = p.getSource().getBytes(ScriptusConfig.CHARSET);
             d.sourceId = p.getSourceName();
             d.userId = p.getUserId();
+            d.isAlive = p.isAlive();
             if(p.getWaiterPid() != null) {
                 d.waitingPid = p.getWaiterPid().toString();
             }
@@ -435,8 +436,8 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     
     @Override
     @Transactional(readOnly=false)
-    public void createTestSources() {
-        super.createTestSources();        
+    public void createSamples() {
+        super.createSamples();        
     }
 
     @Override
@@ -488,7 +489,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly=false)
     public void updateProcessState(final UUID pid, final Object o) {
         super.locks.runWithLock(pid, new Runnable() {
             @Override
@@ -510,7 +511,11 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
                 q.setParameter("pid", pid.toString());
                 q.setParameter("label", label);
 
-                q.executeUpdate();
+                int rows = q.executeUpdate();
+                
+                if(rows != 1) {
+                    throw new ScriptusRuntimeException("no rows updated for pid "+pid);
+                }
             }
             
         });
@@ -527,11 +532,24 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         List<ProcessListItemDAO> dd = q.getResultList();
         
         for(ProcessListItemDAO d : dd) {
-            result.add(new ProcessListItem(d.pid, d.uid, d.stateLabel, d.sourceName, d.version, d.sizeOnDisk, d.created, d.lastmod));
+            result.add(new ProcessListItem(d.pid, d.uid, d.stateLabel, d.sourceName, d.version, d.sizeOnDisk, d.created, d.lastmod, d.alive));
         }
         
         return result;
     }
 
+    @Override
+    @Transactional(readOnly=false)
+    public void markProcessFinished(UUID pid) {
+        Query q = em.createQuery("update ProcessDAO d set d.alive = false where d.pid = :pid");
+        q.setParameter("pid", pid.toString());
+        
+        int rows = q.executeUpdate();
+        
+        if(rows != 1) {
+            throw new ScriptusRuntimeException("no rows updated for pid "+pid);
+        }
+        
+    }
 
 }

@@ -34,4 +34,7 @@ public class ProcessListItemDAO {
     @Column(name="lastmod")
     public long lastmod;
 
+    @Column(name="alive")
+    public boolean alive;
+
 }

@@ -61,7 +61,8 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	private transient Object continuation;
 	private transient Scriptable globalScope;
 	
-	private boolean isKilled;
+    private boolean isKilled;
+    private boolean isAlive;
 	
     private Date lastmod;
     private Date created;
@@ -98,6 +99,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		this.owner = owner;
 		this.source = datastore.loadScriptSource(userId, sourceName);
 		this.isRoot = true;
+		this.isAlive = true;
 		this.version = 0;
 
 		Context cx = Context.enter();
@@ -270,6 +272,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		r.facade = this.facade;
 		// ?
 		r.isRoot = false;
+		r.isAlive = true;
 		r.version = 0;
 		r.pid = null;
 		r.waiterPid = null;
@@ -431,6 +434,14 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean isAlive) {
+        this.isAlive = isAlive;
     }
 
 }

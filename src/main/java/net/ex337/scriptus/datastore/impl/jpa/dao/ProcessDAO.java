@@ -40,6 +40,9 @@ public class ProcessDAO {
     @Column(name="root")
     public boolean isRoot;
     
+    @Column(name="alive")
+    public boolean isAlive;
+    
     @Column(name="script_state")
     public byte[] script_state;
     

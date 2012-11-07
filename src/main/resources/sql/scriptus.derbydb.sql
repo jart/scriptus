@@ -41,6 +41,7 @@ create table scriptus.tbl_process (
 	state blob,
 	state_label varchar(3000),
 	root boolean not null,
+	alive boolean not null,
 	script_state blob,
 	created bigint not null,
 	lastmod bigint not null

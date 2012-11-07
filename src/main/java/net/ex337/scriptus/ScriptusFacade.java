@@ -126,4 +126,8 @@ public class ScriptusFacade {
         datastore.addChild(parent, newChild, seq);
     }
 
+    public void markProcessFinished(UUID pid) {
+        datastore.markProcessFinished(pid);
+    }
+
 }

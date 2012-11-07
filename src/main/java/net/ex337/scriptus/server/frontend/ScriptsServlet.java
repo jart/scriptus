@@ -1,7 +1,6 @@
 package net.ex337.scriptus.server.frontend;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -12,7 +11,7 @@ import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jetty.server.session.HashSessionIdManager;
+import org.eclipse.jetty.server.Request;
 
 /**
  * 
@@ -53,13 +52,8 @@ public class ScriptsServlet extends BaseServlet {
 			return;
 
 		} else if("/list/samples".equals(path)){
-		    
-		    /*
-		     * web service?
-		     */
 
-            Set<String> scripts = new HashSet<String>();
-            scripts.add("test.js");
+            Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(ScriptusDatastore.SAMPLE_USER);
             
             req.setAttribute("scripts", scripts);
             req.setAttribute("samples", Boolean.TRUE);
@@ -74,8 +68,15 @@ public class ScriptsServlet extends BaseServlet {
 			String scriptSource = null;
 			
 			if(StringUtils.isNotEmpty(scriptId)) {
+			    
+			    String user = openid;
+			    
+			    if(Boolean.TRUE.toString().equalsIgnoreCase(req.getParameter("sample"))){
+			        user = ScriptusDatastore.SAMPLE_USER;
+			        req.setAttribute("sample", Boolean.TRUE);
+			    }
 				
-				scriptSource = ((ScriptusDatastore) ctx.getBean("datastore")).loadScriptSource(openid, scriptId);
+				scriptSource = ((ScriptusDatastore) ctx.getBean("datastore")).loadScriptSource(user, scriptId);
 				
 				if(scriptSource == null) {
 					resp.sendError(404);

@@ -17,27 +17,19 @@
 	Current GUI components
 	better colour scheme?
 	feedback form
-	sample scripts
+test	sample scripts
 	remove settings page
-	isTerminated flag
+test	isTerminated flag
 	Login, 
-X	docs
-
+	
+	THEN
 	
 	new GUI components
 	HIGH
 	  per-user Twitter linking
+	   -> use socialauth
 	  better openId login (copy stackoverflow)
 	   -> google, facebook, yahoo
-X test	   dao
-X	    pid
-X	    v
-X	    state (only serialised right now)
-X	    size on disk
-X	    timestamps
-X	    kill
-test	   load servlet
-test	   delete function
 	
 	LOW
 	  news?
@@ -714,4 +706,14 @@ X more	  bootstrapified
 X	   settings
 X test	  simple process admin
 X test	fix tabs
+X	docs
+X test	   dao
+X	    pid
+X	    v
+X	    state (only serialised right now)
+X	    size on disk
+X	    timestamps
+X	    kill
+X test	   load servlet
+X test	   delete function
 

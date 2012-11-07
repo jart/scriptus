@@ -38,7 +38,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		datastore = (ScriptusDatastore) appContext.getBean("datastore");
 		
-		datastore.createTestSources();
+		datastore.createSamples();
 		
 	}
 

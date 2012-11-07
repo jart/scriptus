@@ -13,8 +13,9 @@ public class ProcessListItem {
     private int size;
     private Date created;
     private Date lastmod;
+    private boolean alive;
     
-    public ProcessListItem(String pid, String uid, String stateLabel, String sourceName, int version, int size, long created, long lastmod) {
+    public ProcessListItem(String pid, String uid, String stateLabel, String sourceName, int version, int size, long created, long lastmod, boolean alive) {
         this.pid = UUID.fromString(pid);
         this.uid = uid;
         this.stateLabel = stateLabel;
@@ -23,6 +24,7 @@ public class ProcessListItem {
         this.size = size;
         this.created = new Date(created);
         this.lastmod = new Date(lastmod);
+        this.alive = alive;
     }
 
     public UUID getPid() {
@@ -88,5 +90,15 @@ public class ProcessListItem {
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
     }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+    
+    
 
 }

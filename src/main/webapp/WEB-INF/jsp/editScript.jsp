@@ -46,6 +46,20 @@ function saveScript() {
 	    <li class="active"><a href="#"><%=scriptId == null ? "New " : "Edit" %> script</a></li>
 	</ul>
 
+boolean samples = (request.getAttribute("sample") != null);
+
+if(samples){%>
+	<div class="alert alert-info">
+		<button type="button" class="close" data-dismiss="alert">x</button>
+		<p>When you save this script, it will be saved under 'Your scripts' above.</p>
+		
+		<p>The original sample script will remain unchanged for other users.</p>
+    </div>
+<%
+}
+%>
+
+
 <form method="POST" action="edit" class="form-inline">
 <p>
 	<label for="scriptid">Script name:</label>

@@ -100,8 +100,8 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 	}
 
 	@Override
-	public void createTestSources() {
-		activeImpl.createTestSources();
+	public void createSamples() {
+		activeImpl.createSamples();
 	}
 
 	public void registerMessageCorrelation(MessageCorrelation cid) {
@@ -150,6 +150,10 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 
     public List<ProcessListItem> getProcessesForUser(String uid) {
         return activeImpl.getProcessesForUser(uid);
+    }
+
+    public void markProcessFinished(UUID pid) {
+        activeImpl.markProcessFinished(pid);
     }
     
     
