@@ -45,7 +45,7 @@ function saveScript() {
 	    </li>
 	    <li class="active"><a href="#"><%=scriptId == null ? "New " : "Edit" %> script</a></li>
 	</ul>
-
+<%
 boolean samples = (request.getAttribute("sample") != null);
 
 if(samples){%>

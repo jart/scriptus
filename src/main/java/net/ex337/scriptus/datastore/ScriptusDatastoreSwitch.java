@@ -79,8 +79,8 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		activeImpl.deleteProcess(pid);
 	}
 
-	public ScriptProcess newProcess(String userId, String source, String args, String owner) {
-		return activeImpl.newProcess(userId, source, args, owner);
+	public ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner) {
+		return activeImpl.newProcess(userId, sourceId, false, args, owner);
 	}
 
 	public ScriptProcess getProcess(UUID uuid) {

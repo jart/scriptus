@@ -7,10 +7,11 @@
 ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 %>
 <script type="text/javascript">
-function run(id) {
+function run(id, sample) {
 
 	document.getElementById("runScriptDiv").style.display="";
 	document.getElementById("runid").value = id;
+	document.getElementById("sample").value = sample;
 	document.getElementById("owner").focus();
 
 	return false;
@@ -36,7 +37,7 @@ if( ! confirm("Are you sure?") ) {
 
 java.util.Set<String> scripts = (java.util.Set<String>) request.getAttribute("scripts");
 
-boolean clean = cfg.isCleanInstall();
+boolean clean = cfg.isCleanInstall() || (request.getAttribute("noscripts") != null);
 
 boolean samples = (request.getAttribute("samples") != null);
 
@@ -86,7 +87,7 @@ if(clean){%>
 			%><tr>
 				<td><a href="<%=request.getContextPath()%>/scripts/edit?script=<%=s%><%=samples ? "&sample=true" : ""%>"><%=s%></a></td>
 				<td><a class="btn btn-primary" onClick="run('<%=s%>', <%=samples%>)">Run</a></td>
-				<td><%=if(!samples){%><a class="btn btn-danger" onClick="del('<%=s%>')">Delete</a><%}%></td>
+				<td><%if(!samples){%><a class="btn btn-danger" onClick="del('<%=s%>')">Delete</a><%}%></td>
 			</tr>
 			<%
 		}
@@ -98,7 +99,7 @@ if(clean){%>
 
 	<div class="span3" id="runScriptDiv" style="display:none">
 	
-	<form action="run" method="POST">
+	<form action="<%=request.getContextPath()%>/scripts/run" method="POST">
 		<fieldset>
 			<legend>Run script</legend>
 			<p>
@@ -117,12 +118,13 @@ if(clean){%>
 				<input type="submit" id="submit" value="Run" class="btn btn-primary"/>
 			</p>
 		</fieldset>
+		<input type="hidden" name="sample" id="sample" value="false"/>
 	</form>
 
 	</div>
 </div>
 
-<form action="delete" method="POST" style="display:none" id="deleteform">
+<form action="<%=request.getContextPath()%>/scripts/delete" method="POST" style="display:none" id="deleteform">
 	<input type="hidden" name="deleteid" id="deleteid"/>
 </form>
 

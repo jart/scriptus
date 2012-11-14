@@ -10,7 +10,6 @@ import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
-import net.ex337.scriptus.tests.Testcase_ScriptusDAO;
 
 /**
  * 
@@ -28,12 +27,13 @@ public interface ScriptusDatastore {
 	 * Create a new {@link ScriptProcess} using the supplied parameters
 	 * 
 	 * @param userId the openID user that owns the source
-	 * @param source the source name
-	 * @param args a string bound to the script environment as "args"
-	 * @param owner a string bound to the script environment as "owner" and the twitter screen name to which the final result of the script will be said.
+     * @param sourceId the source name
+     * @param sample TODO
+     * @param args a string bound to the script environment as "args"
+     * @param owner a string bound to the script environment as "owner" and the twitter screen name to which the final result of the script will be said.
 	 * @return a new {@link ScriptProcess}
 	 */
-	public ScriptProcess newProcess(String userId, String source, String args, String owner);
+	public ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner);
 
 	/**
 	 * Retrieve an existing process from the datastore.

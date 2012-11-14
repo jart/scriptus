@@ -81,7 +81,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
     public void test_ask() throws IOException {
 
-        ScriptProcess p = datastore.newProcess(TEST_USER, "ask.js", "", "owner");
+        ScriptProcess p = datastore.newProcess(TEST_USER, "ask.js", false, "", "owner");
 
         ScriptAction r = p.call();
 
@@ -135,7 +135,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
     public void test_listen() throws IOException {
 
-        ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", "", "owner");
+        ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", false, "", "owner");
 
         ScriptAction r = p.call();
 

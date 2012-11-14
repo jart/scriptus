@@ -39,6 +39,8 @@ public class ScriptsServlet extends BaseServlet {
 			
 			if(scripts == null || scripts.isEmpty()){
 			    
+			    req.setAttribute("noscripts", Boolean.TRUE);
+			    
 	            resp.sendRedirect(req.getContextPath()+"/scripts/list/samples");
 	            
 			} else {
@@ -59,7 +61,8 @@ public class ScriptsServlet extends BaseServlet {
             req.setAttribute("samples", Boolean.TRUE);
 
             getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
-		    
+
+            return;
 
 		} else if("/edit".equals(path)) {
 			
@@ -127,7 +130,9 @@ public class ScriptsServlet extends BaseServlet {
 			String args = req.getParameter("args");
 			String owner = req.getParameter("owner");
 			
-			((ProcessScheduler) ctx.getBean("scheduler")).executeNewProcess(openid, script, args, owner);
+			boolean sample = Boolean.TRUE.toString().equalsIgnoreCase(req.getParameter("sample"));
+			
+			((ProcessScheduler) ctx.getBean("scheduler")).executeNewProcess(openid, script, sample, args, owner);
 
 			resp.sendRedirect("list");
 			return;

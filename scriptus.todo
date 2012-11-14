@@ -17,10 +17,19 @@
 	Current GUI components
 	better colour scheme?
 	feedback form
-test	sample scripts
+X test	sample scripts
+X test	  loading
+X test	  editing
+test	  running
+test	   -> definitely don't  work right now
+	  can't run sample scripts -> check sample flag
 	remove settings page
 test	isTerminated flag
+	 -> doesn't appear to work
 	Login, 
+	 -> are we staying with openId?
+	 links around auth all broken
+	  -> wither welcome?
 	
 	THEN
 	

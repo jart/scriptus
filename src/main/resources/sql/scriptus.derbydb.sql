@@ -51,6 +51,7 @@ create view scriptus.v_proclist as (
 	select 
 		pid, 
 		user_id,
+		alive,
 		version, 
 		state_label, 
 		id_source,

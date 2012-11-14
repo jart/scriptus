@@ -44,7 +44,7 @@ public class ScriptusFacade {
         this.transport = transport;
     }
     public ScriptProcess newProcess(String userId, String source, String args, String owner) {
-        return datastore.newProcess(userId, source, args, owner);
+        return datastore.newProcess(userId, source, false, args, owner);
     }
     public ScriptProcess getProcess(UUID uuid) {
         return datastore.getProcess(uuid);

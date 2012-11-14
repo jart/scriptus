@@ -9,10 +9,13 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.ProtectionDomain;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+
+import net.ex337.scriptus.server.ScriptusFrontend;
 
 /**
  * Acts as the interface to the configuration store.
@@ -86,6 +89,7 @@ public class ScriptusConfig {
 	
 	@PostConstruct
 	public void init() throws IOException {
+	    
 		/*
 		 * is there a system property? if so use it
 		 * is there a ~/.scriptus/config.properties? if so use it

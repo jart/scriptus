@@ -60,6 +60,7 @@ public class ScriptusFrontend {
         
         ProtectionDomain protectionDomain = ScriptusFrontend.class.getProtectionDomain();
         URL location = protectionDomain.getCodeSource().getLocation();
+        
         context.setWar(location.toExternalForm());
         context.setExtractWAR(false);
 

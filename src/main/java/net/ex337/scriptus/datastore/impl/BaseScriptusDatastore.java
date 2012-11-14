@@ -3,16 +3,20 @@ package net.ex337.scriptus.datastore.impl;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.ProtectionDomain;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.annotation.Resource;
 
+import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.scheduler.ProcessLocks;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,35 +42,64 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 
 	@Override
 	public void createSamples() {
-		URL u = this.getClass().getClassLoader().getResource("samples");
+	    
+        ProtectionDomain protectionDomain = ScriptusConfig.class.getProtectionDomain();
+        URL location = protectionDomain.getCodeSource().getLocation();
+        
+        if("file".equalsIgnoreCase(location.getProtocol())) {
+            
+            if(location.getFile() == null) {
+                LOG.warn("no samples can be loaded from location "+location);
+                return;
+            }
+            
+            File[] samples = new File(location.getFile()+"samples/").listFiles();
+            
+            for(File f : samples){
+                try {
+                    saveScriptSource(ScriptusDatastore.SAMPLE_USER, f.getName(), FileUtils.readFileToString(f));
+                } catch (IOException e) {
+                    LOG.warn("Could not load/save sample script", e);
+                }
+            }
+            
+        } else if("jar".equalsIgnoreCase(location.getProtocol())) {
 
-		if(u == null) {
-			throw new ScriptusRuntimeException("cannot find samples resource");
-		}
-		
-		File samples = new File(u.getFile());
-		
-		if( ! samples.exists()) {
-            throw new ScriptusRuntimeException("samples file doesn't exist");
-		}
+            /*open as zip file, could be JAR or WAR file*/
+            
+          try {
+              ZipInputStream p = new ZipInputStream(location.openStream());
+              ZipEntry e = null;
+              while((e = p.getNextEntry()) != null) {
+                  String path = e.getName();
+                  if(path.endsWith("/")) {
+                      continue;
+                  }
+                  if(path.startsWith("WEB-INF/classes/samples/") || path.startsWith("samples/")) {
+                      String name = path.substring(path.lastIndexOf("/"));
+                      saveScriptSource(ScriptusDatastore.SAMPLE_USER, name, IOUtils.toString(p));
+                  }
+                  p.closeEntry();
+              }
+          } catch (IOException e) {
+              LOG.warn("Could not load/save sample scripts from JAR file", e);
+          }
+            
+            
+        } else {
+            LOG.warn("samples not loaded, unknown code location "+location);
+        }
 
-		for(File f : samples.listFiles()) {
-			try {
-				saveScriptSource(ScriptusDatastore.SAMPLE_USER, f.getName(), FileUtils.readFileToString(f));
-			} catch (IOException e) {
-				throw new ScriptusRuntimeException(e);
-			}
-		}
 	}
 
 
 
 	@Override
-	public final ScriptProcess newProcess(String userId, String source, String args, String owner) {
+	public final ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner) {
 
 		ScriptProcess result = createScriptProcess();
 
-		result.init(userId, source, args, owner);
+		result.init(userId, sourceId, sample, args, owner);
 
 		return result;
 	}

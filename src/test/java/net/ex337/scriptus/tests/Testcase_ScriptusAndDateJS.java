@@ -67,7 +67,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 	
 	public void test_evalGet() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", false, "", "owner");
 		
 		ScriptAction r = p.call();
 		

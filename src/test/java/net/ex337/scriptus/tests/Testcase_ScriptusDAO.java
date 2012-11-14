@@ -43,7 +43,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	}
 
 	public void test_lifecycle() throws IOException {
-		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", "", "");
+		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", false, "", "");
 		newp.setArgs("foo bar");
 		
 		newp.save();
@@ -236,7 +236,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	    
 	    String uid = UUID.randomUUID().toString();
 	    
-	    ScriptProcess p = datastore.newProcess(uid, "addTwoNumbers.js", "aarfgs", uid);
+	    ScriptProcess p = datastore.newProcess(uid, "addTwoNumbers.js", false, "aarfgs", uid);
 	    p.setSource("");
 	    datastore.writeProcess(p);
 	    

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.datastore.impl.BaseScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.api.ScriptusAPI;
 import net.ex337.scriptus.model.api.Termination;
@@ -25,6 +26,8 @@ import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.SourceLoader;
 
 /**
  * Represents one script process. The source of the process
@@ -88,7 +91,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 * @param args
 	 * @param owner
 	 */
-	public void init(String userId, final String sourceName, String args, String owner) {
+	public void init(String userId, final String sourceName, boolean sample, String args, String owner) {
 
 		LOG.debug("ctor, source=" + sourceName);
 
@@ -97,7 +100,13 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		this.sourceName = sourceName;
 		this.args = args;
 		this.owner = owner;
-		this.source = datastore.loadScriptSource(userId, sourceName);
+		
+		String sourceOwner = userId;
+		if(sample){
+		    sourceOwner = BaseScriptusDatastore.SAMPLE_USER;
+		}
+		
+		this.source = datastore.loadScriptSource(sourceOwner, sourceName);
 		this.isRoot = true;
 		this.isAlive = true;
 		this.version = 0;
