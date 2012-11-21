@@ -541,7 +541,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Override
     @Transactional(readOnly=false)
     public void markProcessFinished(UUID pid) {
-        Query q = em.createQuery("update ProcessDAO d set d.alive = false where d.pid = :pid");
+        Query q = em.createQuery("update ProcessDAO d set d.isAlive = false where d.pid = :pid");
         q.setParameter("pid", pid.toString());
         
         int rows = q.executeUpdate();
