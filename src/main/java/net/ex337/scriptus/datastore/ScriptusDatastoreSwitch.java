@@ -80,7 +80,7 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 	}
 
 	public ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner) {
-		return activeImpl.newProcess(userId, sourceId, false, args, owner);
+		return activeImpl.newProcess(userId, sourceId, sample, args, owner);
 	}
 
 	public ScriptProcess getProcess(UUID uuid) {

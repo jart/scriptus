@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name="tbl_process")
+@Table(name="scriptus.tbl_process")
 public class ProcessDAO {
 
     @Id

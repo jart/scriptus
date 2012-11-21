@@ -43,7 +43,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	}
 
 	public void test_lifecycle() throws IOException {
-		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", false, "", "");
+		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", true, "", "");
 		newp.setArgs("foo bar");
 		
 		newp.save();

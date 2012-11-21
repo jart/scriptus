@@ -64,13 +64,21 @@
 
      <bean id="embeddedDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.jpa.embedded.ScriptusDatastoreEmbeddedDBImpl" />
 
-	<bean id="embeddedDB" class="org.apache.derby.jdbc.EmbeddedDataSource">
+<!-- 	<bean id="embeddedDB" class="org.apache.derby.jdbc.EmbeddedDataSource">
 	    <property name="CreateDatabase" value="create"/>
 	    <property name="databaseName" value="scriptus"/>
 	    <property name="user" value="scriptus"/>
 	    <property name="password" value="scriptus"/>
 	</bean>
-	
+ -->	
+ 
+	<bean id="embeddedDB" class="org.apache.commons.dbcp.BasicDataSource">
+	    <property name="driverClassName" value="org.h2.Driver"/>
+	    <property name="url" value="jdbc:h2:file:scriptusdb/scriptusdb"/>
+	    <property name="username" value="scriptus"/>
+	    <property name="password" value="scriptus"/>
+	</bean>
+ 
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="embeddedDB" />

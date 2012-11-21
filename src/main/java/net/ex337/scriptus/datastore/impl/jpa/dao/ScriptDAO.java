@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name="tbl_script")
+@Table(name="scriptus.tbl_script")
 public class ScriptDAO {
 
     @Column(name="script_src")

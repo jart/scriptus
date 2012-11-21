@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tbl_process_child")
+@Table(name="scriptus.tbl_process_child")
 public class ChildProcessPIDDAO {
 
     @Id

@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="v_proclist")
+@Table(name="scriptus.v_proclist")
 public class ProcessListItemDAO {
 
     @Id

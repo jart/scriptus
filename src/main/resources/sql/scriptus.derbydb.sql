@@ -19,7 +19,7 @@ create table scriptus.tbl_scheduled_actions (
 	pid varchar(36) not null,
 	nonce bigint not null,
 	action varchar(300) not null,
-	when bigint not null
+	action_time bigint not null
 );
 
 create table scriptus.tbl_script (
