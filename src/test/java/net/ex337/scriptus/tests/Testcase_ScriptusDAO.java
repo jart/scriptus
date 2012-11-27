@@ -110,7 +110,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         Set<MessageCorrelation> cbyuser = datastore.getMessageCorrelations(null, u);
 
         assertTrue("user contains user", cbyuser.contains(byuser));
-        assertTrue("user contains null", cbyuser.contains(byNull));
+        assertTrue("userte contains null", cbyuser.contains(byNull));
 
         assertTrue("both contains both", cboth.contains(both));
         assertTrue("both contains msgid", cboth.contains(messageId));

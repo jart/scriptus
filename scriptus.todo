@@ -10,7 +10,8 @@
 	freedom of assembly
 
 	JPA stuff
-	change embedded db name to scriptusDB
+X	change embedded db name to scriptusDB
+	test with hibernate, since eclipselink gives strange errors
 
 	Scriptus on the web.
 	

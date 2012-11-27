@@ -139,9 +139,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 * Writes the script state to DAO. If the pid is null we assign a new one.
 	 */
 	public void save() {
-	    
 	    datastore.writeProcess(this);
-	    version++;
 	}
 
 	/**

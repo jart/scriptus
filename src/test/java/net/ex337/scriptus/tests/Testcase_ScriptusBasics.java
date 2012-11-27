@@ -133,6 +133,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
         
         ScriptProcess p = datastore.newProcess(TEST_USER, "return.js", false, "", "owner");
         
+        p.save();
+        
         ScriptAction r = p.call();
         
         assertTrue("Correct result", r instanceof NormalTermination);
@@ -168,6 +170,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	public void test_log() throws IOException {
 		
 		ScriptProcess p = datastore.newProcess(TEST_USER, "log.js", false, "", "owner");
+		
+		p.save();
 		
 		ScriptAction r = p.call();
 		
@@ -923,6 +927,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec.js", false, "", "owner");
 		
+		p.save();
+		
 		ScriptAction r = p.call();
 		
 		assertTrue("Failed correctly", r instanceof ErrorTermination);
@@ -935,7 +941,9 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	public void test_breakSecurity2() throws IOException {
 		
 		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec2.js", false, "", "owner");
-		
+
+		p.save();
+
 		ScriptAction r = p.call();
 		
 		assertTrue("Failed correctly", r instanceof ErrorTermination);
@@ -949,6 +957,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec3.js", false, "", "owner");
 		
+        p.save();
+        
 		ScriptAction r = p.call();
 		
 		assertTrue("Failed correctly", r instanceof ErrorTermination);
@@ -962,6 +972,8 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec4.js", false, "", "owner");
 		
+        p.save();
+        
 		ScriptAction r = p.call();
 		
 		assertEquals("Failed correctly", ErrorTermination.class, r.getClass());
@@ -975,6 +987,9 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 		
 		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec5.js", false, "", "owner");
 		
+        p.save();
+        
+        
 		ScriptAction r = p.call();
 		
 		assertEquals("Failed correctly", ErrorTermination.class, r.getClass());

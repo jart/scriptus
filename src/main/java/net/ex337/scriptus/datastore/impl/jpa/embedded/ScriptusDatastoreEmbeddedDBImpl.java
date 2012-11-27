@@ -59,7 +59,7 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
                 
 //                conn.setAutoCommit(false);
                 
-                String schema = IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("sql/scriptus.derbydb.sql"), ScriptusConfig.CHARSET_STR);
+                String schema = IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("sql/scriptus.sql"), ScriptusConfig.CHARSET_STR);
                 
                 s = conn.createStatement();
                 

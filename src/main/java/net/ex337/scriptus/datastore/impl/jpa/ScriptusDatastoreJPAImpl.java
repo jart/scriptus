@@ -6,18 +6,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import net.ex337.scriptus.SerializableUtils;
@@ -74,7 +72,15 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
         try {
             
-            ProcessDAO d = em.find(ProcessDAO.class, pid.toString());
+            ProcessDAO d;
+            
+            try{
+                d = em.find(ProcessDAO.class, pid.toString());
+            } catch(PersistenceException pe) {
+                System.out.println("count="+em.createQuery("select count(*) from ProcessDAO d where d.pid = '"+pid.toString()+"'").getSingleResult());
+                throw pe;
+            }
+            
 
             if(d == null) {
                 throw new ProcessNotFoundException(pid.toString());
@@ -186,6 +192,8 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             d.sourceId = p.getSourceName();
             d.userId = p.getUserId();
             d.isAlive = p.isAlive();
+            d.version = p.getVersion()+1;
+            p.setVersion(d.version);
             if(p.getWaiterPid() != null) {
                 d.waitingPid = p.getWaiterPid().toString();
             }
