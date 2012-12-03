@@ -1,0 +1,16 @@
+tt {
+	color:#888;
+}
+.codevar {
+	color:purple;
+}
+.codeverb {
+	color:blue;
+}
+.codestring {
+	color:red;
+}
+.lightborder {
+	border:solid #CCC 1px;
+	padding:1ex;
+}

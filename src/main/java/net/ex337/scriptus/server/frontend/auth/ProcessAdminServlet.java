@@ -1,4 +1,4 @@
-package net.ex337.scriptus.server.frontend;
+package net.ex337.scriptus.server.frontend.auth;
 
 import java.io.IOException;
 import java.util.List;

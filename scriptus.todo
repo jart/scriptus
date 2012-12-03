@@ -1,64 +1,52 @@
+
+	SCRIPTUS IS:
+	
+	programming on a human timescale
+	
+	freedom of assembly
+		
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=test-twitter.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 	mvn clean install -Dmaven.test.skip=true
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
 	mvn -Dtest=Testcase_ScriptusDAO test-compile surefire:test
-	
-	programming on a human timescale
-	
-	freedom of assembly
-
-	JPA stuff
-X	change embedded db name to scriptusDB
-	test with hibernate, since eclipselink gives strange errors
 
 	Scriptus on the web.
 	
-	Current GUI components
-	better colour scheme?
-	feedback form
-X test	sample scripts
-X test	  loading
-X test	  editing
-test	  running
-test	   -> definitely don't  work right now
-	  can't run sample scripts -> check sample flag
-	remove settings page
-test	isTerminated flag
-	 -> doesn't appear to work
-	Login, 
-	 -> are we staying with openId?
-	 links around auth all broken
-	  -> wither welcome?
+		Current GUI components
+		better colour scheme?
+		remove settings page
+		Login, 
+		 -> are we staying with openId?
+		 links around auth all broken
+		  -> wither /welcome, /home, /you ...?
 	
-	THEN
+		THEN
 	
-	new GUI components
-	HIGH
-	  per-user Twitter linking
-	   -> use socialauth
-	  better openId login (copy stackoverflow)
-	   -> google, facebook, yahoo
+		new GUI components
+		HIGH
+		  per-user Twitter linking
+		   -> use socialauth
+		  only poll mentions when script is listening to that uid
+		  better openId login (copy stackoverflow)
+		   -> google, facebook, yahoo
 	
-	LOW
-	  news?
-	  local copy of docs?
-	  version checking?
-	   -> GitHub intefgration
-	   -> checkout API
-	   -> per-release branch?
+		LOW
+		  news?
+		  local copy of docs?
+		  version checking?
+		   -> GitHub intefgration
+		   -> checkout API
+		   -> per-release branch?
 
 
 
 	JPA	
-later	 - DB location needs checking
 later	 - constraints
 	 - document getting to a SQL console
-	   -> add ij maven jar to scriptus so we can get to SQL by passing parameter
 
 
-	 - simple process admin?
 	 - API
 	    - listen() should respond with first tweet after listen() called (not first mention)
 	       - like that today, but done not the right way
@@ -726,4 +714,22 @@ X	    timestamps
 X	    kill
 X test	   load servlet
 X test	   delete function
+X	change embedded db name to scriptusDB
+X	test with hibernate, since eclipselink & derby gave strange errors
+X	feedback form
+X	<iframe src="https://docs.google.com/spreadsheet/embeddedform?formkey=dGgzYUh5LVVsXzdIUUZTbmxURnNQLVE6MQ" 
+X	width="760" height="537" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>	
+X	https://docs.google.com/spreadsheet/viewform?formkey=dGgzYUh5LVVsXzdIUUZTbmxURnNQLVE6MQ
+X test	sample scripts
+X test	  loading
+X test	  editing
+X test	  running
+X test	   -> definitely don't  work right now
+X test	  can't run sample scripts -> check sample flag
+X test	isTerminated flag
+X test	 -> doesn't appear to work
+X later	 - DB location needs checking
+X no	   -> add ij maven jar to scriptus so we can get to SQL by passing parameter
+X	 - simple process admin?
+x	JPA stuff
 

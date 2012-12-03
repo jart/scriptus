@@ -16,12 +16,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 /**
  * 
- * Servlet reponsible for settings page. This servlet doesn't use
- * openID but will only respond to requests from 127.0.0.1.
- * 
- * The page is simple enough that it should be usable in links/lynx.
- * TODO A better security system might be a good idea in the future.
- *   
+ * Servlet reponsible for welcome page, before user us logged in  
  * @author ian
  *
  */
