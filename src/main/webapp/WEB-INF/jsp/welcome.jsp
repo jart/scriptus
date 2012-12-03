@@ -37,17 +37,17 @@
 
 	</div>
 
-	<div class="span4" id="runScriptDiv">
-<p class="code">var goal = ask(
-  "where do you want to be,"
-  +" a year from now?);
-  
-sleep("1y"); //"1y" is 1 year
-
-say("Remember this? "+goal+
-    " How's it going?");</pre>
+	<div class="span4 lightborder" id="runScriptDiv">
+<p><tt>var <span class="codevar">goal</span> = <span class="codeverb">ask</span>(<br />
+  <span class="codestring">"where do you want to be,"</span><br />
+  +<span class="codestring">" a year from now?"</span>);<br />
+  <br />
+<span class="codeverb">sleep</span>(<span class="codestring">"1 y"</span>); //"1y" is 1 year<br />
+<br />
+<span class="codeverb">say</span>(<span class="codestring">"Remember this? "</span>+<span class="codevar">goal</span>+<br />
+    <span class="codestring">" How's it going?"</span>);<tt></p>
 	</div>
-</p>
+</div>
 
 </body></html>
 			
