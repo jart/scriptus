@@ -31,7 +31,7 @@ public abstract class BaseServlet extends HttpServlet {
 	protected XmlWebApplicationContext ctx;
 
 	@Override
-	public final void init() {
+	public void init() {
 
 	    ctx = (XmlWebApplicationContext) WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 	}

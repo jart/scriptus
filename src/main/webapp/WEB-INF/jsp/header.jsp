@@ -3,8 +3,9 @@ String pageLabel = (String)request.getAttribute("pageLabel");
 if(pageLabel == null) pageLabel = "";
 %><div class="navbar">
 	<div class="navbar-inner">
-		<a class="brand" href="<%=request.getContextPath()%>/">Scriptus</a>
+		<a class="brand" href="<%=request.getContextPath() + ((session.getAttribute("openid") != null) ? "/home" : "/") %>">Scriptus</a>
 		<ul class="nav">
+			<li class="<%=pageLabel.equals("about") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/about.jsp">About</a></li>
 			<%if(session.getAttribute("openid") != null) {%>
 				<li class="<%=pageLabel.equals("scripts") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/scripts/list">Scripts</a></li>
 				<li class="<%=pageLabel.equals("processes") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>

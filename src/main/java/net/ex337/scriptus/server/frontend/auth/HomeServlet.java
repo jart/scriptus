@@ -9,9 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.web.context.support.XmlWebApplicationContext;
+import net.ex337.scriptus.server.ScriptusHeadlineReader;
 
 /**
  * 
@@ -23,6 +21,14 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 public class HomeServlet extends BaseServlet {
 
 	private static final long serialVersionUID = -5553735938511251323L;
+    
+    private ScriptusHeadlineReader r;
+    
+    @Override
+    public void init() {
+        super.init();
+        r = (ScriptusHeadlineReader) ctx.getBean("scriptusHeadlineReader");
+    }
 	
 	@Override
 	protected void doAuthGet(HttpServletRequest req, HttpServletResponse resp, String user) throws ServletException, IOException {
@@ -38,6 +44,9 @@ public class HomeServlet extends BaseServlet {
         if(scripts.isEmpty()){
             req.setAttribute("noscripts", Boolean.TRUE);
         }
+        
+        req.setAttribute("lastNewsItemHeadline", r.getLastNewsItemHeadline());
+        req.setAttribute("lastNewsItemLink", r.getLastNewsItemLink());
         
         req.getRequestDispatcher("/WEB-INF/jsp/home.jsp").forward(req, resp);
 		

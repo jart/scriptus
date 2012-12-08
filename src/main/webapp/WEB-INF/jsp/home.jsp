@@ -23,6 +23,10 @@
 	</div>
 </div>
 
+<% if(request.getAttribute("lastNewsItemLink") != null) {%>
+	<p>Latest dev news: <a href="<%=request.getAttribute("lastNewsItemLink")%>"><%=request.getAttribute("lastNewsItemHeadline")%></a></p>
+<%}%>
+
 <div class="row">
 	<div class="span8">
 		<br />

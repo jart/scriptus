@@ -110,4 +110,9 @@
 
     <bean id="scheduler" class="net.ex337.scriptus.scheduler.ProcessSchedulerImpl" />
 
+	<!-- for frontend -->
+    <bean id="scriptusHeadlineReader" class="net.ex337.scriptus.server.ScriptusHeadlineReader" >
+      <property name="atomFeed" value="http://ianso.github.com/scriptus/atom.xml"/>
+    </bean>
+    
 </beans>

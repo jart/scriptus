@@ -17,10 +17,25 @@
 		Current GUI components
 		better colour scheme?
 		remove settings page
-		Login, 
-		 -> are we staying with openId?
-		 links around auth all broken
-		  -> wither /welcome, /home, /you ...?
+X		Login, / landing page
+
+	home page should have
+	 -  have X saved scripts and Y processes running)
+test	 - Latest news: 
+test	    atom feed
+	 <li>New to Scriptus? <a href="about.jsp">Learn about Scriptus here.</a></li>
+	 <li>Writing programs? These sample programs and the API documentation can help you get started.</li>
+	 <li>Have feedback? <a href="feedback.jsp">Don't hesitate to send it.</a></li>
+	 <li>Learn more about <a href="feedback.jsp">Scriptus development on the blog</a>, <a href="feedback.jsp">follow us on Twitter</a> or <a href="feedback.jsp">check out the project on GitHub</a>.</li>
+
+	learn more page 
+	 - formatting
+	 - layout
+	 - links
+	 - scansion of last para
+	 
+
+	review all docs!
 	
 		THEN
 	
@@ -30,7 +45,8 @@
 		   -> use socialauth
 		  only poll mentions when script is listening to that uid
 		  better openId login (copy stackoverflow)
-		   -> google, facebook, yahoo
+		   -> google, facebook, twitter, yahoo
+		   --> need socialauth
 	
 		LOW
 		  news?
@@ -110,9 +126,7 @@ In the example, a poll is taken and the poll results are stored in a MySQL datab
  	       tbl_user_creds
  	       uid / service / token / secret
  	       threadlocal for user info?
-	 - better site design
 	 - inline documentation / QRC? 
-	 - use bootstrap
 	 - , convert docs to HTML
 	   -> use pegDown or pull from gitHub?	
 	 - owner should be twitter account
@@ -181,11 +195,6 @@ low
 	docs: easy to write annoying, difficult to be considerate...
 	move outstanding stuff to github tasks
 
-	*************BUGS not documented in known-problems.md
-	      - children list should be managed separately (SDB?)
-	         - might as well separate state out too...
-	         - add status column
-	      - processes not deleted properly on wait / termination
 	      
 	site
 	 - index.html & default layout re-use CSS & HTML
@@ -732,4 +741,14 @@ X later	 - DB location needs checking
 X no	   -> add ij maven jar to scriptus so we can get to SQL by passing parameter
 X	 - simple process admin?
 x	JPA stuff
+X yes		 -> are we staying with openId?
+X		 links around auth all broken
+X		  -> wither /welcome, /home, /you ...?
+X	*************BUGS not documented in known-problems.md
+X	      - children list should be managed separately (SDB?)
+X	         - might as well separate state out too...
+X	         - add status column
+X doccd	      - processes not deleted properly on wait / termination
+X	 - better site design
+X	 - use bootstrap
 
