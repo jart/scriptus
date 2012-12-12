@@ -16,7 +16,7 @@ public interface ProcessScheduler {
 	 */
 	public void runWithLock(UUID pid, Runnable r);
 
-	public void executeNewProcess(String userId, String sourceName, String args, String owner);
+	public void executeNewProcess(String userId, String sourceName, boolean sample, String args, String owner);
 
 	public void execute(final UUID pid);
 

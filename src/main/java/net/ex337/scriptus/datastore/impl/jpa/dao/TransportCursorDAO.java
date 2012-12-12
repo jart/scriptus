@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name="tbl_cursors")
+@Table(name="scriptus.tbl_cursors")
 public class TransportCursorDAO {
 
     @Id

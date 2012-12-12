@@ -80,8 +80,8 @@ public class ProcessSchedulerImpl implements ProcessScheduler {
 	 * @see net.ex337.scriptus.ProcessScheduler#newProcess(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void executeNewProcess(String userId, String sourceName, String args, String owner) {
-		ScriptProcess p = datastore.newProcess(userId, sourceName, args, owner);
+	public void executeNewProcess(String userId, String sourceName, boolean sample, String args, String owner) {
+		ScriptProcess p = datastore.newProcess(userId, sourceName, sample, args, owner);
 		p.save();
 		execute(p.getPid());
 	}

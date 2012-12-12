@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
+import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -78,8 +79,8 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		activeImpl.deleteProcess(pid);
 	}
 
-	public ScriptProcess newProcess(String userId, String source, String args, String owner) {
-		return activeImpl.newProcess(userId, source, args, owner);
+	public ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner) {
+		return activeImpl.newProcess(userId, sourceId, sample, args, owner);
 	}
 
 	public ScriptProcess getProcess(UUID uuid) {
@@ -99,8 +100,8 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 	}
 
 	@Override
-	public void createTestSources() {
-		activeImpl.createTestSources();
+	public void createSamples() {
+		activeImpl.createSamples();
 	}
 
 	public void registerMessageCorrelation(MessageCorrelation cid) {
@@ -145,6 +146,22 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 
     public UUID getLastChild(UUID pid) {
         return activeImpl.getLastChild(pid);
+    }
+
+    public List<ProcessListItem> getProcessesForUser(String uid) {
+        return activeImpl.getProcessesForUser(uid);
+    }
+
+    public void markProcessFinished(UUID pid) {
+        activeImpl.markProcessFinished(pid);
+    }
+
+    public int countSavedScripts(String user) {
+        return activeImpl.countSavedScripts(user);
+    }
+
+    public int countRunningProcesses(String user) {
+        return activeImpl.countRunningProcesses(user);
     }
     
     

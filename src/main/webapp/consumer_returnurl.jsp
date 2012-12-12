@@ -38,14 +38,37 @@ try
 
                 session.setAttribute("openid", authSuccess.getIdentity());
                 session.setAttribute("openid-claimed", authSuccess.getClaimed());
-                response.sendRedirect(request.getContextPath()+"/scripts/list");  // success
+
+				if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX))
+				{
+				    MessageExtension ext = authSuccess.getExtension(AxMessage.OPENID_NS_AX);
+				
+				    if (ext instanceof FetchResponse)
+				    {
+				        FetchResponse fetchResp = (FetchResponse) ext;
+				        
+				        String firstName = fetchResp.getAttributeValue("FirstName");
+				        String lastName = fetchResp.getAttributeValue("LastName");
+				        
+				        // can have multiple values
+				        List emails = fetchResp.getAttributeValues("email");
+				        
+				        System.out.println("params="+fetchResp.getParameters());
+				        System.out.println("ffn="+firstName+", ln:="+lastName+", ems="+emails);
+
+                session.setAttribute("name", firstName+" "+lastName);
+                session.setAttribute("email", fetchResp.getAttributeValue("email"));
+
+                response.sendRedirect(request.getContextPath()+"/");  // success
+                return;
+				        
+				    }
+				}
+                
             }
-            else
-            {
 %>
             Failed to login!
 <%
-            }
         }
         catch (OpenIDException e)
         {

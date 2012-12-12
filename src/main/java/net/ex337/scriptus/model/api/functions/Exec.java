@@ -36,6 +36,7 @@ public class Exec extends ScriptAction implements Serializable {
 		ScriptProcess p = scriptus.newProcess(process.getUserId(), script, args, process.getOwner());
 		
 		p.setPid(process.getPid());
+		p.setVersion(process.getVersion());
 		
 		p.save();
 		

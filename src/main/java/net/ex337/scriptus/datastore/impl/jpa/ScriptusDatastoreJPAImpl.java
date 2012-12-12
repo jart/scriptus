@@ -6,16 +6,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import net.ex337.scriptus.SerializableUtils;
@@ -30,10 +30,13 @@ import net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptIdDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.TransportCursorDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.views.ProcessListItemDAO;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.api.HasStateLabel;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
@@ -69,7 +72,15 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
         try {
             
-            ProcessDAO d = em.find(ProcessDAO.class, pid.toString());
+            ProcessDAO d;
+            
+            try{
+                d = em.find(ProcessDAO.class, pid.toString());
+            } catch(PersistenceException pe) {
+                System.out.println("count="+em.createQuery("select count(*) from ProcessDAO d where d.pid = '"+pid.toString()+"'").getSingleResult());
+                throw pe;
+            }
+            
 
             if(d == null) {
                 throw new ProcessNotFoundException(pid.toString());
@@ -99,7 +110,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             result.setOwner(d.owner);
             result.setRoot(d.isRoot);
             result.setVersion(d.version);
-            
+            result.setAlive(d.isAlive);
 
             return result;
 
@@ -150,12 +161,15 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             if(newProcess) {
                 d = new ProcessDAO();
                 d.pid = p.getPid().toString();
+                d.created = d.lastmod = System.currentTimeMillis();
             } else {
                 
                 d = em.find(ProcessDAO.class, p.getPid().toString());
                 if(d == null) {
                     throw new ScriptusRuntimeException("Process not found for pid "+p.getPid());
                 }
+                
+                d.lastmod = System.currentTimeMillis();
             }
             
             d.args = p.getArgs();
@@ -177,6 +191,9 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             d.source = p.getSource().getBytes(ScriptusConfig.CHARSET);
             d.sourceId = p.getSourceName();
             d.userId = p.getUserId();
+            d.isAlive = p.isAlive();
+            d.version = p.getVersion()+1;
+            p.setVersion(d.version);
             if(p.getWaiterPid() != null) {
                 d.waitingPid = p.getWaiterPid().toString();
             }
@@ -212,7 +229,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=true)
     public Set<String> listScripts(String userId) {
         
-        Query q = em.createQuery("select name from ScriptDAO d where d.userId = :userId");
+        Query q = em.createQuery("select d.id.name from ScriptDAO d where d.id.userId = :userId");
         q.setParameter("userId", userId);
         
         List<Object> oo = q.getResultList();
@@ -267,7 +284,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Transactional(readOnly=false)
     public void deleteScript(String userId, String name) {
         
-        Query q = em.createQuery("delete from ScriptDAO d where d.userId = :userId and d.name = :name");
+        Query q = em.createQuery("delete from ScriptDAO d where d.id.userId = :userId and d.id.name = :name");
         q.setParameter("userId", userId);
         q.setParameter("name", name);
         
@@ -427,8 +444,8 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     
     @Override
     @Transactional(readOnly=false)
-    public void createTestSources() {
-        super.createTestSources();        
+    public void createSamples() {
+        super.createSamples();        
     }
 
     @Override
@@ -479,5 +496,85 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         }
     }
 
+    @Override
+    @Transactional(readOnly=false)
+    public void updateProcessState(final UUID pid, final Object o) {
+        super.locks.runWithLock(pid, new Runnable() {
+            @Override
+            public void run() {
+                
+                String label = null;
+                
+                if(o instanceof HasStateLabel) {
+                    //TODO locale should be of user
+                    label = ((HasStateLabel)o).getStateLabel(Locale.getDefault());
+                }
+
+                Query q = em.createQuery("update ProcessDAO d set d.state = :state, d.state_label = :label where d.pid= :pid");
+                try {
+                    q.setParameter("state", SerializableUtils.serialiseObject(o));
+                } catch (IOException e) {
+                    throw new ScriptusRuntimeException(e);
+                }
+                q.setParameter("pid", pid.toString());
+                q.setParameter("label", label);
+
+                int rows = q.executeUpdate();
+                
+                if(rows != 1) {
+                    throw new ScriptusRuntimeException("no rows updated for pid "+pid);
+                }
+            }
+            
+        });
+    }
+    
+    @Override
+    public List<ProcessListItem> getProcessesForUser(String uid) {
+        
+        List<ProcessListItem> result = new ArrayList<ProcessListItem>();
+        
+        Query q = em.createQuery("select p from ProcessListItemDAO p where p.uid = :uid");
+        q.setParameter("uid", uid);
+        
+        List<ProcessListItemDAO> dd = q.getResultList();
+        
+        for(ProcessListItemDAO d : dd) {
+            result.add(new ProcessListItem(d.pid, d.uid, d.stateLabel, d.sourceName, d.version, d.sizeOnDisk, d.created, d.lastmod, d.alive));
+        }
+        
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public void markProcessFinished(UUID pid) {
+        Query q = em.createQuery("update ProcessDAO d set d.isAlive = false where d.pid = :pid");
+        q.setParameter("pid", pid.toString());
+        
+        int rows = q.executeUpdate();
+        
+        if(rows != 1) {
+            throw new ScriptusRuntimeException("no rows updated for pid "+pid);
+        }
+        
+    }
+
+    @Override
+    public int countSavedScripts(String user) {
+        Query q = em.createQuery("select count(*) from ScriptDAO d where d.id.userId = :user");
+        q.setParameter("user", user);
+        return ((Long) q.getSingleResult()).intValue();
+    }
+
+    @Override
+    public int countRunningProcesses(String user) {
+        Query q = em.createQuery("select count(*) from ProcessDAO d where d.userId = :user");
+        q.setParameter("user", user);
+        return ((Long) q.getSingleResult()).intValue();
+        
+    }
+    
+    
 
 }

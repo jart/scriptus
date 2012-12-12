@@ -4,15 +4,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.api.HasStateLabel;
 
 import org.apache.commons.io.IOUtils;
 
-public class Get extends ScriptAction implements Serializable {
+public class Get extends ScriptAction implements Serializable, HasStateLabel {
 
 	private static final long serialVersionUID = -1642528520387888606L;
 
@@ -31,6 +33,7 @@ public class Get extends ScriptAction implements Serializable {
 		 * 
 		 * Also this is probably a horrifically naive way of doing it.
 		 */
+	    scriptus.updateProcessState(process.getPid(), this);
 		try {
 			HttpURLConnection c = (HttpURLConnection) url.openConnection();
 			c.setConnectTimeout(60000);
@@ -45,6 +48,12 @@ public class Get extends ScriptAction implements Serializable {
 
 		
 	}
+
+
+    @Override
+    public String getStateLabel(Locale locale) {
+        return "GETting "+url;
+    }
 
 }
 

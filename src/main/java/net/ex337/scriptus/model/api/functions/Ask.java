@@ -2,15 +2,17 @@ package net.ex337.scriptus.model.api.functions;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Locale;
 
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.api.HasStateLabel;
 import net.ex337.scriptus.model.api.HasTimeout;
 import net.ex337.scriptus.model.scheduler.Wake;
 
-public class Ask extends ScriptAction implements Serializable, HasTimeout {
+public class Ask extends ScriptAction implements Serializable, HasTimeout, HasStateLabel {
 
 	private static final long serialVersionUID = 41890027788062200L;
 
@@ -61,6 +63,10 @@ public class Ask extends ScriptAction implements Serializable, HasTimeout {
 		
 		
 	}
+    @Override
+    public String getStateLabel(Locale locale) {
+        return "Asking "+getMsg()+ (getWho() == null ? "" : " to "+getWho());
+    }
 
 }
 

@@ -19,11 +19,17 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJPAImpl {
     
     @Resource
     private DataSource embeddedDB;
+    
+    @Resource
+    private TransactionTemplate txTemplate;
 
     private static final Log LOG = LogFactory.getLog(ScriptusDatastoreEmbeddedDBImpl.class);
 
@@ -53,7 +59,7 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
                 
 //                conn.setAutoCommit(false);
                 
-                String schema = IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("sql/scriptus.derbydb.sql"), ScriptusConfig.CHARSET_STR);
+                String schema = IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("sql/scriptus.sql"), ScriptusConfig.CHARSET_STR);
                 
                 s = conn.createStatement();
                 
@@ -77,8 +83,16 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
                     conn.close();
                 }
             }
+            
+            txTemplate.execute(new TransactionCallback<Void>() {
 
-
+                @Override
+                public Void doInTransaction(TransactionStatus status) {
+                    ScriptusDatastoreEmbeddedDBImpl.this.createSamples();
+                    return null;
+                }
+                
+            });
 
         } else {
             

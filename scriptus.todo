@@ -1,42 +1,60 @@
+
+	SCRIPTUS IS:
+	
+	programming on a human timescale
+	
+	freedom of assembly
+		
 	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
 	mvnDebug jetty:run -Dscriptus.config=test-twitter.properties
 	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
 	mvn clean install -Dmaven.test.skip=true
 	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
 	mvn -Dtest=Testcase_ScriptusDAO test-compile surefire:test
-	
-	programming on a human timescale
-	
-	freedom of assembly
 
 	Scriptus on the web.
 	
-	Current GUI components
-	Login, logout, 
-	scripts crudl
-	settings
-	docs
+		better colour scheme? -> http://paintstrap.com/
+		
+--> offset1 on text-only pages? 
+	index?
+	about?
+	home?
+	 -> increase size, use unicode arrows, 
+	learn more page 
+	 - formatting
+	 - layout
+	 - links
+	 - scansion of last para
+	 - text cohesion with index?
+
+	review all docs!
 	
-	new GUI components
-	HIGH
-	  per-user Twitter linking
-	  bootstrapified
-	  better openId login (copy stackoverflow)
-	  simple process admin
-	LOW
-	  news?
-	  local copy of docs?
-	  
+		THEN
+	
+		new GUI components
+		HIGH
+		  per-user Twitter linking
+		   -> use socialauth
+		  only poll mentions when script is listening to that uid
+		  better openId login (copy stackoverflow)
+		   -> google, facebook(no), twitter(no), yahoo
+		   --> need socialauth?
+	
+		LOW
+		  local copy of docs?
+		  version checking?
+		   -> GitHub intefgration
+		   -> checkout API
+		   -> per-release branch?
 
 
 
 	JPA	
-later	 - DB location needs checking
 later	 - constraints
 	 - document getting to a SQL console
 
 
-	 - simple process admin?
 	 - API
 	    - listen() should respond with first tweet after listen() called (not first mention)
 	       - like that today, but done not the right way
@@ -100,9 +118,7 @@ In the example, a poll is taken and the poll results are stored in a MySQL datab
  	       tbl_user_creds
  	       uid / service / token / secret
  	       threadlocal for user info?
-	 - better site design
 	 - inline documentation / QRC? 
-	 - use bootstrap
 	 - , convert docs to HTML
 	   -> use pegDown or pull from gitHub?	
 	 - owner should be twitter account
@@ -171,11 +187,6 @@ low
 	docs: easy to write annoying, difficult to be considerate...
 	move outstanding stuff to github tasks
 
-	*************BUGS not documented in known-problems.md
-	      - children list should be managed separately (SDB?)
-	         - might as well separate state out too...
-	         - add status column
-	      - processes not deleted properly on wait / termination
 	      
 	site
 	 - index.html & default layout re-use CSS & HTML
@@ -687,4 +698,56 @@ X no	 - will need to hand-wire entityManagerFactory etc.
 X	 - fix bad @Ids on scriptDAO
 X no	 - don't hardcode embedded db names?
 X	 - test sources duplicated, create unique id
+X	scripts crudl
+X	listScripts not in testDAO
+X	logout, 
+X more	  bootstrapified
+X	   settings
+X test	  simple process admin
+X test	fix tabs
+X	docs
+X test	   dao
+X	    pid
+X	    v
+X	    state (only serialised right now)
+X	    size on disk
+X	    timestamps
+X	    kill
+X test	   load servlet
+X test	   delete function
+X	change embedded db name to scriptusDB
+X	test with hibernate, since eclipselink & derby gave strange errors
+X	feedback form
+X	<iframe src="https://docs.google.com/spreadsheet/embeddedform?formkey=dGgzYUh5LVVsXzdIUUZTbmxURnNQLVE6MQ" 
+X	width="760" height="537" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>	
+X	https://docs.google.com/spreadsheet/viewform?formkey=dGgzYUh5LVVsXzdIUUZTbmxURnNQLVE6MQ
+X test	sample scripts
+X test	  loading
+X test	  editing
+X test	  running
+X test	   -> definitely don't  work right now
+X test	  can't run sample scripts -> check sample flag
+X test	isTerminated flag
+X test	 -> doesn't appear to work
+X later	 - DB location needs checking
+X no	   -> add ij maven jar to scriptus so we can get to SQL by passing parameter
+X	 - simple process admin?
+x	JPA stuff
+X yes		 -> are we staying with openId?
+X		 links around auth all broken
+X		  -> wither /welcome, /home, /you ...?
+X	*************BUGS not documented in known-problems.md
+X	      - children list should be managed separately (SDB?)
+X	         - might as well separate state out too...
+X	         - add status column
+X doccd	      - processes not deleted properly on wait / termination
+X	 - better site design
+X	 - use bootstrap
+Xtest	 - Latest news: 
+Xtest	    atom feed
+X		Current GUI components
+X		Login, / landing page
+X	home page should have
+X test	 -  have X saved scripts and Y processes running)
+X		  news?
 

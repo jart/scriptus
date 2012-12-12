@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name="tbl_scheduled_actions")
+@Table(name="scriptus.tbl_scheduled_actions")
 public class ScheduledScriptActionDAO {
 
     @Version
@@ -24,7 +24,7 @@ public class ScheduledScriptActionDAO {
     @Column(name="nonce")
     public long nonce;
 
-    @Column(name="when")
+    @Column(name="action_time")
     public long when;
 
 }

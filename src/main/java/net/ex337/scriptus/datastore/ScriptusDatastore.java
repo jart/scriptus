@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
@@ -20,16 +21,19 @@ import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
  */
 public interface ScriptusDatastore {
 
-	/**
+	public static final String SAMPLE_USER = "sample";
+
+    /**
 	 * Create a new {@link ScriptProcess} using the supplied parameters
 	 * 
 	 * @param userId the openID user that owns the source
-	 * @param source the source name
-	 * @param args a string bound to the script environment as "args"
-	 * @param owner a string bound to the script environment as "owner" and the twitter screen name to which the final result of the script will be said.
+     * @param sourceId the source name
+     * @param sample TODO
+     * @param args a string bound to the script environment as "args"
+     * @param owner a string bound to the script environment as "owner" and the twitter screen name to which the final result of the script will be said.
 	 * @return a new {@link ScriptProcess}
 	 */
-	public ScriptProcess newProcess(String userId, String source, String args, String owner);
+	public ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner);
 
 	/**
 	 * Retrieve an existing process from the datastore.
@@ -122,9 +126,9 @@ public interface ScriptusDatastore {
 
 	/**
 	 * Loads under a user "test" all scripts found under the
-	 * directory "testScripts", if it exists.
+	 * directory "samples", if it exists.
 	 */
-	public void createTestSources();
+	public void createSamples();
 
 	/**
 	 * Updates the process state, under lock, to the supplied object.
@@ -135,5 +139,12 @@ public interface ScriptusDatastore {
     public void writeProcess(ScriptProcess p);
 
     public UUID getLastChild(UUID pid);
+    
+    public List<ProcessListItem> getProcessesForUser(String uid);
+
+    public void markProcessFinished(UUID pid);
+    
+    public int countSavedScripts(String user);
+    public int countRunningProcesses(String user);
 	
 }

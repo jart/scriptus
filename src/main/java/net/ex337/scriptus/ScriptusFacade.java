@@ -44,7 +44,7 @@ public class ScriptusFacade {
         this.transport = transport;
     }
     public ScriptProcess newProcess(String userId, String source, String args, String owner) {
-        return datastore.newProcess(userId, source, args, owner);
+        return datastore.newProcess(userId, source, false, args, owner);
     }
     public ScriptProcess getProcess(UUID uuid) {
         return datastore.getProcess(uuid);
@@ -124,6 +124,10 @@ public class ScriptusFacade {
 
     public void addChild(int seq, UUID parent, UUID newChild) {
         datastore.addChild(parent, newChild, seq);
+    }
+
+    public void markProcessFinished(UUID pid) {
+        datastore.markProcessFinished(pid);
     }
 
 }

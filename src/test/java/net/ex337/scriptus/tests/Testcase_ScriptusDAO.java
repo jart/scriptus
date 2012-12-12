@@ -10,6 +10,7 @@ import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
+import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
@@ -37,12 +38,12 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		datastore = (ScriptusDatastore) appContext.getBean("datastore");
 		
-		datastore.createTestSources();
+		datastore.createSamples();
 		
 	}
 
 	public void test_lifecycle() throws IOException {
-		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", "", "");
+		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", true, "", "");
 		newp.setArgs("foo bar");
 		
 		newp.save();
@@ -52,7 +53,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		assertEquals("pid same", newp.getPid(), saved.getPid());
 		
 		assertEquals("args same", newp.getArgs(), saved.getArgs());
-		
+
+        assertTrue("count processes", datastore.countRunningProcesses("test") >= 1);
+
 	}
 	
 	public void test_uuid() throws IOException, ClassNotFoundException, InterruptedException {
@@ -109,7 +112,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         Set<MessageCorrelation> cbyuser = datastore.getMessageCorrelations(null, u);
 
         assertTrue("user contains user", cbyuser.contains(byuser));
-        assertTrue("user contains null", cbyuser.contains(byNull));
+        assertTrue("userte contains null", cbyuser.contains(byNull));
 
         assertTrue("both contains both", cboth.contains(both));
         assertTrue("both contains msgid", cboth.contains(messageId));
@@ -229,6 +232,56 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         assertEquals("removed for good", 2, ch.size());
         
         assertTrue("see?", ! ch.contains(ch3));
+	}
+	
+	public void testProcessListItem() {
+	    
+	    String uid = UUID.randomUUID().toString();
+	    
+	    ScriptProcess p = datastore.newProcess(uid, "addTwoNumbers.js", false, "aarfgs", uid);
+	    p.setSource("");
+	    datastore.writeProcess(p);
+	    
+	    List<ProcessListItem> i = datastore.getProcessesForUser(uid);
+	    
+	    assertEquals("good size", 1, i.size());
+	    
+	    ProcessListItem l = i.get(0);
+	    
+	    assertEquals("good pid", p.getPid(), l.getPid());
+	    assertEquals("uid", uid, l.getUid());
+	}
+	
+	public void testScriptEditing() {
+	    
+	    String uid = UUID.randomUUID().toString();
+        String name = UUID.randomUUID().toString();
+        String src = UUID.randomUUID().toString();
+	    
+	    datastore.saveScriptSource(uid, name, src);
+	    
+	    Set<String> s = datastore.listScripts(uid);
+	    
+	    assertTrue("script found", s.contains(name)); 
+	    
+	    String retrievedSrc = datastore.loadScriptSource(uid, name);
+	    
+	    assertEquals("source saved OK", src, retrievedSrc);
+	    
+	    datastore.saveScriptSource(uid, name, src+src);
+	    
+        retrievedSrc = datastore.loadScriptSource(uid, name);
+        
+        assertEquals("source saved OK", src+src, retrievedSrc);
+        
+        datastore.deleteScript(uid, name);
+        
+        s = datastore.listScripts(uid);
+        
+        assertFalse("script deleted", s.contains(name));
+        
+        assertTrue("count scripts", datastore.countSavedScripts(uid) >= 1 );
+
 	}
 	
 }

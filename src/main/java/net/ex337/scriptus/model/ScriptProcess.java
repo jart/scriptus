@@ -1,6 +1,7 @@
 package net.ex337.scriptus.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -9,6 +10,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.datastore.impl.BaseScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.api.ScriptusAPI;
 import net.ex337.scriptus.model.api.Termination;
@@ -24,6 +26,8 @@ import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.SourceLoader;
 
 /**
  * Represents one script process. The source of the process
@@ -60,7 +64,11 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	private transient Object continuation;
 	private transient Scriptable globalScope;
 	
-	private boolean isKilled;
+    private boolean isKilled;
+    private boolean isAlive;
+	
+    private Date lastmod;
+    private Date created;
 	
 	@Resource(name="datastore")
 	private transient ScriptusDatastore datastore;
@@ -83,7 +91,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 * @param args
 	 * @param owner
 	 */
-	public void init(String userId, final String sourceName, String args, String owner) {
+	public void init(String userId, final String sourceName, boolean sample, String args, String owner) {
 
 		LOG.debug("ctor, source=" + sourceName);
 
@@ -92,8 +100,15 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		this.sourceName = sourceName;
 		this.args = args;
 		this.owner = owner;
-		this.source = datastore.loadScriptSource(userId, sourceName);
+		
+		String sourceOwner = userId;
+		if(sample){
+		    sourceOwner = BaseScriptusDatastore.SAMPLE_USER;
+		}
+		
+		this.source = datastore.loadScriptSource(sourceOwner, sourceName);
 		this.isRoot = true;
+		this.isAlive = true;
 		this.version = 0;
 
 		Context cx = Context.enter();
@@ -124,9 +139,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 * Writes the script state to DAO. If the pid is null we assign a new one.
 	 */
 	public void save() {
-	    
 	    datastore.writeProcess(this);
-	    version++;
 	}
 
 	/**
@@ -172,6 +185,9 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 				cx.setClassShutter(new ScriptusClassShutter());
 				cx.putThreadLocal("process", this);
 				try {
+//				    if(state != null) {
+//	                    System.out.println("state class="+state.getClass());
+//				    }
 					result = cx.resumeContinuation(continuation, globalScope, state);
 				} finally {
 					Context.exit();
@@ -263,6 +279,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		r.facade = this.facade;
 		// ?
 		r.isRoot = false;
+		r.isAlive = true;
 		r.version = 0;
 		r.pid = null;
 		r.waiterPid = null;
@@ -408,6 +425,30 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
          * OK to use as a child sequence - they don't have to be contiguous
          */
         datastore.addChild(this.pid, childPid, version);
+    }
+
+    public Date getLastmod() {
+        return lastmod;
+    }
+
+    public void setLastmod(Date lastmod) {
+        this.lastmod = lastmod;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean isAlive) {
+        this.isAlive = isAlive;
     }
 
 }

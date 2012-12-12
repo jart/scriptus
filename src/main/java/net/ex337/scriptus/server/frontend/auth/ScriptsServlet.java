@@ -1,10 +1,9 @@
-package net.ex337.scriptus.server.frontend;
+package net.ex337.scriptus.server.frontend.auth;
 
 import java.io.IOException;
 import java.util.Set;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,8 +11,7 @@ import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.eclipse.jetty.server.Request;
 
 /**
  * 
@@ -24,46 +22,48 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
  * @author ian
  *
  */
-public class ScriptsServlet extends HttpServlet {
+public class ScriptsServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 50869801033071491L;
-
-	private XmlWebApplicationContext ctx;
-
-	@Override
-	public void init() {
-
-	    ctx = (XmlWebApplicationContext) WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-	}
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		if(req.getSession(false) == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		if(req.getSession().getAttribute("openid") == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		
-		String openid=(String) req.getSession().getAttribute("openid");
+	protected void doAuthGet(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException {
 		
 		String path = req.getPathInfo();
 
         req.setAttribute("config", ctx.getBean("config"));
 
-		if("/list".equals(path)){
+		if("/list/yours".equals(path) || "/list".equals(path)){
 
 			Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(openid);
 			
-			req.setAttribute("scripts", scripts);
+			if(scripts == null || scripts.isEmpty()){
+			    
+			    req.setAttribute("noscripts", Boolean.TRUE);
+			    
+	            resp.sendRedirect(req.getContextPath()+"/scripts/list/samples");
+	            
+			} else {
+			    
+                req.setAttribute("scripts", scripts);
 
-			getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
+	            getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
+			}
+			
 			
 			return;
-			
+
+		} else if("/list/samples".equals(path)){
+
+            Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(ScriptusDatastore.SAMPLE_USER);
+            
+            req.setAttribute("scripts", scripts);
+            req.setAttribute("samples", Boolean.TRUE);
+
+            getServletContext().getRequestDispatcher("/WEB-INF/jsp/listScripts.jsp").forward(req, resp);
+
+            return;
+
 		} else if("/edit".equals(path)) {
 			
 			String scriptId = req.getParameter("script");
@@ -71,8 +71,15 @@ public class ScriptsServlet extends HttpServlet {
 			String scriptSource = null;
 			
 			if(StringUtils.isNotEmpty(scriptId)) {
+			    
+			    String user = openid;
+			    
+			    if(Boolean.TRUE.toString().equalsIgnoreCase(req.getParameter("sample"))){
+			        user = ScriptusDatastore.SAMPLE_USER;
+			        req.setAttribute("sample", Boolean.TRUE);
+			    }
 				
-				scriptSource = ((ScriptusDatastore) ctx.getBean("datastore")).loadScriptSource(openid, scriptId);
+				scriptSource = ((ScriptusDatastore) ctx.getBean("datastore")).loadScriptSource(user, scriptId);
 				
 				if(scriptSource == null) {
 					resp.sendError(404);
@@ -96,18 +103,8 @@ public class ScriptsServlet extends HttpServlet {
 
 	//saveScript
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doAuthPost(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException {
 
-		if(req.getSession(false) == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		if(req.getSession().getAttribute("openid") == null) {
-			resp.sendRedirect(req.getContextPath()+"/");
-			return;
-		}
-		
-		String openid=(String) req.getSession().getAttribute("openid");
 
 		String path = req.getPathInfo();
 
@@ -133,7 +130,9 @@ public class ScriptsServlet extends HttpServlet {
 			String args = req.getParameter("args");
 			String owner = req.getParameter("owner");
 			
-			((ProcessScheduler) ctx.getBean("scheduler")).executeNewProcess(openid, script, args, owner);
+			boolean sample = Boolean.TRUE.toString().equalsIgnoreCase(req.getParameter("sample"));
+			
+			((ProcessScheduler) ctx.getBean("scheduler")).executeNewProcess(openid, script, sample, args, owner);
 
 			resp.sendRedirect("list");
 			return;
@@ -142,5 +141,10 @@ public class ScriptsServlet extends HttpServlet {
 
 		resp.sendError(404);
 	}
+
+    @Override
+    protected String getPageLabel() {
+        return "scripts";
+    }
 
 }

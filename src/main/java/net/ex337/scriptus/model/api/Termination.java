@@ -23,8 +23,9 @@ public abstract class Termination extends ScriptAction implements Serializable {
 			scriptus.updateProcessState(process.getWaiterPid(), this.getResult());
 			
 			scriptus.execute(process.getWaiterPid());
-			
-			process.delete();
+	
+			//should we do this since we don't delete anything else that finishes?
+//			process.delete();
 			
 		} else {
 			
@@ -60,6 +61,8 @@ public abstract class Termination extends ScriptAction implements Serializable {
 
 
 		}
+		
+		scriptus.markProcessFinished(process.getPid());
 
 	}
 

@@ -12,26 +12,55 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<!-- TODO: Add <servlet> tags for each servlet here. -->
 	
 	<servlet>
-		<servlet-name>scriptus</servlet-name>
-		<servlet-class>net.ex337.scriptus.server.frontend.ScriptsServlet</servlet-class>
+		<servlet-name>scripts</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.ScriptsServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>processes</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.ProcessAdminServlet</servlet-class>
 	</servlet>
 	
 	<servlet>
 		<servlet-name>settings</servlet-name>
-		<servlet-class>net.ex337.scriptus.server.frontend.SettingsServlet</servlet-class>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.SettingsServlet</servlet-class>
 	</servlet>
 	
-	
+	<servlet>
+		<servlet-name>you</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.YouServlet</servlet-class>
+	</servlet>
+		
+	<servlet>
+		<servlet-name>home</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.HomeServlet</servlet-class>
+	</servlet>
+		
 	<!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
 	
 	<servlet-mapping>
-		<servlet-name>scriptus</servlet-name>
+		<servlet-name>scripts</servlet-name>
 		<url-pattern>/scripts/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>processes</servlet-name>
+		<url-pattern>/processes/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>settings</servlet-name>
 		<url-pattern>/settings</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>you</servlet-name>
+		<url-pattern>/you</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>home</servlet-name>
+		<url-pattern>/home</url-pattern>
 	</servlet-mapping>
 	
 	<!-- TODO: Optionally add a <welcome-file-list> tag to display a welcome file. -->

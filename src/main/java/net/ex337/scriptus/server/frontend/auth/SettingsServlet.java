@@ -1,4 +1,4 @@
-package net.ex337.scriptus.server.frontend;
+package net.ex337.scriptus.server.frontend.auth;
 
 import java.io.IOException;
 
@@ -45,7 +45,8 @@ public class SettingsServlet extends HttpServlet {
 			return;
 		}
 		
-		req.setAttribute("config", ctx.getBean("config"));
+        req.setAttribute("config", ctx.getBean("config"));
+        req.setAttribute("pageLabel", "settings");
 		
 		req.getRequestDispatcher("/WEB-INF/jsp/settings.jsp").forward(req, resp);
 		return;
