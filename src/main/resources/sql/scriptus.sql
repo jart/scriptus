@@ -71,3 +71,11 @@ create table scriptus.tbl_process_child (
 	child varchar(36) not null,
 	seq int not null
 );
+
+create table scriptus.tbl_access_tokens (
+	user_id varchar(3000) not null,
+	transport varchar(100) not null,
+	key_id varchar(100) not null,
+	access_token varchar(3000),
+	access_secret varchar(3000),	
+);

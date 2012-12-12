@@ -344,6 +344,18 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
         p.setAlive(false);
         writeProcess(p);
     }
+
+    @Override
+    public int countSavedScripts(String user) {
+        return 1;
+    }
+
+    @Override
+    public int countRunningProcesses(String user) {
+        return 1;
+    }
+    
+    
     
 
 }

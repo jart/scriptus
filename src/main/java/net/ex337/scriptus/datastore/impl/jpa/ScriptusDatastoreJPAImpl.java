@@ -560,4 +560,21 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         
     }
 
+    @Override
+    public int countSavedScripts(String user) {
+        Query q = em.createQuery("select count(*) from ScriptDAO d where d.id.userId = :user");
+        q.setParameter("user", user);
+        return ((Long) q.getSingleResult()).intValue();
+    }
+
+    @Override
+    public int countRunningProcesses(String user) {
+        Query q = em.createQuery("select count(*) from ProcessDAO d where d.userId = :user");
+        q.setParameter("user", user);
+        return ((Long) q.getSingleResult()).intValue();
+        
+    }
+    
+    
+
 }

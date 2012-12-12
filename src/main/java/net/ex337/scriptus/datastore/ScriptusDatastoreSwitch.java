@@ -155,6 +155,14 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
     public void markProcessFinished(UUID pid) {
         activeImpl.markProcessFinished(pid);
     }
+
+    public int countSavedScripts(String user) {
+        return activeImpl.countSavedScripts(user);
+    }
+
+    public int countRunningProcesses(String user) {
+        return activeImpl.countRunningProcesses(user);
+    }
     
     
 

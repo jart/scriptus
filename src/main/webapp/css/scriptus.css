@@ -13,4 +13,5 @@ tt {
 .lightborder {
 	border:solid #CCC 1px;
 	padding:1ex;
+	margin-bottom: 1ex;
 }

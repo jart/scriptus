@@ -59,7 +59,7 @@ try
                 session.setAttribute("name", firstName+" "+lastName);
                 session.setAttribute("email", fetchResp.getAttributeValue("email"));
 
-                response.sendRedirect(request.getContextPath()+"/scripts/list");  // success
+                response.sendRedirect(request.getContextPath()+"/");  // success
                 return;
 				        
 				    }

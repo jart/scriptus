@@ -53,7 +53,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		assertEquals("pid same", newp.getPid(), saved.getPid());
 		
 		assertEquals("args same", newp.getArgs(), saved.getArgs());
-		
+
+        assertTrue("count processes", datastore.countRunningProcesses("test") >= 1);
+
 	}
 	
 	public void test_uuid() throws IOException, ClassNotFoundException, InterruptedException {
@@ -277,6 +279,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         s = datastore.listScripts(uid);
         
         assertFalse("script deleted", s.contains(name));
+        
+        assertTrue("count scripts", datastore.countSavedScripts(uid) >= 1 );
+
 	}
 	
 }

@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import sun.awt.image.SunWritableRaster.DataStealer;
+
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.server.ScriptusHeadlineReader;
@@ -24,26 +26,34 @@ public class HomeServlet extends BaseServlet {
     
     private ScriptusHeadlineReader r;
     
+    private ScriptusConfig f;
+    
+    private ScriptusDatastore d;
+    
     @Override
     public void init() {
         super.init();
         r = (ScriptusHeadlineReader) ctx.getBean("scriptusHeadlineReader");
+        f = (ScriptusConfig) ctx.getBean("config");
+        d = (ScriptusDatastore) ctx.getBean("datastore");
     }
 	
 	@Override
 	protected void doAuthGet(HttpServletRequest req, HttpServletResponse resp, String user) throws ServletException, IOException {
 
-	    ScriptusConfig f = (ScriptusConfig) ctx.getBean("config");
 
 	    if(f.isCleanInstall()) {
 	        req.setAttribute("clean", Boolean.TRUE);
 	    }
+	    
+	    int countScripts = d.countSavedScripts(user);
+	    int countProcesses = d.countRunningProcesses(user);
 	    	    
-        Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(user);
-        
-        if(scripts.isEmpty()){
+        if(countScripts == 0){
             req.setAttribute("noscripts", Boolean.TRUE);
         }
+        req.setAttribute("countScripts", countScripts);
+        req.setAttribute("countProcesses", countProcesses);
         
         req.setAttribute("lastNewsItemHeadline", r.getLastNewsItemHeadline());
         req.setAttribute("lastNewsItemLink", r.getLastNewsItemLink());

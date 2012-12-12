@@ -1,6 +1,7 @@
 <%@ page session="true" %>
 <html>
 <head>
+	<title>What is Scriptus?</title>
 	<%@include file="/WEB-INF/jsp/head.jsp"%>
 	<link type="text/css" rel="stylesheet" href="css/openid.css" />
 	<script type="text/javascript" src="js/openid-jquery.js"></script>
@@ -16,32 +17,86 @@
 <%@include file="/WEB-INF/jsp/header.jsp"%>
 
 <div class="row">
-	<div class="span12">
+	<div class="offset1 span10">
 		<h1>What is Scriptus?</h1>
+		
+		<p>Scriptus lets you <strong>weave code into your life</strong>.</p>
+		
+		<p>Scriptus is <strong>code that puts people first</strong>.</p>
+		
+		<p><strong>Listening</strong> to people is this easy: <tt><span class="codeverb">listen</span>();</tt></p>
+		
+		<p><strong>Talking</strong> to people is this easy: <tt><span class="codeverb">say</span>(<span class="codestring">"hello!"</span>);</tt></p>
+		
+	</div>
 
-<p>Scriptus lets you weave code into your life.</p>
+</div>
 
-<p>Scriptus is code that puts people first. It combines JavaScript, Twitter and a simple UNIX-like process model.</p>
+<div class="row">
 
-<p>Listening to people is this easy: <code>listen();</code></p>
+	<div class="offset1 span10">
+	
+		<p>Scriptus is <strong>programming on a human timescale</strong>. Time is no object:</p>
 
-<p>Talking to people is this easy: <code>say("hello!");</code></p>
+	</div>
 
-<p>Scriptus is about the long term. What question would you ask yourself a year from now?</p>
+</div>
 
-<div class="lightborder"><p><tt>var question = ask("what would you ask yourself a year from now?");<br />
-sleep("1 y");<br />
-say(question);</tt></p></div>
+<div class="row">
+	
+	<div class="offset1 span10">
+		<div class="lightborder"><p><tt>var <span class="codevar">question</span> = <span class="codeverb">ask</span>(<span class="codestring">"what would you ask yourself a year from now?"</span>);<br />
+		<span class="codeverb">sleep</span>(<span class="codestring">"1y"</span>); //1y is 1 year<br />
+		<span class="codeverb">say</span>(<span class="codestring">question</span>);</tt></p></div>
+	</div>
 
-<p>Scriptus goes beyond life-hacking or the quantified self, to allow you to instrument your
- life as you see fit. Just as computer-assisted chess players are stronger than either
-  humans or computers, so can we be better when computers help us. Scriptus puts you directly
-   in charge of the code, and puts the code as close to you as possible, by using the same
-    social networks you use yourself.</p>
+</div>
+
+<div class="row">
+	<div class="offset1 span10">
+
+<p>Scriptus allows you to <strong>instrument your
+ life</strong> as you see fit.</p>
+ 
 
 	</div>
 </div>	
-	<%if(session.getAttribute("openid") == null) {%>
+
+
+<div class="row">
+	<div class="offset1 span10">
+		<h1>Why use Scriptus?</h1>
+	
+    	<p>People and computers are good at different things.
+    	 Scriptus is about people using computers to augment themselves.</p>
+    	
+    	<p>People have been doing this with technology since the axe was invented,
+    	but programming is different, 
+    	and Scriptus is a new way of thinking about programming.</p>
+    	
+    	<p>Many simple ideas such as personal motivation/self-improvement tools or bike maintenence schedules are simpler in Scriptus than on the web.
+    	
+    	<p>Scriptus makes it easy to organise or schedule anything you want in precisely the way you want.</p>
+		
+	</div>
+</div>	
+
+
+<div class="row">
+	<div class="offset1 span10">
+		
+		<h1>How does Scriptus work?</h1>
+		
+		<p>Scriptus combines JavaScript, Twitter and a simple UNIX-like process model.</p>
+		
+		<p>Scriptus runs on the same social networks that you use yourself, on Twitter or Facebook.</p>
+
+		<p>Scriptus processes are persisted on disk, so they survive restarts, can be moved anywhere, and can wait for input practically forever.</p>
+		
+	</div>
+</div>
+
+<%if(session.getAttribute("openid") == null) {%>
 	<div class="row">
 	
 		<div class="span4">

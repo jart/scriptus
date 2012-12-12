@@ -22,36 +22,41 @@
 		<h1>Welcome to Scriptus!</h1>		
 	</div>
 </div>
-
+<ul>
+	<li>New to Scriptus? <a href="about.jsp">Learn about Scriptus here.</a></li>
+	<li>Writing programs? <a href="<%=request.getContextPath()%>/scripts/list">These sample programs</a> and the API overview can help you get started.</li>
+	<%
+	Integer countProcesses = (Integer)request.getAttribute("countProcesses");
+	Integer countScripts = (Integer)request.getAttribute("countScripts");
+	
+	if(countScripts != 0 || countProcesses != 0) {
+	%>	<li>You have
+	 <a href="<%=request.getContextPath()%>/scripts/list"><%=countScripts%> 
+	 	saved script<%=(countScripts == 1 ? "" : "")%></a>
+	 	 and <%
+	 	 if(countProcesses == 0) {
+	 	 	%>no processes running.<%
+	 	 } else {
+	 	 %><a href="<%=request.getContextPath()%>/processes/list"><%=countProcesses%> process<%=(countProcesses == 1 ? "" : "es")%> running</a>.<%
+	 	 } 
+	 	 %></li><%
+	} else {
+		//new user ? 
+	}
+	
+	%>
+	<li>Have feedback? <a href="feedback.jsp">Don't hesitate to send it.</a></li>
 <% if(request.getAttribute("lastNewsItemLink") != null) {%>
-	<p>Latest dev news: <a href="<%=request.getAttribute("lastNewsItemLink")%>"><%=request.getAttribute("lastNewsItemHeadline")%></a></p>
+	<li>Latest news from the <a href="http://ianso.github.com/scriptus/">dev blog</a>: <a href="<%=request.getAttribute("lastNewsItemLink")%>"><%=request.getAttribute("lastNewsItemHeadline")%></a></li>
 <%}%>
+	<li><a href="">Follow us on Twitter</a> or <a href="https://github.com/ianso/scriptus">check out the project on GitHub</a>.</li>
+</ul>
 
 <div class="row">
 	<div class="span8">
 		<br />
-	
-		<p>Scriptus is <strong>programming on a human timescale.</strong></p>
-		
-		<p>Scriptus programs can run for days, months or years, so you can think long-term.</p>
-		<br />
-		<p>Scriptus is <strong>freedom of assembly.</strong></p>
-		
-		<p>Scriptus communicates via social networks like you do, and helps groups organise better.</p>
 
 	</div>
-
-	<div class="span4 lightborder" id="runScriptDiv">
-<p><tt>var <span class="codevar">goal</span> = <span class="codeverb">ask</span>(<br />
-  <span class="codestring">"where do you want to be,"</span><br />
-  +<span class="codestring">" a year from now?"</span>);<br />
-  <br />
-<span class="codeverb">sleep</span>(<span class="codestring">"1 y"</span>); //"1y" is 1 year<br />
-<br />
-<span class="codeverb">say</span>(<span class="codestring">"Remember this? "</span>+<span class="codevar">goal</span>+<br />
-    <span class="codestring">" How's it going?"</span>);<tt></p>
-	</div>
-</div>
 
 </body></html>
 			

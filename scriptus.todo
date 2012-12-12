@@ -14,26 +14,19 @@
 
 	Scriptus on the web.
 	
-		Current GUI components
-		better colour scheme?
-		remove settings page
-X		Login, / landing page
-
-	home page should have
-	 -  have X saved scripts and Y processes running)
-test	 - Latest news: 
-test	    atom feed
-	 <li>New to Scriptus? <a href="about.jsp">Learn about Scriptus here.</a></li>
-	 <li>Writing programs? These sample programs and the API documentation can help you get started.</li>
-	 <li>Have feedback? <a href="feedback.jsp">Don't hesitate to send it.</a></li>
-	 <li>Learn more about <a href="feedback.jsp">Scriptus development on the blog</a>, <a href="feedback.jsp">follow us on Twitter</a> or <a href="feedback.jsp">check out the project on GitHub</a>.</li>
-
+		better colour scheme? -> http://paintstrap.com/
+		
+--> offset1 on text-only pages? 
+	index?
+	about?
+	home?
+	 -> increase size, use unicode arrows, 
 	learn more page 
 	 - formatting
 	 - layout
 	 - links
 	 - scansion of last para
-	 
+	 - text cohesion with index?
 
 	review all docs!
 	
@@ -45,11 +38,10 @@ test	    atom feed
 		   -> use socialauth
 		  only poll mentions when script is listening to that uid
 		  better openId login (copy stackoverflow)
-		   -> google, facebook, twitter, yahoo
-		   --> need socialauth
+		   -> google, facebook(no), twitter(no), yahoo
+		   --> need socialauth?
 	
 		LOW
-		  news?
 		  local copy of docs?
 		  version checking?
 		   -> GitHub intefgration
@@ -751,4 +743,11 @@ X	         - add status column
 X doccd	      - processes not deleted properly on wait / termination
 X	 - better site design
 X	 - use bootstrap
+Xtest	 - Latest news: 
+Xtest	    atom feed
+X		Current GUI components
+X		Login, / landing page
+X	home page should have
+X test	 -  have X saved scripts and Y processes running)
+X		  news?
 

@@ -143,5 +143,8 @@ public interface ScriptusDatastore {
     public List<ProcessListItem> getProcessesForUser(String uid);
 
     public void markProcessFinished(UUID pid);
+    
+    public int countSavedScripts(String user);
+    public int countRunningProcesses(String user);
 	
 }
