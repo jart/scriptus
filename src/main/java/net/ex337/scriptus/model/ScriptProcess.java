@@ -27,8 +27,6 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.SourceLoader;
-
 /**
  * Represents one script process. The source of the process
  * is loaded at initialisation time and is kept with the 

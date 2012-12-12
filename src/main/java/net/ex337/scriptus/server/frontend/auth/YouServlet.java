@@ -1,19 +1,10 @@
 package net.ex337.scriptus.server.frontend.auth;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.model.ProcessListItem;
-import net.ex337.scriptus.scheduler.ProcessScheduler;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 

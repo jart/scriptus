@@ -7,7 +7,6 @@ import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContinuationPending;
-import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;

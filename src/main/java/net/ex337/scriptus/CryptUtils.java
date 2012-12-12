@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 
+import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 
 import org.apache.commons.lang.StringUtils;
@@ -84,11 +85,15 @@ public class CryptUtils {
 		}
 		return result;
 	}
+	
+    public static final byte[] hash(String hash, String str) {
+        return hash(hash, str.getBytes(ScriptusConfig.CHARSET));
+    }
 
-	public static final byte[] hash(String hash, String str) {
+	public static final byte[] hash(String hash, byte[] str) {
 		try {
 			MessageDigest md = MessageDigest.getInstance(hash);
-			md.update(str.getBytes());
+			md.update(str);
 			return md.digest();
 		} catch (Exception e) {
 			throw new ScriptusRuntimeException("probmem with hash", e);

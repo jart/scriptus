@@ -36,6 +36,8 @@
 		HIGH
 		  per-user Twitter linking
 		   -> use socialauth
+		   at which point the DB becomes an HVT, how do we deal with this?
+		   keys & salts
 		  only poll mentions when script is listening to that uid
 		  better openId login (copy stackoverflow)
 		   -> google, facebook(no), twitter(no), yahoo

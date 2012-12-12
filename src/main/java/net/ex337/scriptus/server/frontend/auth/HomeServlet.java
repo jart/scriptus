@@ -1,13 +1,10 @@
 package net.ex337.scriptus.server.frontend.auth;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import sun.awt.image.SunWritableRaster.DataStealer;
 
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;

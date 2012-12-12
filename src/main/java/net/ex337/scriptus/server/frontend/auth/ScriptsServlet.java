@@ -11,7 +11,6 @@ import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jetty.server.Request;
 
 /**
  * 

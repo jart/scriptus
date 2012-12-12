@@ -1,5 +1,7 @@
 package net.ex337.scriptus.config;
 
+import static net.ex337.scriptus.CryptUtils.hash;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,13 +11,16 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.ProtectionDomain;
+import java.security.Key;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.spec.SecretKeySpec;
 
-import net.ex337.scriptus.server.ScriptusFrontend;
+import net.ex337.scriptus.CryptUtils;
+
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Acts as the interface to the configuration store.
@@ -315,6 +320,30 @@ public class ScriptusConfig {
 	public String getMemoryStoreClass() {
 	    return "net.ex337.scriptus.datastore.impl.ScriptusDatastoreMemoryImpl";
 	}
+
+    public String decrypt(byte[] ciphertext, String keyId) {
+        
+        byte [] keymat = hash("SHA256", ArrayUtils.addAll(hash("SHA256", getKey(keyId)), getSalt()));
+        
+        Key key = new SecretKeySpec(keymat, 0, 16, "AES256");
+
+        return new String(CryptUtils.decrypt("AES256", ciphertext, key), CHARSET);
+    }
 	
-	
+    private byte[] getSalt() {
+        return new byte[0];
+    }
+
+    private byte[] getKey(String keyId) {
+        return new byte[0];
+    }
+
+    public byte[] encrypt(String plaintext, String keyId) {
+        
+        byte [] keymat = hash("SHA256", ArrayUtils.addAll(hash("SHA256", getKey(keyId)), getSalt()));
+        
+        Key key = new SecretKeySpec(keymat, 0, 16, "AES256");
+
+        return CryptUtils.encrypt("AES256", plaintext.getBytes(CHARSET), key);
+    }
 }
