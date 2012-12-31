@@ -32,7 +32,7 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 	<label for="datastore">Data storage:</label>
 	<select id="datastore" name="datastore">
 		<option <%=cfg.getDatastoreType() == DatastoreType.Embedded? "selected=\"selected\"" : "" %> value="Embedded">Embedded database</option>
-		<option <%=cfg.getDatastoreType() == DatastoreType.Db? "selected=\"selected\"" : "" %> value="Db">Database (external)</option>
+<!--		<option <%=cfg.getDatastoreType() == DatastoreType.Db? "selected=\"selected\"" : "" %> value="Db">Database (external)</option>-->
 		<option <%=cfg.getDatastoreType() == DatastoreType.Memory? "selected=\"selected\"" : "" %> value="Memory">In memory (transient)</option>
 	</select>
 </p>

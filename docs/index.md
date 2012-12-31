@@ -12,7 +12,6 @@ This page lists all of the documentation of the Scriptus application.
 #Scriptus internals
 
  * [The internal architecture](internal-architecture.md) page describes in broad terms the layout of the Scriptus codebase.
- * [In design choices](design-choices.md), I explain some of the reasoning, or lack thereof, behind the design of Scriptus.
  * [If Scriptus ever needs to scale](scaling.md), this document explains how it might be done.
  * [If Scriptus becomes a going concern](future.md), some potential directions for the evolution of the codebase are discussed here.
  

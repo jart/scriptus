@@ -1,5 +1,9 @@
 #Future directions for Scriptus
 
+##As of 2012-12-31
+
+The RDBMS migration has been done and the first draft of the bootstrapified UI is in place, and looks very nice. The multi-user architecture is next.
+
 ##As of 2012-08-07
 
 All the below stuff, which is still interesting to me, has been put back a little by two big intermediate goals: firstly, migrate to an RDBMS to make schema evolution easier, and secondly, make Scriptus a multi-user install by default, see "Architecture" down below. Once I've done that I intend to improve the look & feel with [bootstrap](https://twitter.github.com/bootstrap/).

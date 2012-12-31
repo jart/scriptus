@@ -9,7 +9,7 @@ The datastore object is responsible for any short- or long-term persistence of S
 
 The transport object is used by the script process (via the API) to interact with users.
 
-The transport and datastore have three separate implementations each, and which one is used at runtime is configured in `ScriptusConfig`
+The transport and datastore have three and two separate implementations respectively, and which one is used at runtime is configured in `ScriptusConfig`
  and the property file backing it. Scriptus is reloaded when the settings are changed via the admin interface.
 
 There are two dedicated classes, ProcessLocks and MessageRouting, that are responsible for global per-process locks and routing messages from transports to the correct processes.

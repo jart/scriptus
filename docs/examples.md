@@ -1,6 +1,6 @@
 #Scriptus example programs
 
-There are a variety of example programs for Scriptus in `src/scripts`, and some of them are even useful. Below, some of them are listed along with a brief discussion in each case of how they use Scriptus.
+There are a variety of example programs for Scriptus in `scripts`, and some of them are even useful. Below, some of them are listed along with a brief discussion in each case of how they use Scriptus.
 
 ##`addTwoNumbers.js`
 

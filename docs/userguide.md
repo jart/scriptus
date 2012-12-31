@@ -40,12 +40,8 @@ The datastore is responsible for persisting saved programs and running program s
  *   **In-memory** storage keeps everything in memory. When Scriptus is shut down or restarted everything vanishes.
 This storage method is used for running test cases in the Scriptus source code, but can also be useful if you're debugging scripts offline that you've written & saved elsewhere.
 
- *   **Local file-system** storage saves everything on disk on the same computer on which you're running Scriptus.
-This can also be fine for testing, but is also fine if you're running Scriptus on your own server. If this is the case, backup, fault-tolerance etc. is the responsibility of the server administrator.
-
- *   **Amazon AWS** storage saves everything in the online services Amazon S3 and Amazon SDB, which have the advantage of being scalable and highly redundant without you having to do anything about it. On the other hand, it's a for-pay service, although Scriptus stores only a few kilobytes of data per script and per running process, so it should be very cheap.
-Using AWS also means that programs cannot be run offline, for obvious reasons. 
-
+ *   **Embedded DB** storage saves everything in an H2 database, stored under the folder "scriptus-db".
+ 
 ##Choosing a transport
 
 The transport is the means via which Scriptus programs interact with their users. There are three transports and they all have their uses.
