@@ -1,19 +1,12 @@
 
 	SCRIPTUS IS:
 	
+	code that puts people first
+	
 	programming on a human timescale
 	
 	freedom of assembly
-		
-	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
-	mvnDebug jetty:run -Dscriptus.config=test-twitter.properties
-	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-	mvn clean install -Dmaven.test.skip=true
-	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
-	mvn -Dtest=Testcase_ScriptusDAO test-compile surefire:test
 
-	Scriptus on the web.
-	
 		better colour scheme? -> http://paintstrap.com/
 		
 --> offset1 on text-only pages? 
@@ -36,9 +29,13 @@
 		HIGH
 		  per-user Twitter linking
 		   -> use socialauth
-		   at which point the DB becomes an HVT, how do we deal with this?
-		   keys & salts
+
+
+		   
 		  only poll mentions when script is listening to that uid
+		   query
+		    select distinct userid from messagecorrelation where message_id like 'tweet:' 
+		    for each, poll twitteer
 		  better openId login (copy stackoverflow)
 		   -> google, facebook(no), twitter(no), yahoo
 		   --> need socialauth?
@@ -753,4 +750,11 @@ X	home page should have
 X test	 -  have X saved scripts and Y processes running)
 X		  news?
 X	review all docs!
+X		   at which point the DB becomes an HVT, how do we deal with this?
+X 		    - encrypt stuff in DB
+X test		   keys & salts
+X test		   -> scriptus config keys
+X test		   -> first-time initialisation & saving
+X test		   -> correctly choosing last key
+X test		   -> encrypt & decrypt using config
 
