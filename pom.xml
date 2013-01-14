@@ -452,6 +452,12 @@
 </dependency>
 
 
+<dependency>
+  <groupId>org.brickred</groupId>
+  <artifactId>socialauth</artifactId>
+  <version>3.0</version>
+</dependency>
+
 	</dependencies>
 
 	<!--repo for temporarily patched libraries, like Rhino -->
@@ -478,11 +484,13 @@
  		     <url>http://hsql.sourceforge.net/m2-repo</url>
 		  </repository>
  
- 		  <!--  repository>
-		     <id>HSQLDB repo</id>
- 		     <url>http://www.hsqldb.org/repos</url>
-		  </repository-->
-
+<repository>
+    <id>sonatype-oss-public</id>
+    <url>https://oss.sonatype.org/content/groups/public/</url>
+    <releases>
+        <enabled>true</enabled>
+    </releases>
+</repository>
 
  	</repositories>
 

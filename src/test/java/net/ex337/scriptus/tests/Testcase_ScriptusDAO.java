@@ -7,11 +7,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
+import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
 
@@ -30,7 +32,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	
 	@Override
 	protected void setUp() throws Exception {
-		
+	    
 		System.setProperty("scriptus.config", "test-scriptus.properties");
 //		System.setProperty("scriptus.config", "filesystem-based-scriptus.properties");
 		
@@ -268,20 +270,42 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	    
 	    assertEquals("source saved OK", src, retrievedSrc);
 	    
-	    datastore.saveScriptSource(uid, name, src+src);
+	    datastore.saveScriptSource(uid, name+name, src+src);
 	    
         retrievedSrc = datastore.loadScriptSource(uid, name);
         
         assertEquals("source saved OK", src+src, retrievedSrc);
         
-        datastore.deleteScript(uid, name);
+        datastore.deleteScript(uid, name+name);
         
         s = datastore.listScripts(uid);
         
-        assertFalse("script deleted", s.contains(name));
+        assertFalse("script deleted", s.contains(name+name));
         
         assertTrue("count scripts", datastore.countSavedScripts(uid) >= 1 );
 
 	}
 	
+	public void testAccessTokens() {
+	    
+	    String uid = UUID.randomUUID().toString();
+
+	    TransportAccessToken t = new TransportAccessToken(uid, TransportType.Dummy, "accessToken"+uid, "accessSecret"+uid);
+	    
+	    datastore.saveTransportAccessToken(t);
+	    
+	    assertTrue("found new token", datastore.getInstalledTransports(uid).contains(TransportType.Dummy));
+	    
+	    datastore.deleteTransportAccessToken(uid, TransportType.Dummy);
+
+	    assertFalse("deleted new token", datastore.getInstalledTransports(uid).contains(TransportType.Dummy));
+
+        datastore.saveTransportAccessToken(t);
+        
+        TransportAccessToken tt = datastore.getAccessToken(uid, TransportType.Dummy);
+        
+        assertEquals("access secret OK", t.getAccessSecret(), tt.getAccessSecret());
+        assertEquals("access token OK", t.getAccessToken(), tt.getAccessToken());
+        
+	}
 }

@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -30,12 +31,15 @@ import net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptIdDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.TransportCursorDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.TransportTokenDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.TransportTokenIdDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.views.ProcessListItemDAO;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.api.HasStateLabel;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.scheduler.Wake;
@@ -52,6 +56,9 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore implements ScriptusDatastore {
     
     private static final Log LOG = LogFactory.getLog(ScriptusDatastoreJPAImpl.class);
+    
+    @Resource
+    private ScriptusConfig config;
     
     @PersistenceContext(unitName="jpa-pu")
     private EntityManager em;
@@ -574,6 +581,71 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         return ((Long) q.getSingleResult()).intValue();
         
     }
+
+    @Override
+    @Transactional(readOnly=false)
+    public void saveTransportAccessToken(TransportAccessToken t) {
+        TransportTokenDAO d = new TransportTokenDAO();
+        d.keyId = config.getLatestKeyId();
+        d.accessSecret = config.encrypt(t.getAccessSecret(), d.keyId);
+        d.accessToken = config.encrypt(t.getAccessToken(), d.keyId);
+        d.id = new TransportTokenIdDAO();
+        d.id.transport = t.getTransport().toString();
+        d.id.userId = t.getUserId();
+        
+        em.merge(d);
+        
+    }
+
+    @Override
+    public List<TransportType> getInstalledTransports(String openid) {
+        
+        Query q = em.createQuery("select d.id.transport from TransportTokenDAO d where d.id.userId = :userId");
+        q.setParameter("userId", openid);
+        
+        List<String> transports = q.getResultList();
+        
+        List<TransportType> result = new ArrayList<ScriptusConfig.TransportType>();
+        
+        for(String s : transports) {
+            result.add(TransportType.valueOf(s));
+        }
+        
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public void deleteTransportAccessToken(String openid, TransportType t) {
+        
+        TransportTokenIdDAO d = new TransportTokenIdDAO();
+        d.userId = openid;
+        d.transport = t.toString();
+        
+        TransportTokenDAO dd = em.find(TransportTokenDAO.class, d);
+        
+        if(dd != null) {
+            em.remove(dd);
+        }
+        
+    }
+
+    @Override
+    public TransportAccessToken getAccessToken(String userId, TransportType transportType) {
+
+        TransportTokenIdDAO d = new TransportTokenIdDAO();
+        d.userId = userId;
+        d.transport = transportType.toString();
+        
+        TransportTokenDAO dd = em.find(TransportTokenDAO.class, d);
+        
+        TransportAccessToken t = createTransportAccessToken();
+        
+        t.load(dd);
+        
+        return t;
+    }
+    
     
     
 

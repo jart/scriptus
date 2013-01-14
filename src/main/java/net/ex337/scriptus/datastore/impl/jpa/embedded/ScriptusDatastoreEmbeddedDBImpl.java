@@ -106,22 +106,6 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
 
     @PreDestroy
     public void destroy() {
-        try {
-            // the shutdown=true attribute shuts down Derby
-            DriverManager.getConnection("jdbc:derby:;shutdown=true");
-
-            // To shut down a specific database only, but keep the
-            // engine running (for example for connecting to other
-            // databases), specify a database in the connection URL:
-            // DriverManager.getConnection("jdbc:derby:" + dbName +
-            // ";shutdown=true");
-        } catch (SQLException se) {
-            if (((se.getErrorCode() == 50000) && ("XJ015".equals(se.getSQLState())))) {
-                // OK
-            } else {
-                LOG.error("did not shut down normally", se);
-            }
-        }
     }
 
     public ScriptusConfig getConfig() {

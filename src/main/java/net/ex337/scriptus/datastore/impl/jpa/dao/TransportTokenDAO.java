@@ -16,7 +16,7 @@ public class TransportTokenDAO {
     @Column(name="version")
     public int version;
     
-    @Column(name="version")
+    @Column(name="key_id")
     public String keyId;
 
     @Column(name="access_token")

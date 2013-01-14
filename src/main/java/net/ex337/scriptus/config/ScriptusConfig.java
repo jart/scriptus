@@ -63,7 +63,23 @@ public class ScriptusConfig {
 
     public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
 
-    public static enum TransportType {Twitter, CommandLine, Dummy};
+    public static enum TransportType {
+        Twitter(true), 
+        CommandLine(false), 
+        Dummy(false),
+        
+        ;
+        
+        private boolean isPublic;
+        
+        private TransportType(boolean isPublic){
+            this.isPublic = isPublic;
+        }
+
+        public boolean isPublic() {
+            return isPublic;
+        }
+    };
 	public static enum DatastoreType {Db, Embedded, Memory};
 
 	public static final String DURATION_FORMAT="([0-9]+)[\\ ,]*([smhdwMqyDC])";

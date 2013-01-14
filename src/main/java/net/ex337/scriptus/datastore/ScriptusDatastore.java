@@ -9,6 +9,7 @@ import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 /**
@@ -146,5 +147,13 @@ public interface ScriptusDatastore {
     
     public int countSavedScripts(String user);
     public int countRunningProcesses(String user);
+
+    public void saveTransportAccessToken(TransportAccessToken twitterT);
+
+    public List<TransportType> getInstalledTransports(String openid);
+
+    public void deleteTransportAccessToken(String openid, TransportType t);
+
+    public TransportAccessToken getAccessToken(String userId, TransportType transportType);
 	
 }

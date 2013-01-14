@@ -1,4 +1,6 @@
 
+	For me, this is about giving back.
+
 	SCRIPTUS IS:
 	
 	code that puts people first
@@ -6,6 +8,8 @@
 	programming on a human timescale
 	
 	freedom of assembly
+
+	
 
 		better colour scheme? -> http://paintstrap.com/
 		
@@ -30,12 +34,27 @@
 		  per-user Twitter linking
 		   -> use socialauth
 
+		/connect <-- lists all available networks etc.
+		/connect/twitter <-- POST sends redirect to twitter does oauth etc. GET done from twitter 302, goes to /connect
+		/connect/facebook...
 
+test		4 new DAO methods -> update
+test		  save
+test		  delete
+test		  list
+test		  read
+test		 2 new servlets
+test			connect
+tst			twitterconnect
+		 
 		   
 		  only poll mentions when script is listening to that uid
 		   query
 		    select distinct userid from messagecorrelation where message_id like 'tweet:' 
-		    for each, poll twitteer
+		     -> or move transport to another column
+		    for each, poll twitter
+		    add transport type to correlations table
+		    twitterClientImpl -> go to datastore, config directly
 		  better openId login (copy stackoverflow)
 		   -> google, facebook(no), twitter(no), yahoo
 		   --> need socialauth?

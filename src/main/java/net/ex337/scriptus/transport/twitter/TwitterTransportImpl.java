@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,7 @@ import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.transport.MessageRouting;
 import net.ex337.scriptus.transport.Transport;
@@ -28,6 +30,8 @@ import net.ex337.scriptus.transport.Transport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.common.collect.MapMaker;
 
 /**
  * The Twitter transport. Periodically polls Twitter for mentions of the
@@ -59,10 +63,12 @@ public class TwitterTransportImpl implements Transport {
 
     private ScheduledExecutorService scheduledTwitterChecker;
 
-    private String screenName;
+    private Map<String,String> screenNameCache;
 
     @PostConstruct
     public void init() {
+        
+        screenNameCache = new MapMaker().expireAfterAccess(config.getSchedulerPollInterval()*2, config.getSchedulerTimeUnit()).makeMap();
 
         if (config.getTransportType() != TransportType.Twitter) {
             return;
@@ -92,7 +98,6 @@ public class TwitterTransportImpl implements Transport {
 
         }, delay, pollIntervalSeconds, TimeUnit.SECONDS);
 
-        screenName = twitter.getScreenName();
 
     }
 
@@ -120,91 +125,105 @@ public class TwitterTransportImpl implements Transport {
          * also potentially tweets before the last one- so we need to keep track
          * of this.
          */
-
-        @SuppressWarnings("unchecked")
-        List<String> lastMentions = new ArrayList<String>();
-        try {
-            String cursor = datastore.getTransportCursor(TransportType.Twitter);
-            if(cursor != null) {
-                lastMentions = (List<String>)SerializableUtils.deserialiseObject(cursor.getBytes(ScriptusConfig.CHARSET));
-            }
-        } catch (IOException e) {
-            LOG.warn("couldn't get twitter cursor", e);
-        } catch (ClassNotFoundException e) {
-            LOG.warn("couldn't get twitter cursor", e);
-        }
+        List<String> userIds = datastore.getListeningCorrelations(TransportType.Twitter);
         
-        Long lastMention = Long.MIN_VALUE;
-        
-        if( ! lastMentions.isEmpty()) {
-            String lastMentionStr = lastMentions.get(lastMentions.size()-1);
-            lastMention = Long.parseLong(lastMentionStr.substring(lastMentionStr.indexOf(":")+1));
-        }
-        
+        for(String userId : userIds) {
+            TransportAccessToken accessToken = datastore.getAccessToken(userId, TransportType.Twitter);
 
-        LOG.debug("lastm:" + (lastMention == null ? "null" : snowflakeDate(getSecond(lastMention))));
-
-        List<Tweet> mentions = twitter.getMentions();
-
-        long ageThreshold = getAgeThreshold(lastMention);
-
-        LOG.debug("ageThreshold:" + snowflakeDate(ageThreshold));
-
-        if (mentions.isEmpty()) {
-            return;
-        }
-
-        List<Message> incomings = new ArrayList<Message>();
-
-        Collections.sort(mentions);
-
-        List<String> processedIncomings = new ArrayList<String>();
-
-        for (final Tweet s : mentions) {
-
-            String messageId = "tweet:" + s.getSnowflake();
-            /*
-             * dealt with this one
-             */
-            if (lastMentions.contains(messageId)) {
-                continue;
-            }
-            /*
-             * i.e. we've gone beyond the last mention and a bit beyond
-             */
-            long snAgeSecs = getSecond(s.getSnowflake());
-
-            LOG.debug("snAgeSecs:" + snowflakeDate(snAgeSecs));
-
-            /*
-             * we've passed last processed tweet
-             */
-            if (snAgeSecs <= ageThreshold) {
-
-                break;
+            String screenName = screenNameCache.get(userId);
+            
+            if(screenName == null) {
+                screenNameCache.put(userId, screenName = twitter.getScreenName(accessToken));
             }
 
-            Message m = new Message(s.getScreenName(), cleanTweet(s, screenName));
-            if (s.getInReplyToId() != -1) {
-                m.setInReplyToMessageId("tweet:" + s.getInReplyToId());
-            }
-            m.setCreation(s.getCreation());
-
-            incomings.add(m);
-
-            processedIncomings.add(messageId);
-
-        }
-
-        routing.handleIncomings(incomings);
-
-        if (!processedIncomings.isEmpty()) {
+            @SuppressWarnings("unchecked")
+            List<String> lastMentions = new ArrayList<String>();
             try {
-                datastore.updateTransportCursor(TransportType.Twitter, new String(SerializableUtils.serialiseObject(processedIncomings), ScriptusConfig.CHARSET));
+                String cursor = datastore.getTransportCursor(TransportType.Twitter);
+                if(cursor != null) {
+                    lastMentions = (List<String>)SerializableUtils.deserialiseObject(cursor.getBytes(ScriptusConfig.CHARSET));
+                }
             } catch (IOException e) {
-                throw new ScriptusRuntimeException(e);
+                LOG.warn("couldn't get twitter cursor", e);
+            } catch (ClassNotFoundException e) {
+                LOG.warn("couldn't get twitter cursor", e);
             }
+            
+            Long lastMention = Long.MIN_VALUE;
+            
+            if( ! lastMentions.isEmpty()) {
+                String lastMentionStr = lastMentions.get(lastMentions.size()-1);
+                lastMention = Long.parseLong(lastMentionStr.substring(lastMentionStr.indexOf(":")+1));
+            }
+            
+
+            LOG.debug("lastm:" + (lastMention == null ? "null" : snowflakeDate(getSecond(lastMention))));
+
+            List<Tweet> mentions = twitter.getMentions(accessToken);
+
+            long ageThreshold = getAgeThreshold(lastMention);
+
+            LOG.debug("ageThreshold:" + snowflakeDate(ageThreshold));
+
+            if (mentions.isEmpty()) {
+                return;
+            }
+
+            List<Message> incomings = new ArrayList<Message>();
+
+            Collections.sort(mentions);
+
+            List<String> processedIncomings = new ArrayList<String>();
+
+            for (final Tweet s : mentions) {
+
+                String messageId = "tweet:" + s.getSnowflake();
+                /*
+                 * dealt with this one
+                 */
+                if (lastMentions.contains(messageId)) {
+                    continue;
+                }
+                /*
+                 * i.e. we've gone beyond the last mention and a bit beyond
+                 */
+                long snAgeSecs = getSecond(s.getSnowflake());
+
+                LOG.debug("snAgeSecs:" + snowflakeDate(snAgeSecs));
+
+                /*
+                 * we've passed last processed tweet
+                 */
+                if (snAgeSecs <= ageThreshold) {
+
+                    break;
+                }
+
+                Message m = new Message(s.getScreenName(), cleanTweet(s, screenName));
+                m.setUserId(userId);
+                if (s.getInReplyToId() != -1) {
+                    m.setInReplyToMessageId("tweet:" + s.getInReplyToId());
+                }
+                m.setCreation(s.getCreation());
+
+                incomings.add(m);
+
+                processedIncomings.add(messageId);
+
+            }
+
+            routing.handleIncomings(incomings);
+
+            if (!processedIncomings.isEmpty()) {
+                try {
+                    datastore.updateTransportCursor(TransportType.Twitter, new String(SerializableUtils.serialiseObject(processedIncomings), ScriptusConfig.CHARSET));
+                } catch (IOException e) {
+                    throw new ScriptusRuntimeException(e);
+                }
+            }
+            
         }
+
 
 
     }

@@ -26,6 +26,7 @@ import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
@@ -354,7 +355,30 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
     public int countRunningProcesses(String user) {
         return 1;
     }
-    
+
+    @Override
+    public void saveTransportAccessToken(TransportAccessToken twitterT) {
+        //TODO
+    }
+
+    @Override
+    public List<TransportType> getInstalledTransports(String openid) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteTransportAccessToken(String openid, TransportType t) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public TransportAccessToken getAccessToken(String userId, TransportType transportType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     
     
 

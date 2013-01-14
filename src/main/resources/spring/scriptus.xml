@@ -51,11 +51,14 @@
     <bean id="transport" class="net.ex337.scriptus.transport.TransportSwitch" />
 
 	<bean scope="prototype" id="scriptProcess" class="net.ex337.scriptus.model.ScriptProcess"/>
+	<bean scope="prototype" id="transportAccessToken" class="net.ex337.scriptus.model.TransportAccessToken"/>
+
 
 	<bean id="facade" class="net.ex337.scriptus.ScriptusFacade"/>
 
     <bean id="baseDatastore" abstract="true" >
 		<lookup-method name="createScriptProcess" bean="scriptProcess"/>
+		<lookup-method name="createTransportAccessToken" bean="transportAccessToken"/>
     </bean>
 
 
