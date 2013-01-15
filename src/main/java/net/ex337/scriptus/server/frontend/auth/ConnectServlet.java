@@ -72,6 +72,7 @@ public class ConnectServlet extends BaseServlet {
             }
             
             req.getRequestDispatcher("/connect/twitter").forward(req, resp);
+            return;
         }
         
         resp.sendRedirect(req.getContextPath()+"/connect");

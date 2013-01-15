@@ -69,8 +69,6 @@ public class TwitterConnectionServlet extends BaseServlet {
 	@Override
 	protected void doAuthGet(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException {
 		
-		String path = req.getPathInfo();
-		
 	    SocialAuthManager manager = (SocialAuthManager) req.getSession().getAttribute(SOCIAL_AUTH_MANAGER);
 	    
 	    if(manager == null) {
@@ -79,6 +77,7 @@ public class TwitterConnectionServlet extends BaseServlet {
 	         * link they were posted to.
 	         */
 	        resp.sendRedirect(req.getContextPath()+"/connect");
+	        return;
 	    }
 	    
 	    Map<String, String> paramsMap = SocialAuthUtil.getRequestParametersMap(req); 
@@ -111,15 +110,13 @@ public class TwitterConnectionServlet extends BaseServlet {
             
             manager.setSocialAuthConfig(socialAuthConfig);
             
-            String domain = req.getServletPath();
-            
-            String successURL = domain+"/twitter";
+            String successURL = req.getRequestURL().toString();
             
             String url = manager.getAuthenticationUrl(TransportType.Twitter.toString().toLowerCase(), successURL);
             
             req.getSession().setAttribute(SOCIAL_AUTH_MANAGER, manager);
 
-            resp.sendRedirect(successURL);
+            resp.sendRedirect(url);
             
         } catch (Exception e) {
             throw new ScriptusRuntimeException(e);

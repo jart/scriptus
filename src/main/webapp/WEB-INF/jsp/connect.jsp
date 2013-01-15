@@ -50,7 +50,7 @@ for(Object o : free) {
 
 
 
-<form action="<%=request.getContextPath()%>/scripts/delete" method="POST" style="display:none" id="transportform">
+<form action="<%=request.getContextPath()%>/connect" method="POST" style="display:none" id="transportform">
 	<input type="hidden" name="transport" id="transport"/>
 	<input type="hidden" name="op" id="op" value="fals"/>
 </form>
