@@ -1,4 +1,6 @@
 
+la buvette
+
 	For me, this is about giving back.
 
 	SCRIPTUS IS:
@@ -8,6 +10,33 @@
 	programming on a human timescale
 	
 	freedom of assembly
+
+	The TEXT
+	
+	Values we want to convey:
+	  love / giving
+	   -> how: examples should be brave, charitable
+	  care
+	   -> attention to detail
+	  professionalism/competence
+	   -> WAR file needs polishing, 
+	   -> demo site must be well-rounded
+	  
+	home page 
+	 -> needs more than recapitulating menus (dashboard?)
+	
+	index
+	 -> new slugline "code that puts people first".
+	
+	about page
+	 -> rework call to action, followons when you're logged in
+	
+	what do do with minitite on github?
+	-> same L&F as Scriptus, different colour scheme/accents?
+	-> keep for hosting blog
+	-> still one page, go directly to demo-site?
+	-> keep GA bug
+
 
 		better colour scheme? -> http://paintstrap.com/
 		
@@ -29,30 +58,22 @@
 
 	new GUI components
 	HIGH
-	  per-user Twitter linking
-	  polling per-user
-	  separate column for transport
 	/connect/facebook?
 
 test	 2 new servlets
   test	    disconnect
   	      not immediate?
-	 
-test	    mc per transport & user
-test	    - fix testcases
-	    - DAO
-	    - twitter testcase
-	    for each, poll twitter
+test	    for each, poll twitter
 	  better openId login (copy stackoverflow)
 	   -> google, facebook(no), twitter(no), yahoo
 	   --> need socialauth?
 
-		LOW
-		  local copy of docs?
-		  version checking?
-		   -> GitHub intefgration
-		   -> checkout API
-		   -> per-release branch?
+	LOW
+	  local copy of docs?
+	  version checking?
+	   -> GitHub integration
+	   -> checkout API
+	   -> per-release branch?
 
 
 
@@ -92,40 +113,20 @@ test	 - scheduler should queue task in memory undfer a certain delta
 		 
 	    - extending Scriptus
 	       - adding new method calls
-	       beginning to think that an RDBMS would be the best way to keep track off all this stuff
-	        - transactions
-	        - relations
 	online demo
-	 - twitter account per user, not per install
-	    - auth process as designed
-	    - store keys in sdb, encrypt then HMAC (or whatever it is)
-	    - things like processedIncomings & listeners are per install, should be per user per pid
-	       --> would also fix listening
-	   -->per user
-	   	 datastore instance
- 	       transport instance
- 	       facade
- 	       -->storing auth creds for twitter
- 	       -->encrypt before saving!
- 	       tbl_user_creds
- 	       uid / service / token / secret
- 	       threadlocal for user info?
 	 - inline documentation / QRC? 
 	 - , convert docs to HTML
 	   -> use pegDown or pull from gitHub?	
-	 - owner should be twitter account
+	 - owner should be twitter account?
 	 - MVC w/servlets, stateless sessions with HMAC?
 	 - limits (size, tweets, # processes, CPU time, transfer)
 	 
-	 git stash save diffaccs
 
 
 
 	pipe
 	read
 	write
-	 - separate out state into SDB
-	 - incl. process table
 	add time machine to rhino
 x no?	filesystem
 	 - procfs
@@ -141,11 +142,7 @@ test	  Boolean.length / Boolean.prototype.constructor.length == 1...
 	rhino migration script for serialised stuff
 	 -->migrating tags from Strings to Enums on properties ...
 
-	improve first page of minisite
-	 - better focus, appeal, call to action
 
-	twitter integration
-test	   - listen
 
 	 - habit judo from metafilter
 	    -> see detials in script habitJudo.js
@@ -168,7 +165,7 @@ test	   - listen
 	 - adventure game from Nathanael
 
 	jetty should be error level, not "null" level
-	war file should print version, not print log4j warnings
+	war file should print version
 	should also print usage option when -h or --help is used
 
 medium	
@@ -185,10 +182,12 @@ low
 	 - site doesn't work locally and on github due to "/scriptus" relocation
 
 	promo
-still a newbie?		mefi projects?
+		mefi projects
+		JavaScript Weekly
+		HN
+		Reddit
 		demo on twitter 
-		 - install the iPhone client
-		   - upgrade firmware, finally
+		 - install the phone client
 		blog posts
 		 - idea of 'slow code'		 
 		 - idea of 'social operating system'
@@ -204,7 +203,6 @@ still a newbie?		mefi projects?
 	script bodies wrapped with (new function(){...})() at compile time - should include arguments or change?
 	two concepts of identity: one via openId, one via twitter. Unify?
 	
-	 scriptus AWS DAO should store process state separately - it's updated by itself all the time
 	 nonce should be extended to all continuations?
 	  - avoid double-acting? or if the server is shut down mid-execution, allows recoverability?
 	 
@@ -730,4 +728,38 @@ X test		connect
 X test		twitterconnect
 X test	    add transport type to correlations table
 X test	    twitterClientImpl -> go to datastore, config directly
+X test	    mc per transport & user
+X test	    - fix testcases
+X	    - DAO
+X	    - twitter testcase
+X	  per-user Twitter linking
+X	  polling per-user
+X	  separate column for transport
+X	       beginning to think that an RDBMS would be the best way to keep track off all this stuff
+X	        - transactions
+X	        - relations
+X	 - twitter account per user, not per install
+X	    - auth process as designed
+X	    - store keys in sdb, encrypt then HMAC (or whatever it is)
+X dupe	    - things like processedIncomings & listeners are per install, should be per user per pid
+X dupe	       --> would also fix listening
+X no	   -->per user
+X no	   	 datastore instance
+X no 	       transport instance
+X no	       facade
+X 	       -->storing auth creds for twitter
+X	       -->encrypt before saving!
+X	       tbl_user_creds
+X 	       uid / service / token / secret
+X no 	       threadlocal for user info?
+X	 git stash save diffaccs
+X no	 - separate out state into SDB
+X	 - incl. process table
+X	twitter integration
+X test	   - listen
+X no	 scriptus AWS DAO should store process state separately - it's updated by itself all the time
+X no		   - upgrade firmware, finally
+X dupe	improve first page of minisite
+X dupe	 - better focus, appeal, call to action
+X	war file should not print log4j warnings
 

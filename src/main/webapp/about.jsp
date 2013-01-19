@@ -26,7 +26,7 @@
 		
 		<p><strong>Listening</strong> to people is this easy: <tt><span class="codeverb">listen</span>();</tt></p>
 		
-		<p><strong>Talking</strong> to people is this easy: <tt><span class="codeverb">say</span>(<span class="codestring">"hello!"</span>);</tt></p>
+		<p><strong>Talking</strong> to people is this easy: <tt><span class="codeverb">say</span>(<span class="codestring">"Hello!"</span>);</tt></p>
 		
 	</div>
 
