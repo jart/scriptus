@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
+import net.ex337.scriptus.model.TransportAccessToken;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -24,9 +25,10 @@ public class TwitterClientImpl implements TwitterClient {
     
     @Resource
     private ScriptusConfig config;
+    
+    private String screenName;
 
-    @PostConstruct
-    public void init() {
+    public void setCredentials(TransportAccessToken token) {
         
         if(config.getTransportType() != TransportType.Twitter) {
             return;
@@ -36,11 +38,16 @@ public class TwitterClientImpl implements TwitterClient {
 		cb.setDebugEnabled(true)
 		.setOAuthConsumerKey(config.getTwitterConsumerKey())
 		.setOAuthConsumerSecret(config.getTwitterConsumerSecret())
-		.setOAuthAccessToken(config.getTwitterAccessToken())
-		.setOAuthAccessTokenSecret(config.getTwitterAccessTokenSecret())
+		.setOAuthAccessToken(token.getAccessToken())
+		.setOAuthAccessTokenSecret(token.getAccessSecret())
 		.setIncludeEntitiesEnabled(true);
 
 		twitter = new TwitterFactory(cb.build()).getInstance();
+		try {
+            screenName = twitter.verifyCredentials().getScreenName();
+        } catch (TwitterException e) {
+            throw new ScriptusRuntimeException(e);
+        }
     }
     
 	@Override
@@ -103,13 +110,7 @@ public class TwitterClientImpl implements TwitterClient {
 
     @Override
     public String getScreenName() {
-        try {
-            return twitter.getScreenName();
-        } catch (IllegalStateException e) {
-            throw new ScriptusRuntimeException(e);
-        } catch (TwitterException e) {
-            throw new ScriptusRuntimeException(e);
-        }
+        return screenName;
     }
 
 }

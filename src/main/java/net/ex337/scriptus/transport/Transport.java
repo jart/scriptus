@@ -19,7 +19,7 @@ public interface Transport {
      * The ID is an opaque string.
      * 
      */
-    public String send(String to, String msg);
+    public String send(String userId, String to, String msg);
 	
 	
 

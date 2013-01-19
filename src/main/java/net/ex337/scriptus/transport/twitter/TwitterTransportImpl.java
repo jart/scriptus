@@ -45,7 +45,7 @@ import com.google.common.collect.MapMaker;
  * @author ian
  * 
  */
-public class TwitterTransportImpl implements Transport {
+public abstract class TwitterTransportImpl implements Transport {
 
     private static final Log LOG = LogFactory.getLog(TwitterTransportImpl.class);
 
@@ -58,8 +58,8 @@ public class TwitterTransportImpl implements Transport {
     @Resource
     private ScriptusConfig config;
 
-    @Resource(name = "twitterClient")
-    private TwitterClient twitter;
+//    @Resource(name = "twitterClient")
+//    private TwitterClient twitter;
 
     private ScheduledExecutorService scheduledTwitterChecker;
 
@@ -132,8 +132,10 @@ public class TwitterTransportImpl implements Transport {
 
             String screenName = screenNameCache.get(userId);
             
+            TwitterClient twitter = getTwitterClient(accessToken);
+            
             if(screenName == null) {
-                screenNameCache.put(userId, screenName = twitter.getScreenName(accessToken));
+                screenNameCache.put(userId, screenName = twitter.getScreenName());
             }
 
             @SuppressWarnings("unchecked")
@@ -159,7 +161,7 @@ public class TwitterTransportImpl implements Transport {
 
             LOG.debug("lastm:" + (lastMention == null ? "null" : snowflakeDate(getSecond(lastMention))));
 
-            List<Tweet> mentions = twitter.getMentions(accessToken);
+            List<Tweet> mentions = twitter.getMentions();
 
             long ageThreshold = getAgeThreshold(lastMention);
 
@@ -199,12 +201,10 @@ public class TwitterTransportImpl implements Transport {
                     break;
                 }
 
-                Message m = new Message(s.getScreenName(), cleanTweet(s, screenName));
-                m.setUserId(userId);
+                Message m = new Message(s.getScreenName(), cleanTweet(s, screenName), s.getCreation(), userId);
                 if (s.getInReplyToId() != -1) {
                     m.setInReplyToMessageId("tweet:" + s.getInReplyToId());
                 }
-                m.setCreation(s.getCreation());
 
                 incomings.add(m);
 
@@ -313,8 +313,12 @@ public class TwitterTransportImpl implements Transport {
     }
 
     @Override
-    public String send(String to, String msg) {
+    public String send(String userId, String to, String msg) {
 
+        TransportAccessToken accessToken = datastore.getAccessToken(userId, TransportType.Twitter);
+
+        TwitterClient twitter = getTwitterClient(accessToken);
+        
         long id = twitter.tweet((to == null ? "" : "@" + to + " ") + msg);
 
         LOG.debug(id + " : " + "@" + to + " " + msg);
@@ -322,4 +326,12 @@ public class TwitterTransportImpl implements Transport {
         return "tweet:" + id;
 
     }
+    
+    private TwitterClient getTwitterClient(TransportAccessToken token) {
+        TwitterClient c = createTwitterClient();
+        c.setCredentials(token);
+        return c;
+    }
+    
+    protected abstract TwitterClient createTwitterClient();
 }

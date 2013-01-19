@@ -103,8 +103,8 @@ public class ScriptusConfig {
 	private String twitterConsumerKey="";
 	private String twitterConsumerSecret="";
 
-	private String twitterAccessToken="";
-	private String twitterAccessTokenSecret="";
+//	private String twitterAccessToken="";
+//	private String twitterAccessTokenSecret="";
 
 	private TransportType transportType;
 	
@@ -254,8 +254,8 @@ public class ScriptusConfig {
 	private void load(Properties props) {
 		twitterConsumerKey = props.getProperty("twitterConsumerKey");
 		twitterConsumerSecret = props.getProperty("twitterConsumerSecret");
-		twitterAccessToken = props.getProperty("twitterAccessToken");
-		twitterAccessTokenSecret = props.getProperty("twitterAccessTokenSecret");
+//		twitterAccessToken = props.getProperty("twitterAccessToken");
+//		twitterAccessTokenSecret = props.getProperty("twitterAccessTokenSecret");
 		datastoreType = DatastoreType.valueOf(props.getProperty("datastore"));
 		transportType = TransportType.valueOf(props.getProperty("transport"));
 		disableOpenID = Boolean.parseBoolean(props.getProperty("disableOpenID"));
@@ -308,8 +308,8 @@ public class ScriptusConfig {
 		
 		props.put("twitterConsumerKey",			twitterConsumerKey);
 		props.put("twitterConsumerSecret",		twitterConsumerSecret);
-		props.put("twitterAccessToken",			twitterAccessToken);
-		props.put("twitterAccessTokenSecret",	twitterAccessTokenSecret);
+//		props.put("twitterAccessToken",			twitterAccessToken);
+//		props.put("twitterAccessTokenSecret",	twitterAccessTokenSecret);
 		props.put("transport",       			transportType.toString());
 		props.put("datastore", 					datastoreType.toString());
 		
@@ -337,21 +337,21 @@ public class ScriptusConfig {
 		this.twitterConsumerKey = twitterConsumerKey;
 	}
 
-	public String getTwitterAccessToken() {
-		return twitterAccessToken;
-	}
-
-	public void setTwitterAccessToken(String twitterAccessToken) {
-		this.twitterAccessToken = twitterAccessToken;
-	}
-
-	public String getTwitterAccessTokenSecret() {
-		return twitterAccessTokenSecret;
-	}
-
-	public void setTwitterAccessTokenSecret(String twitterAccessTokenSecret) {
-		this.twitterAccessTokenSecret = twitterAccessTokenSecret;
-	}
+//	public String getTwitterAccessToken() {
+//		return twitterAccessToken;
+//	}
+//
+//	public void setTwitterAccessToken(String twitterAccessToken) {
+//		this.twitterAccessToken = twitterAccessToken;
+//	}
+//
+//	public String getTwitterAccessTokenSecret() {
+//		return twitterAccessTokenSecret;
+//	}
+//
+//	public void setTwitterAccessTokenSecret(String twitterAccessTokenSecret) {
+//		this.twitterAccessTokenSecret = twitterAccessTokenSecret;
+//	}
 	
 	
 	public String getTwitterConsumerSecret() {

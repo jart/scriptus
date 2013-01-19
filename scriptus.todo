@@ -9,8 +9,6 @@
 	
 	freedom of assembly
 
-	
-
 		better colour scheme? -> http://paintstrap.com/
 		
 --> offset1 on text-only pages? 
@@ -27,38 +25,28 @@
 
 	 -> remove 'owner' and final say
 	
-		THEN
-	
-		new GUI components
-		HIGH
-		  per-user Twitter linking
-		   -> use socialauth
+	THEN
 
-		/connect <-- lists all available networks etc.
-		/connect/twitter <-- POST sends redirect to twitter does oauth etc. GET done from twitter 302, goes to /connect
-		/connect/facebook...
+	new GUI components
+	HIGH
+	  per-user Twitter linking
+	  polling per-user
+	  separate column for transport
+	/connect/facebook?
 
-test		4 new DAO methods -> update
-test		  save
-test		  delete
-test		  list
-test		  read
-test		 2 new servlets
-test			connect
-tst			twitterconnect
-		 
-		   
-		  only poll mentions when script is listening to that uid
-		   query
-		    select distinct userid from messagecorrelation where message_id like 'tweet:' 
-		     -> or move transport to another column
-		    for each, poll twitter
-		    add transport type to correlations table
-		    twitterClientImpl -> go to datastore, config directly
-		  better openId login (copy stackoverflow)
-		   -> google, facebook(no), twitter(no), yahoo
-		   --> need socialauth?
-	
+test	 2 new servlets
+  test	    disconnect
+  	      not immediate?
+	 
+test	    mc per transport & user
+test	    - fix testcases
+	    - DAO
+	    - twitter testcase
+	    for each, poll twitter
+	  better openId login (copy stackoverflow)
+	   -> google, facebook(no), twitter(no), yahoo
+	   --> need socialauth?
+
 		LOW
 		  local copy of docs?
 		  version checking?
@@ -81,20 +69,6 @@ test	 - anything that wake()s doens't do so exactly on time, but to the nearest 
 test	 - scheduler should use short-term memory-based queue with rolling pre-loading in advance from datastore
 test	 - scheduler should queue task in memory undfer a certain delta
 	problem - only stuff sent up to that minute will be executed
-
-The `listen()` call works by registering a process as a listener inside the Twitter transport. We then poll Twitter every minute for mentions by the user being listened to.
-
-However, if the user 'speaks' after the last poll but before the timeout, then this tweet is not picked up before the process is woken and null is returned to the program.
-
-In addition, the wake is not unregistered on receipt of a message, causing a needless process load & nonce check.
-
-	
-IdScriptableObject
-
-
-In addition to this change, a new page has been added to the documentation, [HOWTO extend Scriptus with custom functionality](). Inspired by some conversations with Nela & Emil at xxx, who've been using Scriptus to run a questionnaire for their followers on Twitter, I've documented the best way to add new functionalities to Scriptus.
-
-In the example, a poll is taken and the poll results are stored in a MySQL database. The MySQL DB is accessed separately to the Scriptus storage system, which is still used exclusively for script state. [Check it out]() if you like Scriptus but want it to do extra things that are really specific to your needs.
 	
 	PROBLEMS
 	DOCS + can use other correlations
@@ -224,42 +198,6 @@ still a newbie?		mefi projects?
 
 
 
-
-
-While I was thinking about the kind of programs I could write with Scriptus, I realised that my general concept of 'execution' was quite limiting, because it limited me to in-memory processes. Once execution can happen anywhere, like in the XKCD cartoon(http://xkcd.com/505/), we can use it for anything, on any scale.
-
-For example, how an election works is common knowledge. The process of nomination, candidature, campaigning and voting takes months, but is procedurally simple at heart. How do we write a program that that will let anybody run an election?
-
-The answer is to write the program and then think about how to run it. Once we expand the idea of programming to include many of the things that encompass everyday life, it becomes easier to think about Tim O'Reilly's idea of "working on stuff that matters".
-
-
-
-
-
-
-
-The Long Code Manifesto
-
-Computers run faster and faster. But in the real world, anything important takes time and effort to achieve.
-
-If our goal is to make the world a better place, then we need to learn to code on a world-changing scale.
-
-Therefore, we should not think of /execution/ as being a transient, in-memory process of computation.
-
-Programs that change the world will run for years or decades, so they can't reside on any one computer, and they need to stick around.
-
-The challenge is to write programs for the long term. Write programs that run for months, years or decades.
-
-Their input and output will be our thoughts and actions, and they will work with us first, computers second.
-
-Because computers can't change the world. We can.
-
-
-
-
-I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising / orchestrating human activity.
-
-On the other hand, the instant the project does have users, it is no longer about me.
 
 	 		 	
 **running track of compromises & known bugs
@@ -776,4 +714,20 @@ X test		   -> scriptus config keys
 X test		   -> first-time initialisation & saving
 X test		   -> correctly choosing last key
 X test		   -> encrypt & decrypt using config
+X test		4 new DAO methods -> update
+X test		  save
+X test		  delete
+X test		  list
+X test		  read
+X		   -> use socialauth
+X		/connect <-- lists all available networks etc.
+X		/connect/twitter <-- POST sends redirect to twitter does oauth etc. GET done from twitter 302, goes to /connect
+X test	  only poll mentions when script is listening to that uid
+X test	   query
+X test	    select distinct userid from messagecorrelation where message_id like 'tweet:' 
+X test	     -> or move transport to another column
+X test		connect
+X test		twitterconnect
+X test	    add transport type to correlations table
+X test	    twitterClientImpl -> go to datastore, config directly
 

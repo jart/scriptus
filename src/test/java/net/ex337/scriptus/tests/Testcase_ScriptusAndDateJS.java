@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.ex337.scriptus.ScriptusFacade;
+import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -24,6 +25,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 	private ProcessScheduler c;
 	private ScriptusDatastore datastore;
 	private Transport m;
+    private ScriptusConfig conf;
 	
 	private static final Map<String,String> testSources = new HashMap<String,String>() {{
 		put("evalget.js", 
@@ -54,7 +56,9 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 		for(Map.Entry<String,String> e : testSources.entrySet()) {
 			datastore.saveScriptSource(TEST_USER, e.getKey(), e.getValue());
 		}
-		
+
+	      conf = (ScriptusConfig) appContext.getBean("config");
+
 		//((DummyTransport)m).response = "response";
 		
 	}
@@ -77,7 +81,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 
 		Get g = (Get) r;
 		
-		g.visit(new ScriptusFacade(datastore, c, m), p);
+		g.visit(new ScriptusFacade(datastore, c, m, conf), p);
 		
 		p = datastore.getProcess(p.getPid());
 		

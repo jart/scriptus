@@ -142,23 +142,28 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	}
 
 	@Override
-	public Set<MessageCorrelation> getMessageCorrelations(String cid, String fromUser) {
+	public Set<MessageCorrelation> getMessageCorrelations(String cid, String fromUser, String userid) {
         
         Set<MessageCorrelation> result = new HashSet<MessageCorrelation>();
 
         for(MessageCorrelation c : correlations) {
-            if(c.getMessageId() == null && c.getUser() == null){
+            
+            if( ! userid.equals(c.getUserId())){
+                continue;
+            }
+            
+            if(c.getMessageId() == null && c.getFrom() == null){
                 result.add(c);
             } else if(cid != null) {
-                if(cid.equals(c.getMessageId()) && c.getUser() == null){
+                if(cid.equals(c.getMessageId()) && c.getFrom() == null){
                     result.add(c);
-                } else if(cid.equals(c.getMessageId()) && fromUser.equals(c.getUser())){
+                } else if(cid.equals(c.getMessageId()) && fromUser.equals(c.getFrom())){
                     result.add(c);
 	            }
 	        } else {
-               if((fromUser.equals(c.getUser()) && c.getMessageId() == null)) {
+               if((fromUser.equals(c.getFrom()) && c.getMessageId() == null)) {
                     result.add(c);
-               } else if(c.getMessageId() == null && (c.getUser() == null) || fromUser.equals(c.getUser())) {
+               } else if(c.getMessageId() == null && (c.getFrom() == null) || fromUser.equals(c.getFrom())) {
 	                result.add(c);
 	           } 
 	        }
@@ -375,6 +380,12 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 
     @Override
     public TransportAccessToken getAccessToken(String userId, TransportType transportType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> getListeningCorrelations(TransportType twitter) {
         // TODO Auto-generated method stub
         return null;
     }

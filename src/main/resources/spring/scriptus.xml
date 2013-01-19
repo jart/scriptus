@@ -41,12 +41,15 @@
    	</bean>
     	
     <bean id="cmdLineTransport" class="net.ex337.scriptus.transport.impl.CommandLineTransport" />
-    <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl" />
-    
-    <bean id="twitterClientMock" class="net.ex337.scriptus.transport.twitter.TwitterClientMock"/>
-    <bean id="twitterClientImpl" class="net.ex337.scriptus.transport.twitter.TwitterClientImpl"/>
 
-    <alias name="twitterClientImpl" alias="twitterClient" />
+    <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl">
+		<lookup-method name="createTwitterClient" bean="twitterClient"/>
+    </bean>
+    
+    <bean id="twitterClientMock" class="net.ex337.scriptus.transport.twitter.TwitterClientMock" scope="prototype"/>
+    <bean id="twitterClientImpl" class="net.ex337.scriptus.transport.twitter.TwitterClientImpl" scope="prototype"/>
+
+    <alias name="twitterClientMock" alias="twitterClient" />
 
     <bean id="transport" class="net.ex337.scriptus.transport.TransportSwitch" />
 

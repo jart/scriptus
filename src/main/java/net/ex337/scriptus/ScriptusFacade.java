@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -30,6 +32,8 @@ public class ScriptusFacade {
     private ProcessScheduler scheduler;
     @Resource
     private Transport transport;
+    @Resource
+    private ScriptusConfig config;
 
     /*
      * zero-arg constructor for prototype bean
@@ -38,10 +42,11 @@ public class ScriptusFacade {
         
     }
 
-    public ScriptusFacade(ScriptusDatastore datastore, ProcessScheduler scheduler, Transport transport) {
+    public ScriptusFacade(ScriptusDatastore datastore, ProcessScheduler scheduler, Transport transport, ScriptusConfig config) {
         this.datastore = datastore;
         this.scheduler = scheduler;
         this.transport = transport;
+        this.config = config;
     }
     public ScriptProcess newProcess(String userId, String source, String args, String owner) {
         return datastore.newProcess(userId, source, false, args, owner);
@@ -82,8 +87,8 @@ public class ScriptusFacade {
     public void registerMessageCorrelation(MessageCorrelation cid) {
         datastore.registerMessageCorrelation(cid);
     }
-    public Set<MessageCorrelation> getMessageCorrelationByID(String inReplyTo, String from) {
-        return datastore.getMessageCorrelations(inReplyTo, from);
+    public Set<MessageCorrelation> getMessageCorrelationByID(String inReplyTo, String from, String userId) {
+        return datastore.getMessageCorrelations(inReplyTo, from, userId);
     }
     public void unregisterMessageCorrelation(MessageCorrelation correlation) {
         datastore.unregisterMessageCorrelation(correlation);
@@ -106,8 +111,8 @@ public class ScriptusFacade {
     public void markAsKilledIfRunning(UUID pid) {
         scheduler.markAsKilledIfRunning(pid);
     }
-    public String send(String to, String msg) {
-        return transport.send(to, msg);
+    public String send(String userId, String to, String msg) {
+        return transport.send(userId, to, msg);
     }
 
     public void scheduleTask(ScheduledScriptAction action) {
@@ -128,6 +133,10 @@ public class ScriptusFacade {
 
     public void markProcessFinished(UUID pid) {
         datastore.markProcessFinished(pid);
+    }
+
+    public TransportType getTransportType() {
+        return config.getTransportType();
     }
 
 }

@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
+import net.ex337.scriptus.model.TransportAccessToken;
 
 public class TwitterClientMock implements TwitterClient {
     
-    public List<Tweet> mockTweets = new ArrayList<Tweet>();
+    /*
+     * these are static because the client is now a per-user bean...
+     */
     
-    public List<String> statusUpdates = new ArrayList<String>();
+    public static List<Tweet> mockTweets = new ArrayList<Tweet>();
+    
+    public static List<String> statusUpdates = new ArrayList<String>();
 
     public String screenName = "mock";
     
@@ -24,7 +29,7 @@ public class TwitterClientMock implements TwitterClient {
 	    
 	}
 	
-	private long ctr = 1;
+	private long ctr = System.currentTimeMillis();
 
 	@Override
 	public long tweet(String txt) {
@@ -41,6 +46,11 @@ public class TwitterClientMock implements TwitterClient {
     @Override
     public String getScreenName() {
         return screenName;
+    }
+
+    @Override
+    public void setCredentials(TransportAccessToken token) {
+        //don't need this
     }
 
 	

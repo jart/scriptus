@@ -33,7 +33,7 @@ public class Say extends ScriptAction implements Serializable {
 	@Override
 	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 
-		String messageId = scriptus.send(who, msg);
+		String messageId = scriptus.send(process.getUserId(), who, msg);
 		
 		scriptus.updateProcessState(process.getPid(), messageId);
 

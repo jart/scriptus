@@ -48,8 +48,8 @@ public class TransportSwitch implements Transport {
 		}			
 	}
 
-    public String send(String to, String msg) {
-        return activeImpl.send(to, msg);
+    public String send(String userId, String to, String msg) {
+        return activeImpl.send(userId, to, msg);
     }
 
 	

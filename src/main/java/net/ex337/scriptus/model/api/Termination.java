@@ -40,7 +40,7 @@ public abstract class Termination extends ScriptAction implements Serializable {
 					Context.enter();
 					
 					if(getResult() != null && ! (getResult() instanceof Undefined)) {
-						scriptus.send(process.getOwner(), getResult().toString());
+						scriptus.send(process.getUserId(), process.getOwner(), getResult().toString());
 					}
  
 				} finally {

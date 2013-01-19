@@ -2,10 +2,12 @@ create schema scriptus;
 
 create table scriptus.tbl_message_correlation (
 	pid varchar(36) not null,
+	from_id varchar(3000),
 	user_id varchar(3000),
 	message_id varchar(3000),
 	timestamp bigint,
 	version int not null,
+	transport varchar (300) not null,
 	primary key (pid)
 );
 

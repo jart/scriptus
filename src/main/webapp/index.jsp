@@ -22,6 +22,8 @@ if(f.getDisableOpenID()) {
 
         session.setAttribute("openid", "no-openid");
         session.setAttribute("openid-claimed", "no-openid-claimed");
+            session.setAttribute("name", "no OpenID");
+            session.setAttribute("email", "nope@example.com);
 }
 
     if (request.getParameter("logout")!=null)

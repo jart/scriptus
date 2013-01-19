@@ -80,7 +80,7 @@ public class ConnectServlet extends BaseServlet {
 
     @Override
     protected String getPageLabel() {
-        return "scripts";
+        return "connect";
     }
 
 }

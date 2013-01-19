@@ -109,8 +109,8 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		activeImpl.registerMessageCorrelation(cid);
 	}
 
-	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser) {
-		return activeImpl.getMessageCorrelations(inReplyToMessageId, fromUser);
+	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser, String userId) {
+		return activeImpl.getMessageCorrelations(inReplyToMessageId, fromUser, userId);
 	}
 
 	public void unregisterMessageCorrelation(MessageCorrelation c) {
@@ -180,6 +180,10 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
     @Override
     public TransportAccessToken getAccessToken(String userId, TransportType transportType) {
         return activeImpl.getAccessToken(userId, transportType);
+    }
+
+    public List<String> getListeningCorrelations(TransportType twitter) {
+        return activeImpl.getListeningCorrelations(twitter);
     }
     
     

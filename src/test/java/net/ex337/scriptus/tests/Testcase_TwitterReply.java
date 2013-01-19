@@ -6,10 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import net.ex337.scriptus.ScriptusFacade;
+import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.api.functions.Ask;
 import net.ex337.scriptus.model.api.functions.Listen;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
@@ -33,6 +36,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
     private ProcessScheduler c;
     private ScriptusDatastore datastore;
     private Transport m;
+    private ScriptusConfig config;
 
     private TwitterTransportImpl twitter;
 
@@ -63,6 +67,8 @@ public class Testcase_TwitterReply extends BaseTestCase {
         c = (ProcessScheduler) appContext.getBean("scheduler");
 
         datastore = (ScriptusDatastore) appContext.getBean("datastore");
+        
+        config = (ScriptusConfig) appContext.getBean("config");
 
         for (Map.Entry<String, String> e : testSources.entrySet()) {
             datastore.saveScriptSource(TEST_USER, e.getKey(), e.getValue());
@@ -72,6 +78,13 @@ public class Testcase_TwitterReply extends BaseTestCase {
         // ((DummyTransport)m).response = "response";
         
         twitter = (TwitterTransportImpl) appContext.getBean("twitterTransport");
+        
+        try{
+            TransportAccessToken c = datastore.getAccessToken(TEST_USER, TransportType.Twitter);
+        } catch(Exception e) {
+            datastore.saveTransportAccessToken(new TransportAccessToken(TEST_USER, TransportType.Twitter, "token", "secret"));
+        }
+        
 
     }
 
@@ -92,7 +105,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         final ThreadLocal<String> tweetId = new ThreadLocal<String>();
 
-        ScriptusFacade f = new ScriptusFacade(datastore, c, m) {
+        ScriptusFacade f = new ScriptusFacade(datastore, c, m, config) {
 
             @Override
             public void registerMessageCorrelation(MessageCorrelation cid) {
@@ -104,12 +117,12 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         r.visit(f, p); // sould say
 
-        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(tweetId.get(), "ianso");
+        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(tweetId.get(), "ianso", TEST_USER);
 
         assertEquals("1 correlation", 1, ccc.size());
 
         assertEquals("correct pid registered", ccc.iterator().next().getPid(), ccc.iterator().next().getPid());
-        assertEquals("correct user registered", "ianso", ccc.iterator().next().getUser());
+        assertEquals("correct user registered", "ianso", ccc.iterator().next().getFrom());
 
         Tweet t = new Tweet(123, "reply", "ianso", Long.parseLong(StringUtils.remove(tweetId.get(), "tweet:")));
 
@@ -146,7 +159,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
 //        final ThreadLocal<String> tweetId = new ThreadLocal<String>();
 
-        ScriptusFacade f = new ScriptusFacade(datastore, c, m) {
+        ScriptusFacade f = new ScriptusFacade(datastore, c, m, config) {
 
             @Override
             public void registerMessageCorrelation(MessageCorrelation cid) {
@@ -158,12 +171,12 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         r.visit(f, p); // sould say
 
-        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(null, "ianso");
+        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(null, "ianso", TEST_USER);
 
         assertEquals("1 correlation", 1, ccc.size());
 
         assertEquals("correct pid registered", ccc.iterator().next().getPid(), ccc.iterator().next().getPid());
-        assertEquals("correct user registered", null, ccc.iterator().next().getUser());
+        assertEquals("correct user registered", null, ccc.iterator().next().getFrom());
 
         Tweet t = new Tweet(123, "reply", "ianso");
 

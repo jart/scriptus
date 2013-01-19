@@ -105,7 +105,7 @@ public interface ScriptusDatastore {
 	 * @param fromUser TODO
 	 * @see #registerMessageCorrelation(MessageCorrelation)
 	 */
-	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser);
+	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser, String userId);
 	
 	/**
 	 * @see #registerMessageCorrelation(MessageCorrelation)
@@ -155,5 +155,7 @@ public interface ScriptusDatastore {
     public void deleteTransportAccessToken(String openid, TransportType t);
 
     public TransportAccessToken getAccessToken(String userId, TransportType transportType);
+
+    public List<String> getListeningCorrelations(TransportType twitter);
 	
 }

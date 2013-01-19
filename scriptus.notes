@@ -25,3 +25,55 @@ A: Because it includes:
 
 Java is nice because you can just pull in dependencies from anywhere and BAM you're set, but the cost of this is an exploding deployable.
 
+
+The `listen()` call works by registering a process as a listener inside the Twitter transport. We then poll Twitter every minute for mentions by the user being listened to.
+
+However, if the user 'speaks' after the last poll but before the timeout, then this tweet is not picked up before the process is woken and null is returned to the program.
+
+In addition, the wake is not unregistered on receipt of a message, causing a needless process load & nonce check.
+
+	
+IdScriptableObject
+
+
+In addition to this change, a new page has been added to the documentation, [HOWTO extend Scriptus with custom functionality](). Inspired by some conversations with Nela & Emil at xxx, who've been using Scriptus to run a questionnaire for their followers on Twitter, I've documented the best way to add new functionalities to Scriptus.
+
+In the example, a poll is taken and the poll results are stored in a MySQL database. The MySQL DB is accessed separately to the Scriptus storage system, which is still used exclusively for script state. [Check it out]() if you like Scriptus but want it to do extra things that are really specific to your needs.
+
+
+
+
+While I was thinking about the kind of programs I could write with Scriptus, I realised that my general concept of 'execution' was quite limiting, because it limited me to in-memory processes. Once execution can happen anywhere, like in the XKCD cartoon(http://xkcd.com/505/), we can use it for anything, on any scale.
+
+For example, how an election works is common knowledge. The process of nomination, candidature, campaigning and voting takes months, but is procedurally simple at heart. How do we write a program that that will let anybody run an election?
+
+The answer is to write the program and then think about how to run it. Once we expand the idea of programming to include many of the things that encompass everyday life, it becomes easier to think about Tim O'Reilly's idea of "working on stuff that matters".
+
+
+
+
+
+The Long Code Manifesto
+
+Computers run faster and faster. But in the real world, anything important takes time and effort to achieve.
+
+If our goal is to make the world a better place, then we need to learn to code on a world-changing scale.
+
+Therefore, we should not think of /execution/ as being a transient, in-memory process of computation.
+
+Programs that change the world will run for years or decades, so they can't reside on any one computer, and they need to stick around.
+
+The challenge is to write programs for the long term. Write programs that run for months, years or decades.
+
+Their input and output will be our thoughts and actions, and they will work with us first, computers second.
+
+Because computers can't change the world. We can.
+
+
+
+
+I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising / orchestrating human activity.
+
+On the other hand, the instant the project does have users, it is no longer about me.
+
+

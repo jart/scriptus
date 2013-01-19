@@ -63,8 +63,6 @@ public class SettingsServlet extends HttpServlet {
 
 		ScriptusConfig cfg = (ScriptusConfig) ctx.getBean("config");
 		
-		cfg.setTwitterAccessToken(req.getParameter("twitterAccessToken"));
-		cfg.setTwitterAccessTokenSecret(req.getParameter("twitterAccessTokenSecret"));
 		cfg.setTwitterConsumerKey(req.getParameter("twitterConsumerKey"));
 		cfg.setTwitterConsumerSecret(req.getParameter("twitterConsumerSecret"));
 		cfg.setDatastoreType(DatastoreType.valueOf(req.getParameter("datastore")));
