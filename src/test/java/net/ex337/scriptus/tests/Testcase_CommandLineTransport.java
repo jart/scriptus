@@ -28,11 +28,11 @@ public class Testcase_CommandLineTransport extends BaseTestCase {
 	
 	public void testSay() throws TwitterException, InterruptedException {
 		
-		i.send("robotoscriptu", "098765231");
+		i.send("user", "robotoscriptu", "098765231");
 
       Thread.sleep(5000);
 
-      i.send("robotoscriptu", "FOOBAR");
+      i.send("user", "robotoscriptu", "FOOBAR");
 
 		Thread.sleep(100000);
 		

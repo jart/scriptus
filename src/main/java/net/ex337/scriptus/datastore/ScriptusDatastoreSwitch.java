@@ -14,6 +14,7 @@ import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 /**
@@ -108,8 +109,8 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 		activeImpl.registerMessageCorrelation(cid);
 	}
 
-	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser) {
-		return activeImpl.getMessageCorrelations(inReplyToMessageId, fromUser);
+	public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String fromUser, String userId) {
+		return activeImpl.getMessageCorrelations(inReplyToMessageId, fromUser, userId);
 	}
 
 	public void unregisterMessageCorrelation(MessageCorrelation c) {
@@ -162,6 +163,27 @@ public class ScriptusDatastoreSwitch implements ScriptusDatastore {
 
     public int countRunningProcesses(String user) {
         return activeImpl.countRunningProcesses(user);
+    }
+
+    public void saveTransportAccessToken(TransportAccessToken twitterT) {
+        activeImpl.saveTransportAccessToken(twitterT);
+    }
+
+    public List<TransportType> getInstalledTransports(String openid) {
+        return activeImpl.getInstalledTransports(openid);
+    }
+
+    public void deleteTransportAccessToken(String openid, TransportType t) {
+        activeImpl.deleteTransportAccessToken(openid, t);
+    }
+
+    @Override
+    public TransportAccessToken getAccessToken(String userId, TransportType transportType) {
+        return activeImpl.getAccessToken(userId, transportType);
+    }
+
+    public List<String> getListeningCorrelations(TransportType twitter) {
+        return activeImpl.getListeningCorrelations(twitter);
     }
     
     

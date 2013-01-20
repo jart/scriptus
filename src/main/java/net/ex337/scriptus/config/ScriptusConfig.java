@@ -12,6 +12,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.Key;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -19,8 +27,10 @@ import javax.annotation.PostConstruct;
 import javax.crypto.spec.SecretKeySpec;
 
 import net.ex337.scriptus.CryptUtils;
+import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Acts as the interface to the configuration store.
@@ -47,9 +57,29 @@ import org.apache.commons.lang.ArrayUtils;
  */
 public class ScriptusConfig {
 
-	public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
+	private static final String HASH_ALGO = "SHA-256";
 
-    public static enum TransportType {Twitter, CommandLine, Dummy};
+    private static final String SYMETRIC_CIPHER = "AES";
+
+    public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
+
+    public static enum TransportType {
+        Twitter(true), 
+        CommandLine(false), 
+        Dummy(false),
+        
+        ;
+        
+        private boolean isPublic;
+        
+        private TransportType(boolean isPublic){
+            this.isPublic = isPublic;
+        }
+
+        public boolean isPublic() {
+            return isPublic;
+        }
+    };
 	public static enum DatastoreType {Db, Embedded, Memory};
 
 	public static final String DURATION_FORMAT="([0-9]+)[\\ ,]*([smhdwMqyDC])";
@@ -73,12 +103,16 @@ public class ScriptusConfig {
 	private String twitterConsumerKey="";
 	private String twitterConsumerSecret="";
 
-	private String twitterAccessToken="";
-	private String twitterAccessTokenSecret="";
+//	private String twitterAccessToken="";
+//	private String twitterAccessTokenSecret="";
 
 	private TransportType transportType;
 	
 	private DatastoreType datastoreType;
+	
+	private byte[] salt;
+	private transient Map<String,byte[]> keys = new HashMap<String,byte[]>();
+	private transient String lastKey;
 
 	public static boolean FORCE_CLEAN_INSTALL = false;
 
@@ -172,11 +206,23 @@ public class ScriptusConfig {
 			
 		}
 		
-		if(cleanInstall) {
+		if(cleanInstall || FORCE_CLEAN_INSTALL) {
 
 			transportType = TransportType.CommandLine;
 			
 			datastoreType = DatastoreType.Memory;
+			
+			SecureRandom r = new SecureRandom();
+			
+			salt = new byte[32];
+			byte[] firstKey = new byte[32];
+			
+			r.nextBytes(salt);
+			r.nextBytes(firstKey);
+			
+			lastKey = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+			
+			keys.put(lastKey, firstKey);
 			
 		}
 		
@@ -185,12 +231,21 @@ public class ScriptusConfig {
 		 * going to  need to.
 		 */
 		//put DB initialisatoin here
-		if(configLocation.equals(defaultConfigLocation) || datastoreType == DatastoreType.Db) {
+		if(configLocation.equals(defaultConfigLocation)) {
 			
 			if( ! scriptusDir.exists()) {
 				scriptusDir.mkdir();
 			}
 			
+		}
+		
+		/*
+		 * save config file with salt & key.
+		 * But if we're forcing, we don't want to save a new config file
+		 * (every test-case)
+		 */
+		if(cleanInstall && ! FORCE_CLEAN_INSTALL) {
+		    save();
 		}
 		
 
@@ -199,35 +254,77 @@ public class ScriptusConfig {
 	private void load(Properties props) {
 		twitterConsumerKey = props.getProperty("twitterConsumerKey");
 		twitterConsumerSecret = props.getProperty("twitterConsumerSecret");
-		twitterAccessToken = props.getProperty("twitterAccessToken");
-		twitterAccessTokenSecret = props.getProperty("twitterAccessTokenSecret");
+//		twitterAccessToken = props.getProperty("twitterAccessToken");
+//		twitterAccessTokenSecret = props.getProperty("twitterAccessTokenSecret");
 		datastoreType = DatastoreType.valueOf(props.getProperty("datastore"));
 		transportType = TransportType.valueOf(props.getProperty("transport"));
 		disableOpenID = Boolean.parseBoolean(props.getProperty("disableOpenID"));
+		
+		String[] keyIdList = StringUtils.split(props.getProperty("transportKeys"), ",");
+		
+		if(keyIdList == null) {
+		    return;
+		}
+		
+		for(String k : keyIdList) {
+		    this.keys.put(k, CryptUtils.fromHex(props.getProperty("transportKey."+k)));
+		    
+		    if(lastKey == null || k.compareTo(lastKey) > 0) {
+		        this.lastKey = k;
+		    }
+		}
+		
+		String saltHex = props.getProperty("transportKeys.salt");
+		
+		if(saltHex == null){
+		    return;
+		}
+		
+		this.salt = CryptUtils.fromHex(saltHex);
+		
 	}
 	
 	public void save() throws IOException {
+	    
+	    Properties props = dumpConfigToProperties();
+
+	       /*
+         * not written out automatically
+         *  - (a) no option in GUI,
+         *  - (b) dangerous! so has to be done manually
+         */
+        //props.put("disableOpenID",                Boolean.toString(disableOpenID));
+
+        FileOutputStream fout = new FileOutputStream(new File(configLocation));
+        
+        props.store(fout, "Scriptus configuration file");
+        
+        fout.close();
+	}
+	
+	public Properties dumpConfigToProperties() {
 		
 		Properties props = new Properties();
 		
 		props.put("twitterConsumerKey",			twitterConsumerKey);
 		props.put("twitterConsumerSecret",		twitterConsumerSecret);
-		props.put("twitterAccessToken",			twitterAccessToken);
-		props.put("twitterAccessTokenSecret",	twitterAccessTokenSecret);
+//		props.put("twitterAccessToken",			twitterAccessToken);
+//		props.put("twitterAccessTokenSecret",	twitterAccessTokenSecret);
 		props.put("transport",       			transportType.toString());
 		props.put("datastore", 					datastoreType.toString());
-		/*
-		 * not written out automatically
-		 *  - (a) no option in GUI,
-		 *  - (b) dangerous! so has to be done manually
-		 */
-		//props.put("disableOpenID",				Boolean.toString(disableOpenID));
+		
+		List<String> keys = new ArrayList<String>();
 
-		FileOutputStream fout = new FileOutputStream(new File(configLocation));
+        props.put("transportKeys.salt", CryptUtils.toHex(this.salt));
+
+		for(Map.Entry<String, byte[]> e : this.keys.entrySet()) {
+		    keys.add(e.getKey());
+		    props.put("transportKey."+e.getKey(), CryptUtils.toHex(e.getValue()));
+		}
 		
-		props.store(fout, "Scriptus configuration file");
+		props.put("transportKeys", StringUtils.join(keys, ','));
 		
-		fout.close();
+		return props;
 		
 	}
 
@@ -240,21 +337,21 @@ public class ScriptusConfig {
 		this.twitterConsumerKey = twitterConsumerKey;
 	}
 
-	public String getTwitterAccessToken() {
-		return twitterAccessToken;
-	}
-
-	public void setTwitterAccessToken(String twitterAccessToken) {
-		this.twitterAccessToken = twitterAccessToken;
-	}
-
-	public String getTwitterAccessTokenSecret() {
-		return twitterAccessTokenSecret;
-	}
-
-	public void setTwitterAccessTokenSecret(String twitterAccessTokenSecret) {
-		this.twitterAccessTokenSecret = twitterAccessTokenSecret;
-	}
+//	public String getTwitterAccessToken() {
+//		return twitterAccessToken;
+//	}
+//
+//	public void setTwitterAccessToken(String twitterAccessToken) {
+//		this.twitterAccessToken = twitterAccessToken;
+//	}
+//
+//	public String getTwitterAccessTokenSecret() {
+//		return twitterAccessTokenSecret;
+//	}
+//
+//	public void setTwitterAccessTokenSecret(String twitterAccessTokenSecret) {
+//		this.twitterAccessTokenSecret = twitterAccessTokenSecret;
+//	}
 	
 	
 	public String getTwitterConsumerSecret() {
@@ -317,33 +414,37 @@ public class ScriptusConfig {
 		return SCHEDULER_TIME_UNIT;
 	}
 
-	public String getMemoryStoreClass() {
-	    return "net.ex337.scriptus.datastore.impl.ScriptusDatastoreMemoryImpl";
-	}
-
     public String decrypt(byte[] ciphertext, String keyId) {
         
-        byte [] keymat = hash("SHA256", ArrayUtils.addAll(hash("SHA256", getKey(keyId)), getSalt()));
+        byte [] keymat = hash(HASH_ALGO, ArrayUtils.addAll(hash(HASH_ALGO, getKey(keyId)), getSalt()));
         
-        Key key = new SecretKeySpec(keymat, 0, 16, "AES256");
+        Key key = new SecretKeySpec(keymat, 0, 16, SYMETRIC_CIPHER);
 
-        return new String(CryptUtils.decrypt("AES256", ciphertext, key), CHARSET);
+        return new String(CryptUtils.decrypt(SYMETRIC_CIPHER, ciphertext, key), CHARSET);
     }
 	
     private byte[] getSalt() {
-        return new byte[0];
+        return salt;
     }
 
     private byte[] getKey(String keyId) {
-        return new byte[0];
+        byte[] key = keys.get(keyId);
+        if(key == null) {
+            throw new ScriptusRuntimeException("key with ID "+keyId+" not found");
+        }
+        return Arrays.copyOf(key, key.length);
+    }
+
+    public String getLatestKeyId() {
+        return lastKey;
     }
 
     public byte[] encrypt(String plaintext, String keyId) {
         
-        byte [] keymat = hash("SHA256", ArrayUtils.addAll(hash("SHA256", getKey(keyId)), getSalt()));
+        byte [] keymat = hash(HASH_ALGO, ArrayUtils.addAll(hash(HASH_ALGO, getKey(keyId)), getSalt()));
         
-        Key key = new SecretKeySpec(keymat, 0, 16, "AES256");
+        Key key = new SecretKeySpec(keymat, 0, 16, SYMETRIC_CIPHER);
 
-        return CryptUtils.encrypt("AES256", plaintext.getBytes(CHARSET), key);
+        return CryptUtils.encrypt(SYMETRIC_CIPHER, plaintext.getBytes(CHARSET), key);
     }
 }

@@ -41,21 +41,27 @@
    	</bean>
     	
     <bean id="cmdLineTransport" class="net.ex337.scriptus.transport.impl.CommandLineTransport" />
-    <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl" />
-    
-    <bean id="twitterClientMock" class="net.ex337.scriptus.transport.twitter.TwitterClientMock"/>
-    <bean id="twitterClientImpl" class="net.ex337.scriptus.transport.twitter.TwitterClientImpl"/>
 
-    <alias name="twitterClientImpl" alias="twitterClient" />
+    <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl">
+		<lookup-method name="createTwitterClient" bean="twitterClient"/>
+    </bean>
+    
+    <bean id="twitterClientMock" class="net.ex337.scriptus.transport.twitter.TwitterClientMock" scope="prototype"/>
+    <bean id="twitterClientImpl" class="net.ex337.scriptus.transport.twitter.TwitterClientImpl" scope="prototype"/>
+
+    <alias name="twitterClientMock" alias="twitterClient" />
 
     <bean id="transport" class="net.ex337.scriptus.transport.TransportSwitch" />
 
 	<bean scope="prototype" id="scriptProcess" class="net.ex337.scriptus.model.ScriptProcess"/>
+	<bean scope="prototype" id="transportAccessToken" class="net.ex337.scriptus.model.TransportAccessToken"/>
+
 
 	<bean id="facade" class="net.ex337.scriptus.ScriptusFacade"/>
 
     <bean id="baseDatastore" abstract="true" >
 		<lookup-method name="createScriptProcess" bean="scriptProcess"/>
+		<lookup-method name="createTransportAccessToken" bean="transportAccessToken"/>
     </bean>
 
 

@@ -14,7 +14,11 @@ public class MessageCorrelationDAO {
     @Column(name="pid")
     public String pid;
     @Column(name="user_id")
-    public String user;
+    public String userId;
+    @Column(name="from_id")
+    public String from;
+    @Column(name="transport")
+    public String transport;
     @Column(name="message_id")
     public String messageId;
     @Column(name="timestamp")

@@ -26,6 +26,7 @@ import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.model.support.ScriptusClassShutter;
 
@@ -141,23 +142,28 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
 	}
 
 	@Override
-	public Set<MessageCorrelation> getMessageCorrelations(String cid, String fromUser) {
+	public Set<MessageCorrelation> getMessageCorrelations(String cid, String fromUser, String userid) {
         
         Set<MessageCorrelation> result = new HashSet<MessageCorrelation>();
 
         for(MessageCorrelation c : correlations) {
-            if(c.getMessageId() == null && c.getUser() == null){
+            
+            if( ! userid.equals(c.getUserId())){
+                continue;
+            }
+            
+            if(c.getMessageId() == null && c.getFrom() == null){
                 result.add(c);
             } else if(cid != null) {
-                if(cid.equals(c.getMessageId()) && c.getUser() == null){
+                if(cid.equals(c.getMessageId()) && c.getFrom() == null){
                     result.add(c);
-                } else if(cid.equals(c.getMessageId()) && fromUser.equals(c.getUser())){
+                } else if(cid.equals(c.getMessageId()) && fromUser.equals(c.getFrom())){
                     result.add(c);
 	            }
 	        } else {
-               if((fromUser.equals(c.getUser()) && c.getMessageId() == null)) {
+               if((fromUser.equals(c.getFrom()) && c.getMessageId() == null)) {
                     result.add(c);
-               } else if(c.getMessageId() == null && (c.getUser() == null) || fromUser.equals(c.getUser())) {
+               } else if(c.getMessageId() == null && (c.getFrom() == null) || fromUser.equals(c.getFrom())) {
 	                result.add(c);
 	           } 
 	        }
@@ -354,7 +360,36 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
     public int countRunningProcesses(String user) {
         return 1;
     }
-    
+
+    @Override
+    public void saveTransportAccessToken(TransportAccessToken twitterT) {
+        //TODO
+    }
+
+    @Override
+    public List<TransportType> getInstalledTransports(String openid) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteTransportAccessToken(String openid, TransportType t) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public TransportAccessToken getAccessToken(String userId, TransportType transportType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> getListeningCorrelations(TransportType twitter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     
     
 

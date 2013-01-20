@@ -52,7 +52,7 @@ public class DummyTransport implements Transport {
 	}
 	
 	@Override
-	public String send(final String to, final String msg) {
+	public String send(String userId, final String to, final String msg) {
 
         final String id = "dummy:"+ctr.getAndIncrement();
         
@@ -65,7 +65,7 @@ public class DummyTransport implements Transport {
                     //TNSH;
                     throw new RuntimeException(e);
                 }
-                Message m = new Message(to, getResponse(msg));
+                Message m = new Message(to, getResponse(msg), System.currentTimeMillis(), "dummy_user");
                 m.setInReplyToMessageId(id);
                 
                 List<Message> responseList = new ArrayList<Message>();

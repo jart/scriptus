@@ -99,7 +99,7 @@ public class CommandLineTransport implements Transport {
 	 * synch to make command-line interaction thread-safe
 	 */
 	@Override
-	public String send(final String to, final String msg) {
+	public String send(String userId, final String to, final String msg) {
 	    
 	    long c = ctr.getAndIncrement();
 	    
@@ -131,7 +131,7 @@ public class CommandLineTransport implements Transport {
 	                int i = s.indexOf(":");
                     String to = s.substring(0, i);
                     String msg = s.substring(i+1);
-	                Message m = new Message(to, msg);
+	                Message m = new Message(to, msg, System.currentTimeMillis(), "local_user");
 	                if(composingTo != -1) {
 	                    m.setInReplyToMessageId("cmd:"+composingTo);
 	                }

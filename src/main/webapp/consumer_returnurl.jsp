@@ -53,8 +53,6 @@ try
 				        // can have multiple values
 				        List emails = fetchResp.getAttributeValues("email");
 				        
-				        System.out.println("params="+fetchResp.getParameters());
-				        System.out.println("ffn="+firstName+", ln:="+lastName+", ems="+emails);
 
                 session.setAttribute("name", firstName+" "+lastName);
                 session.setAttribute("email", fetchResp.getAttributeValue("email"));

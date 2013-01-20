@@ -48,9 +48,9 @@ ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 
 
 <p>Important note concerning Twitter: the permissions of the application 
-must be read-write <em>before</em> you generate the access token, and the
-access token must be given read-write permissions at the moment of creation. 
-Changing the permissions after all the tokens have been generated doesn't 
+must be read-write <em>before</em> you generate any access tokens, and the
+access tokens must be given read-write permissions at the moment of creation. 
+Changing the permissions after tokens have been generated doesn't 
 work for some reason. If your say()s and ask()s are not showing up on Twitter,
 check the log files for errors.</p>
 
@@ -62,16 +62,6 @@ check the log files for errors.</p>
 <p>
 	<label for="twitterConsumerSecret">Twitter consumer secret:</label>
 	<input type="text" name="twitterConsumerSecret" id="twitterConsumerSecret" />
-</p>
-
-<p>
-	<label for="twitterAccessToken">Twitter access token:</label>
-	<input type="text" name="twitterAccessToken" id="twitterAccessToken" value="<%=cfg.getTwitterAccessToken()%>" />
-</p>
-
-<p>
-	<label for="twitterAccessTokenSecret">Twitter access token secret:</label>
-	<input type="text" name="twitterAccessTokenSecret" id="twitterAccessTokenSecret" />
 </p>
 
 <input type="submit" value="Save" class="btn btn-primary"/>

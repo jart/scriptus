@@ -12,7 +12,9 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.datastore.impl.jpa.dao.TransportTokenDAO;
 import net.ex337.scriptus.model.ScriptProcess;
+import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.scheduler.ProcessLocks;
 
 import org.apache.commons.io.FileUtils;
@@ -39,6 +41,8 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 	 * to be overridden by Spring to do autowiring
 	 */
 	public abstract ScriptProcess createScriptProcess();
+	
+	public abstract TransportAccessToken createTransportAccessToken();
 
 	@Override
 	public void createSamples() {

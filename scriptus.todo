@@ -1,19 +1,49 @@
 
+la buvette
+
+	For me, this is about giving back.
+
 	SCRIPTUS IS:
+	
+	code that puts people first
 	
 	programming on a human timescale
 	
 	freedom of assembly
-		
-	mvnDebug jetty:run -Dscriptus.config=test-scriptus.properties
-	mvnDebug jetty:run -Dscriptus.config=test-twitter.properties
-	mvnDebug jetty:run -Dscriptus.config=command-line-scriptus.properties
-	mvn clean install -Dmaven.test.skip=true
-	mvn cobertura:clean clean site -server -Dmaven.test.skip=false	mvn jetty:run -Dmaven.test.skip=false
-	mvn -Dtest=Testcase_ScriptusDAO test-compile surefire:test
 
-	Scriptus on the web.
+	The TEXT
 	
+	FIRST, write & run examples on myself.
+	
+	Values we want to convey:
+	  love / giving
+	   -> why: because that is what this is for
+	   -> how: examples should be brave, charitable, selfless
+	  care
+	   -> how: examples should be considerate when >1 person
+	   -> how: attention to detail
+	  professionalism/competence
+	   -> why: people need to trust the software
+	   -> how: WAR file needs polishing, 
+	   -> how: demo site must be well-rounded
+	  
+	home page 
+	 -> needs more than recapitulating menus (dashboard?)
+	 -> random example + description? doc texterea on edit scripet?
+	
+	index
+	 -> new slugline "code that puts people first".
+	
+	about page
+	 -> rework call to action, followons when you're logged in
+	
+	what do do with minitite on github?
+	-> same L&F as Scriptus, different colour scheme/accents?
+	-> keep for hosting blog
+	-> still one page, go directly to demo-site?
+	-> keep GA bug
+
+
 		better colour scheme? -> http://paintstrap.com/
 		
 --> offset1 on text-only pages? 
@@ -30,25 +60,26 @@
 
 	 -> remove 'owner' and final say
 	
-		THEN
-	
-		new GUI components
-		HIGH
-		  per-user Twitter linking
-		   -> use socialauth
-		   at which point the DB becomes an HVT, how do we deal with this?
-		   keys & salts
-		  only poll mentions when script is listening to that uid
-		  better openId login (copy stackoverflow)
-		   -> google, facebook(no), twitter(no), yahoo
-		   --> need socialauth?
-	
-		LOW
-		  local copy of docs?
-		  version checking?
-		   -> GitHub intefgration
-		   -> checkout API
-		   -> per-release branch?
+	THEN
+
+	new GUI components
+	HIGH
+	/connect/facebook?
+
+test	 2 new servlets
+  test	    disconnect
+  	      not immediate?
+test	    for each, poll twitter
+	  better openId login (copy stackoverflow)
+	   -> google, facebook(no), twitter(no), yahoo
+	   --> need socialauth?
+
+	LOW
+	  local copy of docs?
+	  version checking?
+	   -> GitHub integration
+	   -> checkout API
+	   -> per-release branch?
 
 
 
@@ -65,20 +96,6 @@ test	 - anything that wake()s doens't do so exactly on time, but to the nearest 
 test	 - scheduler should use short-term memory-based queue with rolling pre-loading in advance from datastore
 test	 - scheduler should queue task in memory undfer a certain delta
 	problem - only stuff sent up to that minute will be executed
-
-The `listen()` call works by registering a process as a listener inside the Twitter transport. We then poll Twitter every minute for mentions by the user being listened to.
-
-However, if the user 'speaks' after the last poll but before the timeout, then this tweet is not picked up before the process is woken and null is returned to the program.
-
-In addition, the wake is not unregistered on receipt of a message, causing a needless process load & nonce check.
-
-	
-IdScriptableObject
-
-
-In addition to this change, a new page has been added to the documentation, [HOWTO extend Scriptus with custom functionality](). Inspired by some conversations with Nela & Emil at xxx, who've been using Scriptus to run a questionnaire for their followers on Twitter, I've documented the best way to add new functionalities to Scriptus.
-
-In the example, a poll is taken and the poll results are stored in a MySQL database. The MySQL DB is accessed separately to the Scriptus storage system, which is still used exclusively for script state. [Check it out]() if you like Scriptus but want it to do extra things that are really specific to your needs.
 	
 	PROBLEMS
 	DOCS + can use other correlations
@@ -102,40 +119,20 @@ In the example, a poll is taken and the poll results are stored in a MySQL datab
 		 
 	    - extending Scriptus
 	       - adding new method calls
-	       beginning to think that an RDBMS would be the best way to keep track off all this stuff
-	        - transactions
-	        - relations
 	online demo
-	 - twitter account per user, not per install
-	    - auth process as designed
-	    - store keys in sdb, encrypt then HMAC (or whatever it is)
-	    - things like processedIncomings & listeners are per install, should be per user per pid
-	       --> would also fix listening
-	   -->per user
-	   	 datastore instance
- 	       transport instance
- 	       facade
- 	       -->storing auth creds for twitter
- 	       -->encrypt before saving!
- 	       tbl_user_creds
- 	       uid / service / token / secret
- 	       threadlocal for user info?
 	 - inline documentation / QRC? 
 	 - , convert docs to HTML
 	   -> use pegDown or pull from gitHub?	
-	 - owner should be twitter account
+	 - owner should be twitter account?
 	 - MVC w/servlets, stateless sessions with HMAC?
 	 - limits (size, tweets, # processes, CPU time, transfer)
 	 
-	 git stash save diffaccs
 
 
 
 	pipe
 	read
 	write
-	 - separate out state into SDB
-	 - incl. process table
 	add time machine to rhino
 x no?	filesystem
 	 - procfs
@@ -151,11 +148,7 @@ test	  Boolean.length / Boolean.prototype.constructor.length == 1...
 	rhino migration script for serialised stuff
 	 -->migrating tags from Strings to Enums on properties ...
 
-	improve first page of minisite
-	 - better focus, appeal, call to action
 
-	twitter integration
-test	   - listen
 
 	 - habit judo from metafilter
 	    -> see detials in script habitJudo.js
@@ -178,7 +171,7 @@ test	   - listen
 	 - adventure game from Nathanael
 
 	jetty should be error level, not "null" level
-	war file should print version, not print log4j warnings
+	war file should print version
 	should also print usage option when -h or --help is used
 
 medium	
@@ -195,10 +188,12 @@ low
 	 - site doesn't work locally and on github due to "/scriptus" relocation
 
 	promo
-still a newbie?		mefi projects?
+		mefi projects
+		JavaScript Weekly
+		HN
+		Reddit
 		demo on twitter 
-		 - install the iPhone client
-		   - upgrade firmware, finally
+		 - install the phone client
 		blog posts
 		 - idea of 'slow code'		 
 		 - idea of 'social operating system'
@@ -209,48 +204,11 @@ still a newbie?		mefi projects?
 
 
 
-
-While I was thinking about the kind of programs I could write with Scriptus, I realised that my general concept of 'execution' was quite limiting, because it limited me to in-memory processes. Once execution can happen anywhere, like in the XKCD cartoon(http://xkcd.com/505/), we can use it for anything, on any scale.
-
-For example, how an election works is common knowledge. The process of nomination, candidature, campaigning and voting takes months, but is procedurally simple at heart. How do we write a program that that will let anybody run an election?
-
-The answer is to write the program and then think about how to run it. Once we expand the idea of programming to include many of the things that encompass everyday life, it becomes easier to think about Tim O'Reilly's idea of "working on stuff that matters".
-
-
-
-
-
-
-
-The Long Code Manifesto
-
-Computers run faster and faster. But in the real world, anything important takes time and effort to achieve.
-
-If our goal is to make the world a better place, then we need to learn to code on a world-changing scale.
-
-Therefore, we should not think of /execution/ as being a transient, in-memory process of computation.
-
-Programs that change the world will run for years or decades, so they can't reside on any one computer, and they need to stick around.
-
-The challenge is to write programs for the long term. Write programs that run for months, years or decades.
-
-Their input and output will be our thoughts and actions, and they will work with us first, computers second.
-
-Because computers can't change the world. We can.
-
-
-
-
-I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising / orchestrating human activity.
-
-On the other hand, the instant the project does have users, it is no longer about me.
-
 	 		 	
 **running track of compromises & known bugs
 	script bodies wrapped with (new function(){...})() at compile time - should include arguments or change?
 	two concepts of identity: one via openId, one via twitter. Unify?
 	
-	 scriptus AWS DAO should store process state separately - it's updated by itself all the time
 	 nonce should be extended to all continuations?
 	  - avoid double-acting? or if the server is shut down mid-execution, allows recoverability?
 	 
@@ -753,4 +711,61 @@ X	home page should have
 X test	 -  have X saved scripts and Y processes running)
 X		  news?
 X	review all docs!
+X		   at which point the DB becomes an HVT, how do we deal with this?
+X 		    - encrypt stuff in DB
+X test		   keys & salts
+X test		   -> scriptus config keys
+X test		   -> first-time initialisation & saving
+X test		   -> correctly choosing last key
+X test		   -> encrypt & decrypt using config
+X test		4 new DAO methods -> update
+X test		  save
+X test		  delete
+X test		  list
+X test		  read
+X		   -> use socialauth
+X		/connect <-- lists all available networks etc.
+X		/connect/twitter <-- POST sends redirect to twitter does oauth etc. GET done from twitter 302, goes to /connect
+X test	  only poll mentions when script is listening to that uid
+X test	   query
+X test	    select distinct userid from messagecorrelation where message_id like 'tweet:' 
+X test	     -> or move transport to another column
+X test		connect
+X test		twitterconnect
+X test	    add transport type to correlations table
+X test	    twitterClientImpl -> go to datastore, config directly
+X test	    mc per transport & user
+X test	    - fix testcases
+X	    - DAO
+X	    - twitter testcase
+X	  per-user Twitter linking
+X	  polling per-user
+X	  separate column for transport
+X	       beginning to think that an RDBMS would be the best way to keep track off all this stuff
+X	        - transactions
+X	        - relations
+X	 - twitter account per user, not per install
+X	    - auth process as designed
+X	    - store keys in sdb, encrypt then HMAC (or whatever it is)
+X dupe	    - things like processedIncomings & listeners are per install, should be per user per pid
+X dupe	       --> would also fix listening
+X no	   -->per user
+X no	   	 datastore instance
+X no 	       transport instance
+X no	       facade
+X 	       -->storing auth creds for twitter
+X	       -->encrypt before saving!
+X	       tbl_user_creds
+X 	       uid / service / token / secret
+X no 	       threadlocal for user info?
+X	 git stash save diffaccs
+X no	 - separate out state into SDB
+X	 - incl. process table
+X	twitter integration
+X test	   - listen
+X no	 scriptus AWS DAO should store process state separately - it's updated by itself all the time
+X no		   - upgrade firmware, finally
+X dupe	improve first page of minisite
+X dupe	 - better focus, appeal, call to action
+X	war file should not print log4j warnings
 

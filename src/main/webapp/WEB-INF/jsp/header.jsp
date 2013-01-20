@@ -9,11 +9,10 @@ if(pageLabel == null) pageLabel = "";
 			<%if(session.getAttribute("openid") != null) {%>
 				<li class="<%=pageLabel.equals("scripts") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/scripts/list">Scripts</a></li>
 				<li class="<%=pageLabel.equals("processes") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>
-				<li class="<%=pageLabel.equals("settings") ? "active" : "" %>"><a href="http://127.0.0.1:<%=request.getLocalPort()%><%=request.getContextPath()%>/settings">Settings (local access)</a></li>
+				<li class="<%=pageLabel.equals("connect") ? "active" : "" %>"><a href=""<%=request.getContextPath()%>/connect">Connect</a></li>
 			<%}%>
 			
 			
-			<li class="<%=pageLabel.equals("feedback") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/feedback.jsp">Feedback</a></li>
 		    <li class="dropdown">
 			    <a class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">Documentation
 			    <b class="caret"></b></a>
@@ -24,6 +23,7 @@ if(pageLabel == null) pageLabel = "";
 					<li><a href="https://github.com/ianso/scriptus/blob/master/docs/knownproblems.md">Known problems</a><li>
 			    </ul>
 			</li>
+			<li class="<%=pageLabel.equals("feedback") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/feedback.jsp">Feedback</a></li>
 		</ul>
 		<%if(session.getAttribute("openid") != null) {%>
 			<ul class="nav pull-right">
