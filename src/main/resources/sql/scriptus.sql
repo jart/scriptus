@@ -82,3 +82,13 @@ create table scriptus.tbl_transport_access_tokens (
 	access_secret blob,	
 	version int not null
 );
+/*
+create table scriptus.tbl_log (
+	user_id varchar(3000) not null,
+	pid varchar(36) not null,
+	created bigint not null,
+	message clob not null
+);
+
+
+*/

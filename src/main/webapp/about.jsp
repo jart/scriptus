@@ -65,13 +65,13 @@
 		<h1>Why use Scriptus?</h1>
 	
     	<p>People and computers are good at different things.
-    	 Scriptus is about using computers to XXX.</p>
+    	 Scriptus is about people using computers to augment their abilities.</p>
     	
     	<p>People have been doing this since the axe was invented,
     	but programming is different, 
     	and Scriptus is a new way of thinking about programming.</p>
     	
-    	<p>Many simple ideas such as personal motivation/self-improvement tools or bike maintenence schedules are simpler to create in Scriptus than on the web.
+    	<p>Many simple ideas such as personal motivation/self-improvement tools or bike maintenence schedules are simpler in Scriptus than on the web.
     	
     	<p>Scriptus makes it easy to organise or schedule anything you want in precisely the way you want.</p>
 		
@@ -130,7 +130,7 @@
 	</div>
 <%} else {%>
 
-	<p>You can get started now by running sample scripts, or writing your own... (random script widget goes here?)</p> 
+	<p>You can get started now by running sample scripts, or writing your own...</p> 
 
 <%}%>
 
