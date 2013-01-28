@@ -8,8 +8,11 @@ import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -78,20 +81,79 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 	public String getClassName() {
 		return "scriptus";
 	}
+
+	//one day: i18n
+	public static final List<ScriptusMethod> SCRIPTUS_API = Collections.unmodifiableList(new ArrayList<ScriptusMethod>() {{
+        add(new ScriptusMethod("log", "void log(message)", 
+                "Writes a message to the log file.", Object.class));
+
+        add(new ScriptusMethod("fork", "pid fork()", 
+                "Clones the current process and returns to the parent with the process id (pid), and to the child process with 0."));
+        
+        add(new ScriptusMethod("kill", "kill(pid)", 
+                "Terminates the process specified with the proces ID. The process to kill must be a child of the current process.", 
+                String.class));
+        
+        add(new ScriptusMethod("exec", "exec(script, args)", 
+                "Executes the script with the name and arguments given. The new program will have the pid of the current process.", 
+                String.class, String.class));
+        
+        add(new ScriptusMethod("listen", "listen({to:\"user\", messageId:\"id\", timeout:duration})", 
+                "Listens to the next message, optionally from a specified user or in reply to a given message ID, waiting 24 hours by default if no duration is specified.",
+                NativeObject.class));
+        
+        add(new ScriptusMethod("say", "messageId say(\"message\", {to:\"user\"})", 
+                "Says a message, optionally to a specific user, and returns the ID of the sent message.", 
+                String.class, NativeObject.class));
+        
+        add(new ScriptusMethod("ask", "response ask(\"question\", {to:\"user\", timeout:duration})", 
+                "Says a message, optionally to a specific user, and returns the first response, or null if no response is received within the timeout period (24 hours by default)", 
+                String.class, NativeObject.class));
+        
+        add(new ScriptusMethod("get", "webpage get(\"url\")", 
+                "Returns the contents of an HTTP GET request to the specified http:// or https:// URL.", 
+                String.class));
+        
+        add(new ScriptusMethod("sleep", "sleep(duration)", 
+                "Pauses execution of the current process for the duration provided.", 
+                Object.class));
+        
+        add(new ScriptusMethod("exit", "exit(result)", 
+                "Terminates the current process, returning the optional result to the waiting parent process, if any.", 
+                Object.class));
+        add(new ScriptusMethod("wait", "wait(function, pid)", 
+                "Waits for the process specified by pid, or the last child created if the pid is absent, executing the optional function provided with the result, if any.", 
+                true));
+        //FIXME wait
+    }});
 	
 	public Scriptable createScope(Context cx) throws SecurityException, NoSuchMethodException {
 		Scriptable globalScope = cx.initStandardObjects(this);
 
-		globalScope.put("log", globalScope, new FunctionObject("log", this.getClass().getMethod("log", Object.class), globalScope));
-		globalScope.put("fork", globalScope, new FunctionObject("fork", this.getClass().getMethod("fork"), globalScope));
-		globalScope.put("kill", globalScope, new FunctionObject("kill", this.getClass().getMethod("kill", String.class), globalScope));
-		globalScope.put("exec", globalScope, new FunctionObject("exec", this.getClass().getMethod("exec", String.class, String.class), globalScope));
-		globalScope.put("listen", globalScope, new FunctionObject("listen", this.getClass().getMethod("listen", NativeObject.class), globalScope));
-		globalScope.put("say", globalScope, new FunctionObject("say", this.getClass().getMethod("say", String.class, NativeObject.class), globalScope));
-		globalScope.put("ask", globalScope, new FunctionObject("ask", this.getClass().getMethod("ask", String.class, NativeObject.class), globalScope));
-		globalScope.put("get", globalScope, new FunctionObject("get", this.getClass().getMethod("get", String.class), globalScope));
-		globalScope.put("sleep", globalScope, new FunctionObject("sleep", this.getClass().getMethod("sleep", Object.class), globalScope));
-		globalScope.put("exit", globalScope, new FunctionObject("exit", this.getClass().getMethod("exit", Object.class), globalScope));
+		for(ScriptusMethod m : SCRIPTUS_API){
+		    
+		    if(m.hasSeparateImpl()) {
+		        continue;
+		    }
+		    
+	        globalScope.put(m.getMethodName(), globalScope, 
+	                new FunctionObject(
+	                        m.getMethodName(), 
+	                        this.getClass().getMethod(m.getMethodName(), m.getMethodArgs()), 
+                        globalScope)
+	        );
+		}
+		
+//		globalScope.put("log", globalScope, new FunctionObject("log", this.getClass().getMethod("log", Object.class), globalScope));
+//		globalScope.put("fork", globalScope, new FunctionObject("fork", this.getClass().getMethod("fork"), globalScope));
+//		globalScope.put("kill", globalScope, new FunctionObject("kill", this.getClass().getMethod("kill", String.class), globalScope));
+//		globalScope.put("exec", globalScope, new FunctionObject("exec", this.getClass().getMethod("exec", String.class, String.class), globalScope));
+//		globalScope.put("listen", globalScope, new FunctionObject("listen", this.getClass().getMethod("listen", NativeObject.class), globalScope));
+//		globalScope.put("say", globalScope, new FunctionObject("say", this.getClass().getMethod("say", String.class, NativeObject.class), globalScope));
+//		globalScope.put("ask", globalScope, new FunctionObject("ask", this.getClass().getMethod("ask", String.class, NativeObject.class), globalScope));
+//		globalScope.put("get", globalScope, new FunctionObject("get", this.getClass().getMethod("get", String.class), globalScope));
+//		globalScope.put("sleep", globalScope, new FunctionObject("sleep", this.getClass().getMethod("sleep", Object.class), globalScope));
+//		globalScope.put("exit", globalScope, new FunctionObject("exit", this.getClass().getMethod("exit", Object.class), globalScope));
 
 		String source;
 		try {

@@ -11,37 +11,20 @@ la buvette
 	
 	freedom of assembly
 
-	The TEXT
+
+	Use the program myself and get feedback from friends etc.
+X	 -> VM from Jean-Michel
+x	  -> open ports for Jetty & Mosh
+X	  -> no mosh, stupid maverick :-( todo : change distros
+	  tcp/6432 -> 5342
+	  tcp/8888 -> 80
+	  udp/8888 -> 80
+X	  -> install postgresql
+	  -> configure remote postgres
+	  -> write postgresJPAImpl=
+
+	log() to something you can see in the admin interface
 	
-	FIRST, write & run examples on myself.
-	
-	Values we want to convey:
-	  love / giving
-	   -> why: because that is what this is for
-	   -> how: examples should be brave, charitable, selfless
-	  care
-	   -> how: examples should be considerate when >1 person
-	   -> how: attention to detail
-	  professionalism/competence
-	   -> why: people need to trust the software
-	   -> how: WAR file needs polishing, 
-	   -> how: demo site must be well-rounded
-	  
-	home page 
-	 -> needs more than recapitulating menus (dashboard?)
-	 -> random example + description? doc texterea on edit scripet?
-	
-	index
-	 -> new slugline "code that puts people first".
-	
-	about page
-	 -> rework call to action, followons when you're logged in
-	
-	what do do with minitite on github?
-	-> same L&F as Scriptus, different colour scheme/accents?
-	-> keep for hosting blog
-	-> still one page, go directly to demo-site?
-	-> keep GA bug
 
 
 		better colour scheme? -> http://paintstrap.com/
@@ -58,7 +41,10 @@ la buvette
 	 - scansion of last para
 	 - text cohesion with index?
 
-	 -> remove 'owner' and final say
+
+	usability 
+	 
+	 
 	
 	THEN
 
@@ -170,9 +156,6 @@ test	  Boolean.length / Boolean.prototype.constructor.length == 1...
 	    - brush up on set theory
 	 - adventure game from Nathanael
 
-	jetty should be error level, not "null" level
-	war file should print version
-	should also print usage option when -h or --help is used
 
 medium	
 	Amazon AMI for playing with Scriptus

@@ -1,4 +1,5 @@
 <html>
+<%@page import="net.ex337.scriptus.model.api.*"%>
 <%
 String scriptId = (String)request.getAttribute("scriptId");
 String scriptSource = (String)request.getAttribute("scriptSource");
@@ -27,10 +28,25 @@ function saveScript() {
 <style type="text/css">
 #editor {
     position: relative;
-    width: 100%;
+/*    width: 100%;*/
     height: 50%;
     margin-bottom:1ex;
 }
+#quickref {
+}
+#quickref p {
+    float: left;
+    margin-right:2ex;
+}
+
+#quickref p a {
+  color:inherit;
+};
+
+#quickref p a:hover {
+  text-decoration:none;
+}
+
 </style>
 </head>
 <body>
@@ -59,18 +75,32 @@ if(samples){%>
 }
 %>
 
+<div class="row">
+	<div class="span10">
+		<form method="POST" action="edit" class="form-inline">
+			<p>
+				<label for="scriptid">Script name:</label>
+				<input type="text" id="scriptid" name="scriptid" value="<%=scriptId == null ? "" : scriptId %>"/>
+				<input type="submit" value="Save" onClick="saveScript()" class="btn btn-primary"/>	
+			</p>
+			<div id="editor"><%=scriptSource == null ? "" : scriptSource%></div>
+		</form>
+			
+	</div>
+	<div class="span4" id="quickref">
+		<h5>Quick reference</h5>
+	
+		<%
+			for(ScriptusMethod m : ScriptusAPI.SCRIPTUS_API) {
+		%>
+			<p><code><a href="#" title="<%=m.getQuickDesc()%>" class="methodName"><%=m.getQuickSyntax()%></a></code></p>
+		<%}%>
+	</div>
+		
+</div>
 
-<form method="POST" action="edit" class="form-inline">
-<p>
-	<label for="scriptid">Script name:</label>
-	<input type="text" id="scriptid" name="scriptid" value="<%=scriptId == null ? "" : scriptId %>"/>
-	<input type="submit" value="Save" onClick="saveScript()" class="btn btn-primary"/>	
-</p>
 <textarea id="source" name="source" style="display:none"></textarea> 
 
-<div id="editor"><%=scriptSource == null ? "" : scriptSource%></div>
-
-</form>
 
 </body>
 </html>

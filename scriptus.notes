@@ -11,8 +11,11 @@ transportKeys=201301022057
 transportKeys.salt=0739e3ba46ffa6c923710ef92abc4419075c309238a0f782a5a8e3962505e73c
 transportKey.201301022057=b831da4e83d4425d6aa3e3523726fcefe78f36463656517d1a151defc715ac94
 
-
-
+		<p>Scriptus is <strong>code that puts people first</strong>.</p>
+		extend their interactions
+		augment their abilities
+		deepen ? broaden? 
+		Scriptus is about using computers to 
 
 Q: What the hell, why is the install 24 MB!? TWENTY-FOUR?!
 
@@ -75,5 +78,41 @@ Because computers can't change the world. We can.
 I am having trouble answering the question "yes but what is it for?" because I don't know. I project all my hopes onto it for how I'd like to change the world, but this is all about human problems, not a software project. So I 'fess up and say that this project is firstly for me, and might become a useful organisational prosthetic in future if I get there, and secondly, maybe in future, about reducing the startup / transaction / operational costs of organising / orchestrating human activity.
 
 On the other hand, the instant the project does have users, it is no longer about me.
+
+
+
+
+
+I'm a bit tiddly but:
+
+Computers are not generally, if ever, thought of being part and parcel of a meditative rythm. And there's a very good reason for that: ever since they were first invented, they got faster and faster, and one of the defining characteristics of a 'new' computer was its speed, its responsiveness, its flashiness.
+
+I think that we, as a society, should try and move beyond this and rethink what computers are for. The computer, individually, has changed society and modern business etc. irrevocably but in the last twenty years a new thing has arisen: the Internet, the sum of all computers.
+
+There are parallels here. Christians believe that all people are uniquely valuable through their relation to God - each of us is an object of unconditional and divine love, as is the creation we inhabit. This in turn forms the basis for a looked-for lifestyle based on the 'interconnectedness of all things', to reuse a phrase of Dirk Gently's.
+
+With the arrival of the 'net and the 'unrolling' of computation across much of the developed world in the mobile explosion, the Internet of Things &c., we are in some ways approaching a reflection of this arrangement in our life today. Many people, and things, via the 'net, are increasingly interconnected and interdependent.
+
+Likewise I believe that computation will come into its own once embedded in this interconnected, interdependent world. Without it acting as part of the 'relationality' of the world, it cannot truly come into its own.
+
+This is why I'm writing Scriptus. Scriptus doesn't aim to replace Facebook or Twitter, but to work through them. It's not a central service, although one may exist soon, but something you can download and try yourself; and control yourself. 
+
+Scriptus is computation, the idea of 'the program', directly applied to people. The computer is not programmed, we are. It may be that through this effort the concept of the deterministic, step-at-a-time and unidirectional-through-time style of programming which we've come to accept as a baseline for many common programming languages will be proven to be incapable, brittle or insufficiently expressive to model and facilitate the human interactions, especially the best ones, that I want to see enabled in Scriptus.
+
+My suspicion however is that it's a question of design. Small pieces loosely joined can permit flexibility; it's up to the programmer to understand "one", "1", "ein" and "une", and also to account for human fallibility in all it's forms - and honestly I suspect that that will be the greater part of the work even when GUIs that remove such simple issues about input are introduced.
+
+My intent here is not to replace existing social institutions or interactions, far from it - but rather to lower the 'transaction costs', the effort it takes to organise individual and collective activity, to the point where a new flowering can take place, where civil society and our relations with the world around us can be revitalised, while at the same time realising that the effort involved in those interactions is itself a signifier of the worth with which they are invested.
+
+The effort is supremely geeky - to model and run new human interractions as a computer program. The goal is deeply human: I want nothing more than to make the world a better place by enabling new modes, new scales of interaction that would be impossible with traditional tools, and so bring us closer to the world I believe God wants us to live in, a world where the interconnectedness of all things brings joy, compassion, respite from suffering, strident demands for justice for the downtrodden of this world and peace for all. Amen.
+
+
+
+
+
+
+
+
+
+
 
 
