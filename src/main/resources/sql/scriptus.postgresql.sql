@@ -31,7 +31,7 @@ create table scriptus.tbl_scheduled_actions (
 create table scriptus.tbl_script (
 	version int not null,
 	script_name varchar(300) not null,
-	script_src blob not null,
+	script_src bytea not null,
 	user_id varchar(3000) not null,
 	primary key (script_name, user_id)
 );
@@ -41,15 +41,15 @@ create table scriptus.tbl_process (
 	pid varchar(36) not null,
 	waiting_pid varchar(36),
 	user_id varchar(3000) not null,
-	source blob not null,
+	source bytea not null,
 	id_source varchar(300) not null,
 	args varchar(3000),
 	owner varchar(3000),
-	state blob,
+	state bytea,
 	state_label varchar(3000),
 	root boolean not null,
 	alive boolean not null,
-	script_state blob,
+	script_state bytea,
 	created bigint not null,
 	lastmod bigint not null,
 	primary key (pid)
@@ -57,15 +57,15 @@ create table scriptus.tbl_process (
 
 create view scriptus.v_proclist as (
 	select 
-		pid, 
-		user_id,
-		alive,
-		version, 
-		state_label, 
-		id_source,
-		length(script_state)+length(source)+length(state) size,
-		lastmod,
-		created
+	 pid, 
+	 user_id,
+	 alive,
+	 version, 
+	 state_label, 
+	 id_source,
+	 length(script_state)+length(source)+length(state) size,
+	 lastmod,
+	 created
 	from scriptus.tbl_process
 );
 
@@ -79,8 +79,8 @@ create table scriptus.tbl_transport_access_tokens (
 	user_id varchar(3000) not null,
 	transport varchar(100) not null,
 	key_id varchar(100) not null,
-	access_token blob,
-	access_secret blob,	
+	access_token bytea,
+	access_secret bytea,	
 	version int not null
 );
 /*

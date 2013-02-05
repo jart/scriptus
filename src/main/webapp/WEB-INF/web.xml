@@ -8,6 +8,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<listener>
 	  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	
+	<context-param>
+	    <param-name>contextInitializerClasses</param-name>
+	    <param-value>net.ex337.scriptus.config.ScriptusConfig</param-value>
+	</context-param>
 
 	<!-- TODO: Add <servlet> tags for each servlet here. -->
 	

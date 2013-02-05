@@ -20,6 +20,8 @@ X	  -> no mosh, stupid maverick :-( todo : change distros
 	  tcp/8888 -> 80
 	  udp/8888 -> 80
 X	  -> install postgresql
+	      -> scriptus
+	      -> scriptus_adm
 	  -> configure remote postgres
 	  -> write postgresJPAImpl=
 
