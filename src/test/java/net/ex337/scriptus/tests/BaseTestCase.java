@@ -33,9 +33,12 @@ public abstract class BaseTestCase extends TestCase {
 	    ScriptusConfig c = new ScriptusConfig();
 	    c.init();
 	    
-	    System.setProperty("DatastoreType", c.getDatastoreType().toString());
+//	    System.setProperty("DatastoreType", c.getDatastoreType().toString());
 
-		appContext = new ClassPathXmlApplicationContext(getConfigFile());
+	    appContext = new ClassPathXmlApplicationContext(new String[]{getConfigFile()}, false);
+	    appContext.getEnvironment().getPropertySources().addFirst(c.new ScriptusConfigPropertySource("ScriptusConfig", c));
+	    appContext.refresh();
+	    
 		
 	}
 

@@ -1,4 +1,10 @@
+create database scriptus owner scriptus_adm;
+connect scriptus;
 create schema scriptus;
+alter schema scriptus owner to scriptus_adm;
+create user scriptus_client;
+
+
 
 create table scriptus.tbl_message_correlation (
 	pid varchar(36) not null,
@@ -93,3 +99,14 @@ create table scriptus.tbl_log (
 
 
 */
+
+grant usage on schema scriptus to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_message_correlation to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_cursors to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_scheduled_actions to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_script to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_process to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_process_child to scriptus_client;
+grant select, insert, update, delete on scriptus.v_proclist to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_transport_access_tokens to scriptus_client;
+

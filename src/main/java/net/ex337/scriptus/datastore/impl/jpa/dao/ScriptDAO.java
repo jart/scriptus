@@ -11,7 +11,7 @@ import javax.persistence.Version;
 @Table(name="scriptus.tbl_script")
 public class ScriptDAO {
 
-    @Lob
+//    @Lob
     @Column(name="script_src")
     public byte[] source;
     @EmbeddedId

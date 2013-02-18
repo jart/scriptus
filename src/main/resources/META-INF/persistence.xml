@@ -36,6 +36,7 @@
  -->
 	<properties>
 		<property name="eclipselink.weaving" value="false"/>
+		<property name="hibernate.jdbc.use_streams_for_binary" value="false"/>
 <!--          <property name="hibernate.show_sql" value="true" />
          <property name="hibernate.format_sql" value="false" />
          <property name="hibernate.jdbc.batch_size" value="50" />
@@ -55,8 +56,8 @@
          <property name="hibernate.cache.use_second_level_cache" value="true" />
    		 <property name="hibernate.cache.use_query_cache" value="true"/>
      -->        
-         <property name="hibernate.dialect"
-          	value="org.hibernate.dialect.DerbyDialect" />
+         <!--  property name="hibernate.dialect"
+          	value="org.hibernate.dialect.DerbyDialect" /-->
          <!-- property name="hibernate.dialect"
           	value="ORACLE" /-->
 

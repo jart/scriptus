@@ -60,6 +60,13 @@ import org.springframework.core.env.PropertySource;
  */
 public class ScriptusConfig implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
+    private static final String DB_PARAMETERS = "dbParameters";
+    private static final String DB_NAME = "dbName";
+    private static final String DB_USERNAME = "dbUsername";
+    private static final String DB_PASSWORD = "dbPassword";
+    private static final String DB_PORT = "dbPort";
+    private static final String DB_HOST = "dbHost";
+
     private static final String HASH_ALGO = "SHA-256";
 
     private static final String SYMETRIC_CIPHER = "AES";
@@ -83,7 +90,7 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     };
 
     public static enum DatastoreType {
-        Db, Embedded, Memory
+        PostgreSQL, Embedded, Memory
     };
 
     public static final String DURATION_FORMAT = "([0-9]+)[\\ ,]*([smhdwMqyDC])";
@@ -117,6 +124,8 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     private byte[] salt;
     private transient Map<String, byte[]> keys = new HashMap<String, byte[]>();
     private transient String lastKey;
+    
+    private String dbHost, dbPort, dbUsername, dbPassword, dbName, dbParameters;
 
     public static boolean FORCE_CLEAN_INSTALL = false;
 
@@ -126,11 +135,11 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
      */
     private boolean cleanInstall;
 
-    private String configLocation;
-
     private boolean disableOpenID;
 
     private String defaultConfigLocation = SCRIPTUS_DIR + "/config.properties";;
+
+    private String configLocation = defaultConfigLocation;
 
     @PostConstruct
     public void init() throws IOException {
@@ -268,6 +277,13 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
         transportType = TransportType.valueOf(props.getProperty("transport"));
         disableOpenID = Boolean.parseBoolean(props.getProperty("disableOpenID"));
 
+        dbHost = props.getProperty(DB_HOST);
+        dbPort = props.getProperty(DB_PORT);
+        dbUsername = props.getProperty(DB_USERNAME);
+        dbPassword = props.getProperty(DB_PASSWORD);
+        dbName = props.getProperty(DB_NAME);
+        dbParameters = props.getProperty(DB_PARAMETERS);
+        
         String[] keyIdList = StringUtils.split(props.getProperty("transportKeys"), ",");
 
         if (keyIdList == null) {
@@ -469,24 +485,41 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
         }
         
         load(r);
+        
+        /*
+        <property name="url" value="jdbc:postgresql://${dbServer}:${dbPort}/${dbName}?${dbParameters}"/>
+        <property name="username" value="${dbUsername}"/>
+        <property name="password" value="${dbUsername}"/>
+         */
 
         c.getEnvironment().getPropertySources().addFirst(new ScriptusConfigPropertySource("Scriptus config", this));
     }
     
-    private class ScriptusConfigPropertySource extends PropertySource<ScriptusConfigPropertySource>{
+    public class ScriptusConfigPropertySource extends PropertySource<ScriptusConfig>{
         
-        private ScriptusConfig c;
-
-        public ScriptusConfigPropertySource(String name, ScriptusConfig c) {
-            super(name);
-            this.c = c;
+        public ScriptusConfigPropertySource(String name, ScriptusConfig source) {
+            super(name, source);
         }
 
         @Override
         public Object getProperty(String name) {
             if(DatastoreType.class.getSimpleName().equals(name)){
-                return c.getDatastoreType().toString();
+                return getDatastoreType().toString();
             }
+            if(DB_HOST.equals(name)){
+                return dbHost;
+            } else if(DB_PORT.equals(name)){
+                return dbPort;
+            } else if(DB_PASSWORD.equals(name)){
+                return dbPassword;
+            } else if(DB_USERNAME.equals(name)){
+                return dbUsername;
+            } else if(DB_NAME.equals(name)){
+                return dbName;
+            } else if(DB_PARAMETERS.equals(name)){
+                return dbParameters == null ? "" : dbParameters;
+            }
+            
             return null;
         }
         
