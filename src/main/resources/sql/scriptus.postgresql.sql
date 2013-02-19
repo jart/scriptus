@@ -89,16 +89,16 @@ create table scriptus.tbl_transport_access_tokens (
 	access_secret bytea,	
 	version int not null
 );
-/*
+
 create table scriptus.tbl_log (
-	user_id varchar(3000) not null,
-	pid varchar(36) not null,
-	created bigint not null,
-	message clob not null
+ id varchar(36) not null,
+ user_id varchar(3000) not null,
+ pid varchar(36) not null,
+ created bigint not null,
+ message text not null
 );
 
 
-*/
 
 grant usage on schema scriptus to scriptus_client;
 grant select, insert, update, delete on scriptus.tbl_message_correlation to scriptus_client;
@@ -109,4 +109,5 @@ grant select, insert, update, delete on scriptus.tbl_process to scriptus_client;
 grant select, insert, update, delete on scriptus.tbl_process_child to scriptus_client;
 grant select, insert, update, delete on scriptus.v_proclist to scriptus_client;
 grant select, insert, update, delete on scriptus.tbl_transport_access_tokens to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_log to scriptus_client;
 

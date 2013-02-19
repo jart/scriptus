@@ -28,13 +28,13 @@ import net.ex337.scriptus.model.api.functions.Fork;
 import net.ex337.scriptus.model.api.functions.Get;
 import net.ex337.scriptus.model.api.functions.Kill;
 import net.ex337.scriptus.model.api.functions.Listen;
+import net.ex337.scriptus.model.api.functions.Log;
 import net.ex337.scriptus.model.api.functions.Say;
 import net.ex337.scriptus.model.api.functions.Sleep;
 import net.ex337.scriptus.model.api.functions.Wait;
 import net.ex337.scriptus.model.api.output.NormalTermination;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContinuationPending;
 import org.mozilla.javascript.Function;
@@ -254,7 +254,9 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
 	}
 	
 	public void log(Object o) {
-		LogFactory.getLog("SCRIPTUS_PROGRAMS").info(o);
+        ContinuationPending pending = Context.getCurrentContext().captureContinuation();
+        pending.setApplicationState(new Log(o));
+        throw pending;
 	}
 
 	public Object fork() {

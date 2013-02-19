@@ -139,4 +139,9 @@ public class ScriptusFacade {
         return config.getTransportType();
     }
 
+    public void saveLogMessage(UUID pid, String userId, String message) {
+        datastore.saveLogMessage(pid, userId, message);
+        
+    }
+
 }

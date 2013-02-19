@@ -21,6 +21,7 @@ import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.DatastoreType;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
@@ -388,6 +389,24 @@ public abstract class ScriptusDatastoreMemoryImpl extends BaseScriptusDatastore 
     public List<String> getListeningCorrelations(TransportType twitter) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void saveLogMessage(UUID pid, String userId, String message) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<LogMessageDAO> getLogMessages(String openid) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteLogMessage(String logId, String openid) {
+        // TODO Auto-generated method stub
+        
     }
 
     

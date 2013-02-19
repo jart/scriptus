@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
+import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -157,5 +158,11 @@ public interface ScriptusDatastore {
     public TransportAccessToken getAccessToken(String userId, TransportType transportType);
 
     public List<String> getListeningCorrelations(TransportType twitter);
+
+    public void saveLogMessage(UUID pid, String userId, String message);
+
+    public List<LogMessageDAO> getLogMessages(String openid);
+
+    public void deleteLogMessage(String logId, String openid);
 	
 }

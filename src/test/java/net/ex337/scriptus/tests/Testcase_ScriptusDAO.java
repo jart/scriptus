@@ -10,6 +10,7 @@ import net.ex337.scriptus.SerializableUtils;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -353,4 +354,26 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         datastore.unregisterMessageCorrelation(d2);
 	    
 	}
+
+    public void testLogMessages() {
+        
+        String uid = UUID.randomUUID().toString();
+        String msg = UUID.randomUUID().toString();
+        UUID pid = UUID.randomUUID();
+        
+        datastore.saveLogMessage(pid, uid, msg);
+        
+        List<LogMessageDAO> l = datastore.getLogMessages(uid);
+        
+        assertEquals("found msg", 1, l.size());
+        assertEquals("msg OP", msg, l.get(0).message);
+        
+        datastore.deleteLogMessage(l.get(0).id.id, uid);
+        
+        l = datastore.getLogMessages(uid);
+        
+        assertTrue("empty list now", l.isEmpty());
+        
+    }
+    
 }

@@ -1,5 +1,6 @@
 la buvette
 
+
 	For me, this is about giving back.
 
 	SCRIPTUS IS:
@@ -13,6 +14,8 @@ la buvette
 	Use the program myself and get feedback from friends etc.
 	ask for update to go 8888 --> 8080 so we don't have to sudo
 test	  -> write postgresJPAImpl=
+	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
+pooling
 
 	log() to something you can see in the admin interface
 
@@ -32,8 +35,6 @@ test	  -> write postgresJPAImpl=
 
 
 	usability 
-	 
-	 
 	
 	THEN
 
@@ -746,7 +747,6 @@ X	  -> no mosh, stupid maverick :-( todo : change distros
 X	  tcp/6432 -> 5342
 X	  tcp/8888 -> 80
 X	  udp/8888 -> 80
-X	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
 X	scriptus_adm 
 X	scriptus schema ownerto
 X	H2 no longer seems to mind that about the absence of @Lob. Fine, this makes PostgreSQL happy.
