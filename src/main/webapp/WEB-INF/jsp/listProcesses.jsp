@@ -80,8 +80,8 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 
 
 
-<form action="<%=request.getContextPath()%>/processes/list" method="POST" id="killform">
-	<input type="op" name="op" id="op" value="kill"/>
+<form action="<%=request.getContextPath()%>/processes/list" method="POST" id="killform" style="display:none">
+	<input type="hidden" name="op" id="op" value="kill"/>
 	<input type="hidden" name="pid" id="pid"/>
 </form>
 

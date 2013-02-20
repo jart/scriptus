@@ -54,7 +54,7 @@ public class LogsServlet extends BaseServlet {
 
 		if("delete".equals(op)) {
 			
-			String logId = req.getParameter("logid");
+			String logId = req.getParameter("id");
 			
 			((ScriptusDatastore) ctx.getBean("datastore")).deleteLogMessage(logId, openid);
 			

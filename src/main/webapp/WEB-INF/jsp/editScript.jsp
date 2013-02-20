@@ -83,6 +83,7 @@ if(samples){%>
 				<input type="text" id="scriptid" name="scriptid" value="<%=scriptId == null ? "" : scriptId %>"/>
 				<input type="submit" value="Save" onClick="saveScript()" class="btn btn-primary"/>	
 			</p>
+			<textarea id="source" name="source" style="display:none"></textarea> 
 			<div id="editor"><%=scriptSource == null ? "" : scriptSource%></div>
 		</form>
 			
@@ -99,7 +100,6 @@ if(samples){%>
 		
 </div>
 
-<textarea id="source" name="source" style="display:none"></textarea> 
 
 
 </body>

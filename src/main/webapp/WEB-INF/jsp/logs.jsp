@@ -15,7 +15,7 @@ function del(id) {
 		return false;
 	}
 	
-	document.getElementById("id").value = pid;
+	document.getElementById("id").value = id;
 	document.getElementById("delform").submit();
 
 	return false;
@@ -66,7 +66,7 @@ List<LogMessageDAO> logs = (List<LogMessageDAO>)request.getAttribute("logs");
 		<td><%=l.created%></td>
 		<td title="<%=l.pid%>"><%=l.pid.substring(0,10)%>...</td>
 		<td><%=l.message%></td>
-		<td><a class="btn btn-danger" onclick="delete('<%=l.id.id%>')">Delete</a></td>
+		<td><a class="btn btn-danger" onclick="del('<%=l.id.id%>')">Delete</a></td>
 	</tr>
 <%}%>
 </tbody>
@@ -75,7 +75,7 @@ List<LogMessageDAO> logs = (List<LogMessageDAO>)request.getAttribute("logs");
 
 
 <form action="<%=request.getContextPath()%>/processes/logs" method="POST" style="display:none" id="delform">
-	<input type="op" name="op" id="op" value="delete"/>
+	<input type="hidden" name="op" id="op" value="delete"/>
 	<input type="hidden" name="id" id="id"/>
 </form>
 
