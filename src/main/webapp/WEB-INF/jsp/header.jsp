@@ -8,7 +8,7 @@ if(pageLabel == null) pageLabel = "";
 			<li class="<%=pageLabel.equals("about") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/about.jsp">About</a></li>
 			<%if(session.getAttribute("openid") != null) {%>
 				<li class="<%=pageLabel.equals("scripts") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/scripts/list">Scripts</a></li>
-				<li class="<%=pageLabel.equals("processes") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>
+				<li class="<%=(pageLabel.equals("processes") || pageLabel.equals("logs")) ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>
 				<li class="<%=pageLabel.equals("connect") ? "active" : "" %>"><a href=""<%=request.getContextPath()%>/connect">Connect</a></li>
 			<%}%>
 			

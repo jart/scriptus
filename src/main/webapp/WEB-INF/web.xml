@@ -27,6 +27,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet>
 	
 	<servlet>
+		<servlet-name>logs</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.LogsServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
 		<servlet-name>settings</servlet-name>
 		<servlet-class>net.ex337.scriptus.server.frontend.auth.SettingsServlet</servlet-class>
 	</servlet>
@@ -39,6 +44,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>home</servlet-name>
 		<servlet-class>net.ex337.scriptus.server.frontend.auth.HomeServlet</servlet-class>
+
 	</servlet>
 		
 	<servlet>
@@ -60,7 +66,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	
 	<servlet-mapping>
 		<servlet-name>processes</servlet-name>
-		<url-pattern>/processes/*</url-pattern>
+		<url-pattern>/processes/list</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>logs</servlet-name>
+		<url-pattern>/processes/logs</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>

@@ -17,7 +17,11 @@ test	  -> write postgresJPAImpl=
 	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
 pooling
 
-	log() to something you can see in the admin interface
+test	log() to something you can see in the admin interface
+X test	dao
+test	interface
+	replace cmd transport with admin-page transport
+	replace memoryImpl with h2memory
 
 		better colour scheme? -> http://paintstrap.com/
 		

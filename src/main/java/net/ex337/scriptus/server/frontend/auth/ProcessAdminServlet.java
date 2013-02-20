@@ -31,19 +31,12 @@ public class ProcessAdminServlet extends BaseServlet {
 
         req.setAttribute("config", ctx.getBean("config"));
 
-		if("/list".equals(path)){
+		List<ProcessListItem> processes = ((ScriptusDatastore) ctx.getBean("datastore")).getProcessesForUser(openid);
+		
+		req.setAttribute("processes", processes);
 
-			List<ProcessListItem> processes = ((ScriptusDatastore) ctx.getBean("datastore")).getProcessesForUser(openid);
-			
-			req.setAttribute("processes", processes);
-
-			getServletContext().getRequestDispatcher("/WEB-INF/jsp/listProcesses.jsp").forward(req, resp);
-			
-			return;
-		}
-
-		//if redirect to list, then errors could cause infinite redirects
-		resp.sendError(404);
+		getServletContext().getRequestDispatcher("/WEB-INF/jsp/listProcesses.jsp").forward(req, resp);
+		
 		return;
 	}
 
@@ -52,15 +45,15 @@ public class ProcessAdminServlet extends BaseServlet {
 	protected void doAuthPost(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException {
 
 
-		String path = req.getPathInfo();
+		String op = req.getParameter("op");
 
-		if("/kill".equals(path)) {
+		if("kill".equals(op)) {
 			
 			String pid = req.getParameter("pid");
 			
 			((ScriptusDatastore) ctx.getBean("datastore")).deleteProcess(UUID.fromString(pid));
 			
-			resp.sendRedirect("list");
+            resp.sendRedirect(req.getContextPath()+"/processes/list");
 			return;
 			
 		}

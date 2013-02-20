@@ -39,6 +39,8 @@ public class LogsServlet extends BaseServlet {
         
         List<LogMessageDAO> logs = ((ScriptusDatastore)ctx.getBean("datastore")).getLogMessages(openid);
 
+        req.setAttribute("logs", logs);
+        
 		getServletContext().getRequestDispatcher("/WEB-INF/jsp/logs.jsp").forward(req, resp);
 
 	}
@@ -56,7 +58,7 @@ public class LogsServlet extends BaseServlet {
 			
 			((ScriptusDatastore) ctx.getBean("datastore")).deleteLogMessage(logId, openid);
 			
-			resp.sendRedirect("/logs");
+			resp.sendRedirect(req.getContextPath()+"/processes/logs");
 			return;
 		}
 		

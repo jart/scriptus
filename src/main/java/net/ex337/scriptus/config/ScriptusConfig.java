@@ -164,9 +164,9 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
 
         if (cleanInstall || FORCE_CLEAN_INSTALL) {
 
-            transportType = TransportType.CommandLine;
+            //transportType = TransportType.CommandLine;
 
-            datastoreType = DatastoreType.Memory;
+            //datastoreType = DatastoreType.Memory;
 
             SecureRandom r = new SecureRandom();
 
