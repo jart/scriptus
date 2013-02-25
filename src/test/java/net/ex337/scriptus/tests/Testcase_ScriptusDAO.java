@@ -36,7 +36,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	    
 //	    ScriptusConfig.FORCE_CLEAN_INSTALL = true;
 	    
-//		System.setProperty("scriptus.config", "test-scriptus.properties");
+		System.setProperty("scriptus.config", "test-scriptus.properties");
 //		System.setProperty("scriptus.config", "filesystem-based-scriptus.properties");
 		
 		super.setUp();

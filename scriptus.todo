@@ -12,14 +12,12 @@ la buvette
 	freedom of assembly
 
 	Use the program myself and get feedback from friends etc.
-	ask for update to go 8888 --> 8080 so we don't have to sudo
-test	  -> write postgresJPAImpl=
+		ask for update to go 8888 --> 8080 so we don't have to sudo
 	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
 pooling
 
-test	log() to something you can see in the admin interface
-X test	dao
 test	interface
+	  del log
 	replace cmd transport with admin-page transport
 	replace memoryImpl with h2memory
 
@@ -759,4 +757,7 @@ X	  -> install postgresql
 X	      -> scriptus
 X	      -> scriptus_adm
 X	  -> configure remote postgres
+Xtest	  -> write postgresJPAImpl=
+Xtest	log() to something you can see in the admin interface
+X test	dao
 
