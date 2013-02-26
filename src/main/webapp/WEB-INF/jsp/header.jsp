@@ -18,6 +18,7 @@ if(pageLabel == null) pageLabel = "";
 			    <b class="caret"></b></a>
 	
 			    <ul class="dropdown-menu">
+					<li><a href="<%=request.getContextPath()%>/api.jsp">API quick reference</a>
 					<li><a href="https://github.com/ianso/scriptus/blob/master/docs/userguide.md">User guide</a>
 					<li><a href="https://github.com/ianso/scriptus/blob/master/docs/api.md">API docs</a><li>
 					<li><a href="https://github.com/ianso/scriptus/blob/master/docs/knownproblems.md">Known problems</a><li>

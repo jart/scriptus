@@ -10,6 +10,11 @@ la buvette
 	programming on a human timescale
 	
 	freedom of assembly
+	
+	housekeeping
+	  document new config file, DB setup options
+	  merge into master, release
+	  blog post
 
 	Use the program myself and get feedback from friends etc.
 		ask for update to go 8888 --> 8080 so we don't have to sudo
@@ -19,7 +24,6 @@ pooling
 test	interface
 	  del log
 	replace cmd transport with admin-page transport
-	replace memoryImpl with h2memory
 
 		better colour scheme? -> http://paintstrap.com/
 		
@@ -44,10 +48,7 @@ test	interface
 	HIGH
 	/connect/facebook?
 
-test	 2 new servlets
-  test	    disconnect
-  	      not immediate?
-test	    for each, poll twitter
+  	      disconnect not immediate?
 	  better openId login (copy stackoverflow)
 	   -> google, facebook(no), twitter(no), yahoo
 	   --> need socialauth?
@@ -760,4 +761,9 @@ X	  -> configure remote postgres
 Xtest	  -> write postgresJPAImpl=
 Xtest	log() to something you can see in the admin interface
 X test	dao
+X	replace memoryImpl with h2memory
+Xtest	 2 new servlets
+X  test	    disconnect
+Xtest	    for each, poll twitter
+X	  add quickref to menu
 

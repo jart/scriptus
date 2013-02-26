@@ -91,7 +91,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
                 "Clones the current process and returns to the parent with the process id (pid), and to the child process with 0."));
         
         add(new ScriptusMethod("kill", "kill(pid)", 
-                "Terminates the process specified with the proces ID. The process to kill must be a child of the current process.", 
+                "Terminates the process specified with the proces ID. The process to terminate must be a child of the current process.", 
                 String.class));
         
         add(new ScriptusMethod("exec", "exec(script, args)", 
@@ -122,7 +122,7 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
                 "Terminates the current process, returning the optional result to the waiting parent process, if any.", 
                 Object.class));
         add(new ScriptusMethod("wait", "wait(function, pid)", 
-                "Waits for the process specified by pid, or the last child created if the pid is absent, executing the optional function provided with the result, if any.", 
+                "Waits for the process specified by pid, or the last child process created if the pid is absent, executing the optional function provided with the result, if any.", 
                 true));
         //FIXME wait
     }});

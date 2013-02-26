@@ -4,7 +4,7 @@ This document explains in nitty-gritty detail how to start, set up and run the S
 
 Scriptus requires JDK 6 to run. You can download & setup the OpenJDK, or obtain the latest proprietary version either from Oracle or IBM. The IBM JDK should work but hasn't been tested.
 
-Next, [download Scriptus here](https://github.com/downloads/ianso/scriptus/scriptus.war). Scriptus can be executed directly or deployed in any standard Servlet container such as Tomcat.
+Next, [download Scriptus here](http://iansopublic.s3.amazonaws.com/scriptus.war). Scriptus can be executed directly or deployed in any standard Servlet container such as Tomcat.
 
 To run Scriptus, use the following command:
 
@@ -17,42 +17,43 @@ By default Scriptus writes log files to "logs" under the Scriptus directory. Thi
  
 #Scriptus administration
 
-Scriptus has a very primitive admin tool that allows users to save, edit and delete programs, and to run saved programs. By default this tool is available at [http://127.0.0.1:8080/](http://127.0.0.1:8080/), if you run Scriptus in Maven. The tool asks users to identify themselves using OpenID, as a simple way of allowing multiple users to store and run their programs on the same server.
+Scriptus has web interface that users can use to play with programs. By default this tool is available at [http://127.0.0.1:8080/](http://127.0.0.1:8080/) if you run Scriptus with no command-line arguments. The interface asks users to identify themselves using OpenID, as a simple way of allowing multiple users to store and run their programs on the same server, and connect using their own Twitter accounts.
 
 The OpenID identification can be disabled by putting `disableOpenID=true` in the config file.
 
 #Configuring Scriptus
 
-When you are running Scriptus, the first thing you will probably want to do is go to the settings page and configure Scriptus. If you've run Scriptus using Maven, this will be at [http://127.0.0.1:8080/settings](http://127.0.0.1:8080/settings). This page provides a very simple interface for editing the Scriptus configuration file.
+When you are running Scriptus, the first thing you will probably want to do is run some sample programs. Once you've connected to Twitter, you can find these under the 'scripts' menu. I'm working on improving this secton.
 
-This file is by default stored in `~/.scriptus/config.properties`. If you want to keep it somewhere else, then you can provide a `scriptus.config` system property to specify the location:
+The main Scriptus configuration file is by default stored in `~/.scriptus/config.properties`. If you want to keep it somewhere else, then you can provide a `-c` option to specify the location:
 
-`mvn jetty:run -Dscriptus.config=/etc/scriptus.conf`
+`java -jar scriptus.war -c /etc/scriptus.conf`
 
-All of the options in the configuration file can be edited via this interface except for the `disableOpenID` property described in the previous section.
+The format is a standard key-value pair separated by an equals sign.
 
-The two major configurations for Scriptus are choosing where to store your data, and how to interact with people (the 'transport').
+The two major configurations for Scriptus are choosing where to store your data (´datastore´), and how to interact with people (`transport`).
 
 ##Choosing a datastore
 
 The datastore is responsible for persisting saved programs and running program state. There are three implementations and they all have their uses.
 
- *   **In-memory** storage keeps everything in memory. When Scriptus is shut down or restarted everything vanishes.
-This storage method is used for running test cases in the Scriptus source code, but can also be useful if you're debugging scripts offline that you've written & saved elsewhere.
+ *   `Memory`: **In-memory** storage keeps everything in an in-memory H2 database. When Scriptus is shut down or restarted everything vanishes.
+This storage method is used for running test cases in the Scriptus source code, but can also be useful if you're debugging scripts offline that you've written & saved elsewhere. To
 
- *   **Embedded DB** storage saves everything in an H2 database, stored under the folder "scriptus-db".
+ *   `Embedded`: **Embedded DB** storage saves everything in an H2 database, stored under the folder "scriptusdb" under the starting location. It's not currently possible to specify another location.
+
+ *   `PostgreSQL`: **PostgreSQL** storage saves everything in an PostgreSQL database. To create the database you will need to run the SQL [scriptus.postgresql.sql](https://github.com/ianso/scriptus/blob/master/src/main/resources/sql/scriptus.postgresql.sql), and then add the parameters `dbHost`, `dbPort`, `dbName`, `dbUsername`, `dbPassword`, ,and optionally `dbParameters` to the config file containing the correct information.
  
 ##Choosing a transport
 
 The transport is the means via which Scriptus programs interact with their users. There are three transports and they all have their uses.
 
- *   **Dummy response** just responds with a predetermined response to every `ask()` and not at all to a `listen()`.
+ *   `Dummy` just responds with a predetermined response to every `ask()` and not at all to a `listen()`.
 It can be useful for testing simple scripts. To help with this goal, it checks the messages against a series of regular expressions and can respond with a replacement expression if one matches, otherwise a default response is returned. The regular expressions are in the file `src/main/resources/spring/scriptus.xml`.
 
- *   **Command prompt** sends all `ask()`s and `listen()`s to the command line, where the local user can respond.
-To *not* respond simply hit enter when you're prompted for your response.
+ *   `CommandLine` sends all `ask()`s and `listen()`s to a simple command-line interface, where the local user can respond. This will shortly be replaced with an in-browser, per-user equivalent.
  
- *   **Twitter** is used to interact with users on Twitter.
+ *   `Twitter` is used to interact with users on Twitter. For this to work you need to lin Scriptus to Twitter on the 'connect' page.
 
 ##A note on Twitter
 
@@ -73,7 +74,7 @@ When a Scriptus program is run, it can be supplied with two parameters:
 
 `owner` - The screen name of the script owner. 
  
-This is the person to whom the result of the root process will be said.
+This parameter will be removed soon.
 
 `args` - The program arguments.
  
