@@ -23,7 +23,7 @@ The OpenID identification can be disabled by putting `disableOpenID=true` in the
 
 #Configuring Scriptus
 
-When you are running Scriptus, the first thing you will probably want to do is run some sample programs. Once you've connected to Twitter, you can find these under the 'scripts' menu. I'm working on improving this secton.
+When you are running Scriptus, the first thing you will probably want to do is run some sample programs. Once you've connected to Twitter, you can find these under the 'scripts' menu. I'm working on improving this section.
 
 The main Scriptus configuration file is by default stored in `~/.scriptus/config.properties`. If you want to keep it somewhere else, then you can provide a `-c` option to specify the location:
 
@@ -53,7 +53,7 @@ It can be useful for testing simple scripts. To help with this goal, it checks t
 
  *   `CommandLine` sends all `ask()`s and `listen()`s to a simple command-line interface, where the local user can respond. This will shortly be replaced with an in-browser, per-user equivalent.
  
- *   `Twitter` is used to interact with users on Twitter. For this to work you need to lin Scriptus to Twitter on the 'connect' page.
+ *   `Twitter` is used to interact with users on Twitter. For this to work you need to link Scriptus to Twitter on the 'connect' page.
 
 ##A note on Twitter
 

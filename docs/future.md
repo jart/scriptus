@@ -2,7 +2,7 @@
 
 ##As of 2013-02-27
 
-Scriptus is almost completely multi-user with the exception of the comand-line transport, which needs replacing with a web-based equivalent.
+Scriptus is almost completely multi-user with the exception of the command-line transport, which needs replacing with a web-based equivalent.
 
 Once that's done, I'm going to set up a demo server. I'm going to use the demo server to write some scripts for myself, and get more feedback.
 
