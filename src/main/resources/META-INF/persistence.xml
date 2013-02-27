@@ -23,6 +23,7 @@
     <class>net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO</class>
 	<class>net.ex337.scriptus.datastore.impl.jpa.dao.views.ProcessListItemDAO</class>
 	<class>net.ex337.scriptus.datastore.impl.jpa.dao.TransportTokenDAO</class>
+	<class>net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO</class>
          <!-- Scan for annotated classes -->
     <!--jar-file>MyOrderApp.jar</jar-file>
     <property name="hibernate.archive.autodetection" value="class"/-->
@@ -36,6 +37,7 @@
  -->
 	<properties>
 		<property name="eclipselink.weaving" value="false"/>
+		<property name="hibernate.jdbc.use_streams_for_binary" value="false"/>
 <!--          <property name="hibernate.show_sql" value="true" />
          <property name="hibernate.format_sql" value="false" />
          <property name="hibernate.jdbc.batch_size" value="50" />
@@ -55,8 +57,8 @@
          <property name="hibernate.cache.use_second_level_cache" value="true" />
    		 <property name="hibernate.cache.use_query_cache" value="true"/>
      -->        
-         <property name="hibernate.dialect"
-          	value="org.hibernate.dialect.DerbyDialect" />
+         <!--  property name="hibernate.dialect"
+          	value="org.hibernate.dialect.DerbyDialect" /-->
          <!-- property name="hibernate.dialect"
           	value="ORACLE" /-->
 

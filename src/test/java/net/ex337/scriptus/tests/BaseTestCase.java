@@ -3,6 +3,8 @@ package net.ex337.scriptus.tests;
 
 import junit.framework.TestCase;
 
+import net.ex337.scriptus.config.ScriptusConfig;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -27,8 +29,16 @@ public abstract class BaseTestCase extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
+	    
+	    ScriptusConfig c = new ScriptusConfig();
+	    c.init();
+	    
+//	    System.setProperty("DatastoreType", c.getDatastoreType().toString());
 
-		appContext = new ClassPathXmlApplicationContext(getConfigFile());
+	    appContext = new ClassPathXmlApplicationContext(new String[]{getConfigFile()}, false);
+	    appContext.getEnvironment().getPropertySources().addFirst(c.new ScriptusConfigPropertySource("ScriptusConfig", c));
+	    appContext.refresh();
+	    
 		
 	}
 

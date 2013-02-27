@@ -1,4 +1,3 @@
-
 la buvette
 
 	For me, this is about giving back.
@@ -10,39 +9,20 @@ la buvette
 	programming on a human timescale
 	
 	freedom of assembly
+	
+	housekeeping
+X	  document new config file, DB setup options
+	  merge into master, release
+	  blog post
 
-	The TEXT
-	
-	FIRST, write & run examples on myself.
-	
-	Values we want to convey:
-	  love / giving
-	   -> why: because that is what this is for
-	   -> how: examples should be brave, charitable, selfless
-	  care
-	   -> how: examples should be considerate when >1 person
-	   -> how: attention to detail
-	  professionalism/competence
-	   -> why: people need to trust the software
-	   -> how: WAR file needs polishing, 
-	   -> how: demo site must be well-rounded
-	  
-	home page 
-	 -> needs more than recapitulating menus (dashboard?)
-	 -> random example + description? doc texterea on edit scripet?
-	
-	index
-	 -> new slugline "code that puts people first".
-	
-	about page
-	 -> rework call to action, followons when you're logged in
-	
-	what do do with minitite on github?
-	-> same L&F as Scriptus, different colour scheme/accents?
-	-> keep for hosting blog
-	-> still one page, go directly to demo-site?
-	-> keep GA bug
+	Use the program myself and get feedback from friends etc.
+		ask for update to go 8888 --> 8080 so we don't have to sudo
+	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
+pooling
 
+test	interface
+	  del log
+	replace cmd transport with admin-page transport
 
 		better colour scheme? -> http://paintstrap.com/
 		
@@ -58,7 +38,8 @@ la buvette
 	 - scansion of last para
 	 - text cohesion with index?
 
-	 -> remove 'owner' and final say
+
+	usability 
 	
 	THEN
 
@@ -66,10 +47,7 @@ la buvette
 	HIGH
 	/connect/facebook?
 
-test	 2 new servlets
-  test	    disconnect
-  	      not immediate?
-test	    for each, poll twitter
+  	      disconnect not immediate?
 	  better openId login (copy stackoverflow)
 	   -> google, facebook(no), twitter(no), yahoo
 	   --> need socialauth?
@@ -170,9 +148,6 @@ test	  Boolean.length / Boolean.prototype.constructor.length == 1...
 	    - brush up on set theory
 	 - adventure game from Nathanael
 
-	jetty should be error level, not "null" level
-	war file should print version
-	should also print usage option when -h or --help is used
 
 medium	
 	Amazon AMI for playing with Scriptus
@@ -768,4 +743,26 @@ X no		   - upgrade firmware, finally
 X dupe	improve first page of minisite
 X dupe	 - better focus, appeal, call to action
 X	war file should not print log4j warnings
+X	 -> VM from Jean-Michel
+X no mosh  -> open ports for Jetty & Mosh
+X	  -> no mosh, stupid maverick :-( todo : change distros
+X	  tcp/6432 -> 5342
+X	  tcp/8888 -> 80
+X	  udp/8888 -> 80
+X	scriptus_adm 
+X	scriptus schema ownerto
+X	H2 no longer seems to mind that about the absence of @Lob. Fine, this makes PostgreSQL happy.
+X	host       scriptus  scriptus_client  0.0.0.0/0  md5
+X	  -> install postgresql
+X	      -> scriptus
+X	      -> scriptus_adm
+X	  -> configure remote postgres
+Xtest	  -> write postgresJPAImpl=
+Xtest	log() to something you can see in the admin interface
+X test	dao
+X	replace memoryImpl with h2memory
+Xtest	 2 new servlets
+X  test	    disconnect
+Xtest	    for each, poll twitter
+X	  add quickref to menu
 

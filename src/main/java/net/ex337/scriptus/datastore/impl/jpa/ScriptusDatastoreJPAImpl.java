@@ -25,6 +25,8 @@ import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.datastore.impl.BaseScriptusDatastore;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ChildProcessPIDDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAOId;
 import net.ex337.scriptus.datastore.impl.jpa.dao.MessageCorrelationDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ProcessDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO;
@@ -660,5 +662,49 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
 
         return q.getResultList();
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void saveLogMessage(UUID pid, String userId, String message) {
+        
+        LogMessageDAO i = new LogMessageDAO();
+        i.message = message;
+        i.created = System.currentTimeMillis();
+        i.pid = pid.toString();
+        i.id = new LogMessageDAOId();
+        i.id.id = UUID.randomUUID().toString();
+        i.id.userId = userId;
+        
+        em.persist(i);
+        
+    }
+
+    @Override
+    public List<LogMessageDAO> getLogMessages(String openid) {
+        
+        Query q = em.createQuery("select d from LogMessageDAO d where d.id.userId = :id order by created desc");
+        q.setParameter("id", openid);
+        
+        return q.getResultList();
+
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteLogMessage(String logId, String openid) {
+        
+        LogMessageDAOId i = new LogMessageDAOId(logId, openid);
+        
+        LogMessageDAO d = em.find(LogMessageDAO.class, i);
+        
+        //FIXME use delete query
+        
+        if(d != null){
+            em.remove(d);
+        }
+        
+    }
+    
+    
 
 }

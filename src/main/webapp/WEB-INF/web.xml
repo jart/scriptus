@@ -8,6 +8,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<listener>
 	  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	
+	<context-param>
+	    <param-name>contextInitializerClasses</param-name>
+	    <param-value>net.ex337.scriptus.config.ScriptusConfig</param-value>
+	</context-param>
 
 	<!-- TODO: Add <servlet> tags for each servlet here. -->
 	
@@ -19,6 +24,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>processes</servlet-name>
 		<servlet-class>net.ex337.scriptus.server.frontend.auth.ProcessAdminServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>logs</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.LogsServlet</servlet-class>
 	</servlet>
 	
 	<servlet>
@@ -34,6 +44,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>home</servlet-name>
 		<servlet-class>net.ex337.scriptus.server.frontend.auth.HomeServlet</servlet-class>
+
 	</servlet>
 		
 	<servlet>
@@ -55,7 +66,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	
 	<servlet-mapping>
 		<servlet-name>processes</servlet-name>
-		<url-pattern>/processes/*</url-pattern>
+		<url-pattern>/processes/list</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>logs</servlet-name>
+		<url-pattern>/processes/logs</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>

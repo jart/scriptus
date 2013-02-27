@@ -20,8 +20,6 @@
 	<div class="offset1 span10">
 		<h1>What is Scriptus?</h1>
 		
-		<p>Scriptus lets you <strong>weave code into your life</strong>.</p>
-		
 		<p>Scriptus is <strong>code that puts people first</strong>.</p>
 		
 		<p><strong>Listening</strong> to people is this easy: <tt><span class="codeverb">listen</span>();</tt></p>
@@ -55,8 +53,7 @@
 <div class="row">
 	<div class="offset1 span10">
 
-<p>Scriptus allows you to <strong>instrument your
- life</strong> as you see fit.</p>
+<p>Scriptus allows you to <strong>instrument your life</strong> as you see fit.</p>
  
 
 	</div>
@@ -68,9 +65,9 @@
 		<h1>Why use Scriptus?</h1>
 	
     	<p>People and computers are good at different things.
-    	 Scriptus is about people using computers to augment themselves.</p>
+    	 Scriptus is about people using computers to augment their abilities.</p>
     	
-    	<p>People have been doing this with technology since the axe was invented,
+    	<p>People have been doing this since the axe was invented,
     	but programming is different, 
     	and Scriptus is a new way of thinking about programming.</p>
     	

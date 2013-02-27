@@ -8,8 +8,8 @@ if(pageLabel == null) pageLabel = "";
 			<li class="<%=pageLabel.equals("about") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/about.jsp">About</a></li>
 			<%if(session.getAttribute("openid") != null) {%>
 				<li class="<%=pageLabel.equals("scripts") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/scripts/list">Scripts</a></li>
-				<li class="<%=pageLabel.equals("processes") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>
-				<li class="<%=pageLabel.equals("connect") ? "active" : "" %>"><a href=""<%=request.getContextPath()%>/connect">Connect</a></li>
+				<li class="<%=(pageLabel.equals("processes") || pageLabel.equals("logs")) ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>
+				<li class="<%=pageLabel.equals("connect") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/connect">Connect</a></li>
 			<%}%>
 			
 			
@@ -18,6 +18,7 @@ if(pageLabel == null) pageLabel = "";
 			    <b class="caret"></b></a>
 	
 			    <ul class="dropdown-menu">
+					<li><a href="<%=request.getContextPath()%>/api.jsp">API quick reference</a>
 					<li><a href="https://github.com/ianso/scriptus/blob/master/docs/userguide.md">User guide</a>
 					<li><a href="https://github.com/ianso/scriptus/blob/master/docs/api.md">API docs</a><li>
 					<li><a href="https://github.com/ianso/scriptus/blob/master/docs/knownproblems.md">Known problems</a><li>

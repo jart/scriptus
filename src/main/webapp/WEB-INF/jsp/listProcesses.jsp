@@ -25,6 +25,15 @@ function kill(pid) {
 <body>
 <%@include file="header.jsp"%>
 
+<ul class="nav nav-pills">
+    <li class="active">
+	    <a href="<%=request.getContextPath()%>/processes/list">List processes</a>
+    </li>
+    <li>
+    	<a href="<%=request.getContextPath()%>/processes/logs">Process logs</a>
+    </li>
+</ul>
+
 <%
 List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("processes");
 %>
@@ -71,7 +80,8 @@ List<ProcessListItem> processes = (List<ProcessListItem>)request.getAttribute("p
 
 
 
-<form action="kill" method="POST" style="display:none" id="killform">
+<form action="<%=request.getContextPath()%>/processes/list" method="POST" id="killform" style="display:none">
+	<input type="hidden" name="op" id="op" value="kill"/>
 	<input type="hidden" name="pid" id="pid"/>
 </form>
 

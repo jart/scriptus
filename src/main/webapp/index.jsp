@@ -23,7 +23,7 @@ if(f.getDisableOpenID()) {
         session.setAttribute("openid", "no-openid");
         session.setAttribute("openid-claimed", "no-openid-claimed");
             session.setAttribute("name", "no OpenID");
-            session.setAttribute("email", "nope@example.com);
+            session.setAttribute("email", "nope@example.com");
 }
 
     if (request.getParameter("logout")!=null)
@@ -44,8 +44,8 @@ if(f.getDisableOpenID()) {
 	<div class="span12">
 		<div class="hero-unit">
 		    <h1>Welcome to Scriptus!</h1>
-			<p>Scriptus is <strong>programming on a human timescale.</strong></p>
-			<p>Scriptus frees you to think long-term and easily run code for days, months or years.<p> <a href="about.jsp">Learn more about Scriptus here.</a></p>
+			<p>Scriptus is <strong>code that puts people first.</strong></p>
+			<p>Scriptus frees you to think and act directly with yourself and other people in code.<p> <a href="about.jsp">Learn more about Scriptus here.</a></p>
 		</div>
 	</div>
 </div>	

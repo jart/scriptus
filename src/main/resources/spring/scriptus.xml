@@ -2,10 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-       	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-       	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-       	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+       	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+       	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
        	"
 		xmlns:p="http://www.springframework.org/schema/p"
 		xmlns:context="http://www.springframework.org/schema/context"
@@ -14,11 +14,8 @@
         default-init-method="init" default-destroy-method="destroy">
         
         <!-- Scriptus master Spring config file. -->
-
-  <tx:annotation-driven/>
-
     <context:annotation-config/>
-<context:component-scan base-package="net.ex337.scriptus.datastore.impl.jpa.dao" />
+    <context:property-placeholder />
 
     <bean id="config" class="net.ex337.scriptus.config.ScriptusConfig" />
 
@@ -64,55 +61,9 @@
 		<lookup-method name="createTransportAccessToken" bean="transportAccessToken"/>
     </bean>
 
-
-     <bean id="memoryDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.ScriptusDatastoreMemoryImpl" />
-     <!-- <bean id="memoryDatastore" parent="baseDatastore" class="#{ config.getMemoryStoreClass() }" /> -->
-
-     <bean id="embeddedDatastore" parent="baseDatastore" class="net.ex337.scriptus.datastore.impl.jpa.embedded.ScriptusDatastoreEmbeddedDBImpl" />
-
-<!-- 	<bean id="embeddedDB" class="org.apache.derby.jdbc.EmbeddedDataSource">
-	    <property name="CreateDatabase" value="create"/>
-	    <property name="databaseName" value="scriptus"/>
-	    <property name="user" value="scriptus"/>
-	    <property name="password" value="scriptus"/>
-	</bean>
- -->	
- 
-	<bean id="embeddedDB" class="org.apache.commons.dbcp.BasicDataSource">
-	    <property name="driverClassName" value="org.h2.Driver"/>
-	    <property name="url" value="jdbc:h2:file:scriptusdb/scriptusdb;AUTO_SERVER=TRUE"/>
-	    <property name="username" value="scriptus"/>
-	    <property name="password" value="scriptus"/>
-	</bean>
- 
-	<bean id="entityManagerFactory"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="embeddedDB" />
-		<property name="persistenceUnitName" value="jpa-pu" />
-		<property name="jpaVendorAdapter">
-<!-- 			<bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter"/>
- -->  				<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
- 				<property name="databasePlatform" value="org.hibernate.dialect.HSQLDialect" />
- 			</bean>
- 		</property>
-	</bean>
-
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory"/>
-		<property name="dataSource" ref="embeddedDB"/>
-	</bean>
-
-	<!-- use for programmatic tx only , normally not needed-->
-	<bean id="txTemplate"
-	      class="org.springframework.transaction.support.TransactionTemplate">
-	      <property name="transactionManager" ref="transactionManager"/>
-	</bean>
-	
-  <tx:annotation-driven transaction-manager="transactionManager" />
-
-  <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
-
-	<bean id="datastore" class="net.ex337.scriptus.datastore.ScriptusDatastoreSwitch" />
+    <import resource="scriptus-datastore-${DatastoreType}.xml"/>
+    
+	<!-- bean id="datastore" class="net.ex337.scriptus.datastore.ScriptusDatastoreSwitch" />-->
 
     <bean id="scheduler" class="net.ex337.scriptus.scheduler.ProcessSchedulerImpl" />
 

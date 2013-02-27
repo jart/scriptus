@@ -1,9 +1,7 @@
 package net.ex337.scriptus.datastore.impl.jpa.embedded;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -39,7 +37,7 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
     @PostConstruct
     public void init() throws SQLException, IOException {
 
-        File configFile = new File(config.getConfigLocation()).getAbsoluteFile();
+//        File configFile = new File(config.getConfigLocation()).getAbsoluteFile();
         
         //fFIXME configlocation is thee  config file path
 //        System.setProperty("derby.system.home", configFile.getParent());
@@ -50,58 +48,58 @@ public abstract class ScriptusDatastoreEmbeddedDBImpl extends ScriptusDatastoreJ
 
             
             
-            Connection conn = null;
-            Statement s = null;
-            
-            
-            try{
-                conn = embeddedDB.getConnection();
-                
-//                conn.setAutoCommit(false);
-                
-                String schema = IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("sql/scriptus.sql"), ScriptusConfig.CHARSET_STR);
-                
-                s = conn.createStatement();
-                
-                for(String st : StringUtils.split(schema, ";")) {
-                    
-                    if(StringUtils.isEmpty(st.trim())) {
-                        continue;
-                    }
-                    LOG.debug(st);
-                    s.execute(st.trim());
-                }
-                
-            } catch(SQLException e) {
-                throw e;
-            } finally {
-                
-                if(s != null){
-                    s.close();
-                }
-                if(conn != null) {
-                    conn.close();
-                }
-            }
-            
-            txTemplate.execute(new TransactionCallback<Void>() {
+            createDBSchema();
 
-                @Override
-                public Void doInTransaction(TransactionStatus status) {
-                    ScriptusDatastoreEmbeddedDBImpl.this.createSamples();
-                    return null;
-                }
-                
-            });
-
-        } else {
-            
-            //setup normal connection
-            
         }
 
 
         
+    }
+
+    protected void createDBSchema() throws IOException, SQLException {
+        Connection conn = null;
+        Statement s = null;
+        
+        
+        try{
+            conn = embeddedDB.getConnection();
+            
+//                conn.setAutoCommit(false);
+            
+            String schema = IOUtils.toString(Thread.currentThread().getContextClassLoader().getResourceAsStream("sql/scriptus.sql"), ScriptusConfig.CHARSET_STR);
+            
+            s = conn.createStatement();
+            
+            for(String st : StringUtils.split(schema, ";")) {
+                
+                if(StringUtils.isEmpty(st.trim())) {
+                    continue;
+                }
+                LOG.debug(st);
+                s.execute(st.trim());
+            }
+            
+        } catch(SQLException e) {
+            throw e;
+        } finally {
+            
+            if(s != null){
+                s.close();
+            }
+            if(conn != null) {
+                conn.close();
+            }
+        }
+        
+        txTemplate.execute(new TransactionCallback<Void>() {
+
+            @Override
+            public Void doInTransaction(TransactionStatus status) {
+                ScriptusDatastoreEmbeddedDBImpl.this.createSamples();
+                return null;
+            }
+            
+        });
     }
 
     @PreDestroy

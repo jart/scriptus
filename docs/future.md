@@ -1,5 +1,11 @@
 #Future directions for Scriptus
 
+##As of 2013-02-27
+
+Scriptus is almost completely multi-user with the exception of the comand-line transport, which needs replacing with a web-based equivalent.
+
+Once that's done, I'm going to set up a demo server. I'm going to use the demo server to write some scripts for myself, and get more feedback.
+
 ##As of 2012-12-31
 
 The RDBMS migration has been done and the first draft of the bootstrapified UI is in place, and looks very nice. The multi-user architecture is next.
