@@ -2,9 +2,9 @@
 
 Every project inevitably creates its own terminology, and this page is an attempt to collate it in one location and explain it.
 
-##transport, previously "interaction medium"
+##transport
 
-A means through which Scriptus communicates with its users.
+A means through which Scriptus communicates with its users. The main transport is Twitter, with Facebook planned as well. A command-line interface exists, but will shortly be replaced with a web-based one.
 
 ##program / script
 
@@ -12,7 +12,7 @@ A stored program, written in JavaScript, against the Scriptus API.
 
 ##running program / process
 
-A program running in Scriptus
+A program running in Scriptus.
 
 ##pid
 
@@ -20,9 +20,9 @@ Each process is identified by a Process IDentifier, which right now is a v4 UUID
 
 ##script owner
 
-When running a script, you can specify an owner. This used to be used as a default `to` argument, but this is no longer the case. The result of the root process will be said to the owner.
+When running a script, you can specify an owner. This used to be used as a default `to` argument, but this is no longer the case. This variable will soon be deleted
 
-##datastore, previously "DAO"
+##datastore.
 
 This is where Scriptus stores all data. There are several different types of datastore, as discussed in the internal architecture page. 
 

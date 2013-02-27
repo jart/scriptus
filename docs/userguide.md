@@ -42,7 +42,7 @@ This storage method is used for running test cases in the Scriptus source code, 
 
  *   `Embedded`: **Embedded DB** storage saves everything in an H2 database, stored under the folder "scriptusdb" under the starting location. It's not currently possible to specify another location.
 
- *   `PostgreSQL`: **PostgreSQL** storage saves everything in an PostgreSQL database. To create the database you will need to run the SQL [scriptus.postgresql.sql](https://github.com/ianso/scriptus/blob/master/src/main/resources/sql/scriptus.postgresql.sql), and then add the parameters `dbHost`, `dbPort`, `dbName`, `dbUsername`, `dbPassword`, ,and optionally `dbParameters` to the config file containing the correct information.
+ *   `PostgreSQL`: **PostgreSQL** storage saves everything in an PostgreSQL database. To create the database you will need to run the SQL [scriptus.postgresql.sql](https://github.com/ianso/scriptus/blob/master/src/main/resources/sql/scriptus.postgresql.sql), and then add the parameters `dbHost`, `dbPort`, `dbName`, `dbUsername`, `dbPassword`, and optionally `dbParameters` to the config file containing the correct information.
  
 ##Choosing a transport
 
