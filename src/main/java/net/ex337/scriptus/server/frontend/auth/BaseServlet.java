@@ -7,6 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.scheduler.ProcessScheduler;
+import net.ex337.scriptus.transport.MessageRouting;
+
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -25,10 +30,23 @@ public abstract class BaseServlet extends HttpServlet {
 
 	protected XmlWebApplicationContext ctx;
 
+	protected ScriptusConfig f;
+    
+	protected ScriptusDatastore d;
+
+	protected ProcessScheduler s;
+	
+	protected MessageRouting r;
+	
 	@Override
 	public void init() {
 
 	    ctx = (XmlWebApplicationContext) WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        f = (ScriptusConfig) ctx.getBean("config");
+        d = (ScriptusDatastore) ctx.getBean("datastore");
+        s = (ProcessScheduler) ctx.getBean("scheduler");
+        r = (MessageRouting)ctx.getBean("routing");
+
 	}
 	
 	@Override

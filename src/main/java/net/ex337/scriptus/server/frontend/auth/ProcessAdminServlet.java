@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ProcessListItem;
 
 /**
@@ -29,9 +28,9 @@ public class ProcessAdminServlet extends BaseServlet {
 		
 		String path = req.getPathInfo();
 
-        req.setAttribute("config", ctx.getBean("config"));
+        req.setAttribute("config", f);
 
-		List<ProcessListItem> processes = ((ScriptusDatastore) ctx.getBean("datastore")).getProcessesForUser(openid);
+		List<ProcessListItem> processes = d.getProcessesForUser(openid);
 		
 		req.setAttribute("processes", processes);
 
@@ -51,7 +50,7 @@ public class ProcessAdminServlet extends BaseServlet {
 			
 			String pid = req.getParameter("pid");
 			
-			((ScriptusDatastore) ctx.getBean("datastore")).deleteProcess(UUID.fromString(pid));
+			d.deleteProcess(UUID.fromString(pid));
 			
             resp.sendRedirect(req.getContextPath()+"/processes/list");
 			return;

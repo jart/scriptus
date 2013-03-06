@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.ex337.scriptus.datastore.ScriptusDatastore;
-import net.ex337.scriptus.scheduler.ProcessScheduler;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -34,7 +33,7 @@ public class ScriptsServlet extends BaseServlet {
 
 		if("/list/yours".equals(path) || "/list".equals(path)){
 
-			Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(openid);
+			Set<String> scripts = d.listScripts(openid);
 			
 			if(scripts == null || scripts.isEmpty()){
 			    
@@ -54,7 +53,7 @@ public class ScriptsServlet extends BaseServlet {
 
 		} else if("/list/samples".equals(path)){
 
-            Set<String> scripts = ((ScriptusDatastore) ctx.getBean("datastore")).listScripts(ScriptusDatastore.SAMPLE_USER);
+            Set<String> scripts = d.listScripts(ScriptusDatastore.SAMPLE_USER);
             
             req.setAttribute("scripts", scripts);
             req.setAttribute("samples", Boolean.TRUE);
@@ -78,7 +77,7 @@ public class ScriptsServlet extends BaseServlet {
 			        req.setAttribute("sample", Boolean.TRUE);
 			    }
 				
-				scriptSource = ((ScriptusDatastore) ctx.getBean("datastore")).loadScriptSource(user, scriptId);
+				scriptSource = d.loadScriptSource(user, scriptId);
 				
 				if(scriptSource == null) {
 					resp.sendError(404);
@@ -112,14 +111,14 @@ public class ScriptsServlet extends BaseServlet {
 			String scriptId = req.getParameter("scriptid");
 			String script = req.getParameter("source");
 			
-			((ScriptusDatastore) ctx.getBean("datastore")).saveScriptSource(openid, scriptId, script);
+			d.saveScriptSource(openid, scriptId, script);
 			
 			resp.sendRedirect("list");
 			return;
 			
 		} else if("/delete".equals(path)) {
 			
-			((ScriptusDatastore) ctx.getBean("datastore")).deleteScript(openid, req.getParameter("deleteid"));
+			d.deleteScript(openid, req.getParameter("deleteid"));
 			resp.sendRedirect("list");
 			return;
 			
@@ -131,7 +130,7 @@ public class ScriptsServlet extends BaseServlet {
 			
 			boolean sample = Boolean.TRUE.toString().equalsIgnoreCase(req.getParameter("sample"));
 			
-			((ProcessScheduler) ctx.getBean("scheduler")).executeNewProcess(openid, script, sample, args, owner);
+			s.executeNewProcess(openid, script, sample, args, owner);
 
 			resp.sendRedirect("list");
 			return;

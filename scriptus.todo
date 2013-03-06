@@ -10,9 +10,6 @@ la buvette
 	
 	freedom of assembly
 	
-	housekeeping
-upload	release
-done	  blog post
 
 	Use the program myself and get feedback from friends etc.
 		ask for update to go 8888 --> 8080 so we don't have to sudo
@@ -20,6 +17,21 @@ done	  blog post
 pooling
 
 	replace cmd transport with admin-page transport
+test	  servlet
+test	    DAO read & write
+X	      SQL
+	      testcases
+	       postgres
+	       embedded
+test	    JSP	
+	    fix wiring to no longer use transportSwitch
+	    add transport column to scriptProcess
+	  add transport option to "launch process" page
+	  add transport field to Message, MessageCorrelation
+	  wire in transport to process facade
+
+
+	add facebook transport? it's already half-done...
 
 		better colour scheme? -> http://paintstrap.com/
 		
@@ -766,4 +778,8 @@ X	  document new config file, DB setup options
 X	  merge into master, 
 X test	interface
 X	  del log
+X test	replace memoryImpl with h2memory
+X	housekeeping
+Xupload	release
+Xdone	  blog post
 

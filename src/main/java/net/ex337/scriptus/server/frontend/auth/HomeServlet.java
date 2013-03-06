@@ -23,16 +23,10 @@ public class HomeServlet extends BaseServlet {
     
     private ScriptusHeadlineReader r;
     
-    private ScriptusConfig f;
-    
-    private ScriptusDatastore d;
-    
     @Override
     public void init() {
         super.init();
         r = (ScriptusHeadlineReader) ctx.getBean("scriptusHeadlineReader");
-        f = (ScriptusConfig) ctx.getBean("config");
-        d = (ScriptusDatastore) ctx.getBean("datastore");
     }
 	
 	@Override

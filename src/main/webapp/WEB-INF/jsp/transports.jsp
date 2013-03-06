@@ -29,6 +29,16 @@ function connect(transport) {
 <body>
 <%@include file="header.jsp"%>
 
+<ul class="nav nav-pills">
+    <li class="active">
+	    <a href="<%=request.getContextPath()%>/transports">Transorts</a>
+    </li>
+    <li>
+    	<a href="<%=request.getContextPath()%>/transports/personal">Personal</a>
+    </li>
+</ul>
+
+
 <%
 
 List installed = (List)request.getAttribute("installedTransports");

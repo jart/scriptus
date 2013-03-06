@@ -98,7 +98,14 @@ create table scriptus.tbl_log (
  message text not null
 );
 
-
+create table scriptus.tbl_personal_msg (
+ id varchar(36) not null,
+ parent varchar(36),
+ message text not null,
+ msg_from varchar(300),
+ userId varchar(3000),
+ created bigint not null
+);
 
 grant usage on schema scriptus to scriptus_client;
 grant select, insert, update, delete on scriptus.tbl_message_correlation to scriptus_client;
@@ -110,4 +117,6 @@ grant select, insert, update, delete on scriptus.tbl_process_child to scriptus_c
 grant select, insert, update, delete on scriptus.v_proclist to scriptus_client;
 grant select, insert, update, delete on scriptus.tbl_transport_access_tokens to scriptus_client;
 grant select, insert, update, delete on scriptus.tbl_log to scriptus_client;
+grant select, insert, update, delete on scriptus.tbl_personal_msg to scriptus_client;
+
 

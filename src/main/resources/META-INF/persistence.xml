@@ -24,6 +24,8 @@
 	<class>net.ex337.scriptus.datastore.impl.jpa.dao.views.ProcessListItemDAO</class>
 	<class>net.ex337.scriptus.datastore.impl.jpa.dao.TransportTokenDAO</class>
 	<class>net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO</class>
+	<class>net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO</class>
+	
          <!-- Scan for annotated classes -->
     <!--jar-file>MyOrderApp.jar</jar-file>
     <property name="hibernate.archive.autodetection" value="class"/-->

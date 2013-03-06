@@ -48,13 +48,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet>
 		
 	<servlet>
-		<servlet-name>connect</servlet-name>
-		<servlet-class>net.ex337.scriptus.server.frontend.auth.ConnectServlet</servlet-class>
+		<servlet-name>transports</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.transports.TransportsServlet</servlet-class>
+	</servlet>
+		
+	<servlet>
+		<servlet-name>personal</servlet-name>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.transports.PersonalTransportServlet</servlet-class>
 	</servlet>
 		
 	<servlet>
 		<servlet-name>connectTwitter</servlet-name>
-		<servlet-class>net.ex337.scriptus.server.frontend.auth.TwitterConnectionServlet</servlet-class>
+		<servlet-class>net.ex337.scriptus.server.frontend.auth.transports.TwitterConnectionServlet</servlet-class>
 	</servlet>
 		
 	<!-- TODO: Add <servlet-mapping> tags for each <servlet> here. -->
@@ -90,13 +95,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>connect</servlet-name>
-		<url-pattern>/connect</url-pattern>
+		<servlet-name>transports</servlet-name>
+		<url-pattern>/transports</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>connectTwitter</servlet-name>
-		<url-pattern>/connect/twitter</url-pattern>
+		<url-pattern>/transports/twitter</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>personal</servlet-name>
+		<url-pattern>/transports/personal</url-pattern>
 	</servlet-mapping>
 	
 	<!-- TODO: Optionally add a <welcome-file-list> tag to display a welcome file. -->

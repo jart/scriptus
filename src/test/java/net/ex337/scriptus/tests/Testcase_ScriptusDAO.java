@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
-import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
@@ -203,9 +202,9 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	    
 	    UUID s = UUID.randomUUID();
 	    
-	    datastore.updateTransportCursor(TransportType.CommandLine, s.toString());
+	    datastore.updateTransportCursor(TransportType.Dummy, s.toString());
 	    
-	    UUID t  = UUID.fromString(datastore.getTransportCursor(TransportType.CommandLine));
+	    UUID t  = UUID.fromString(datastore.getTransportCursor(TransportType.Dummy));
 	    
 	    assertEquals("cursor updated", s, t);
 	    

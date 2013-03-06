@@ -74,7 +74,7 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
 
     public static enum TransportType {
-        Twitter(true), CommandLine(false), Dummy(false),
+        Twitter(true), Personal(false), Dummy(false),
 
         ;
 

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -164,5 +165,11 @@ public interface ScriptusDatastore {
     public List<LogMessageDAO> getLogMessages(String openid);
 
     public void deleteLogMessage(String logId, String openid);
+
+    public List<PersonalTransportMessageDAO> getPersonalTransportMessages(String openid);
+
+    public UUID savePersonalTransportMessage(PersonalTransportMessageDAO m);
+
+    public void deletePersonalTransportMessage(String parameter);
 	
 }

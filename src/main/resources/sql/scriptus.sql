@@ -92,3 +92,11 @@ create table scriptus.tbl_log (
 	message clob not null
 );
 
+create table scriptus.tbl_personal_msg (
+ id varchar(36) not null,
+ parent varchar(36),
+ message clob not null,
+ msg_from varchar(300),
+ userId varchar(3000),
+ created long not null
+);

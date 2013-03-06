@@ -22,9 +22,6 @@ public class TransportSwitch implements Transport {
 	@Resource(name="twitterTransport")
 	private Transport twitter;
 	
-	@Resource(name="cmdLineTransport")
-	private Transport cmdLine;
-
 	@Resource(name="dummyTransport")
 	private Transport dummy;
 
@@ -41,8 +38,6 @@ public class TransportSwitch implements Transport {
 	public void switchMedium(TransportType transportType) {
 		if(transportType == TransportType.Twitter) {
 			activeImpl = twitter;
-		} else if(transportType == TransportType.CommandLine) {
-			activeImpl = cmdLine;
 		} else if(transportType == TransportType.Dummy) {
 			activeImpl = dummy;
 		}			

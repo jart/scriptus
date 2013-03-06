@@ -28,6 +28,7 @@ import net.ex337.scriptus.datastore.impl.jpa.dao.ChildProcessPIDDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAOId;
 import net.ex337.scriptus.datastore.impl.jpa.dao.MessageCorrelationDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ProcessDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO;
@@ -704,6 +705,43 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         }
         
     }
+
+    @Override
+    public List<PersonalTransportMessageDAO> getPersonalTransportMessages(String openid) {
+
+        Query  q = em.createQuery("select m from PersonalTransportMessageDAO m where m.userId = :userId order by m.created desc");
+        q.setParameter("userId", openid);
+
+        return q.getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UUID savePersonalTransportMessage(PersonalTransportMessageDAO m) {
+        UUID id = UUID.randomUUID();
+        m.id = id.toString();
+        m.created = System.currentTimeMillis();
+        
+        em.persist(m);
+        
+        return id;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deletePersonalTransportMessage(String id) {
+        
+        Query  q = em.createQuery("delete from PersonalTransportMessageDAO m where m.id = :id");
+        em.setProperty("id", id);
+        
+        int i = q.executeUpdate();
+        
+        if( i == 0) {
+            LOG.debug("no record found for "+id);
+        }
+        
+    }
+    
     
     
 
