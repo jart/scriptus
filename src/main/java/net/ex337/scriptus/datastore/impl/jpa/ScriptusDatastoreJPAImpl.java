@@ -729,10 +729,11 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
 
     @Override
     @Transactional(readOnly = false)
-    public void deletePersonalTransportMessage(String id) {
+    public void deletePersonalTransportMessage(String id, String userId) {
         
-        Query  q = em.createQuery("delete from PersonalTransportMessageDAO m where m.id = :id");
-        em.setProperty("id", id);
+        Query  q = em.createQuery("delete from PersonalTransportMessageDAO m where m.id = :id and m.userId = :userId");
+        q.setParameter("id", id);
+        q.setParameter("userId", userId);
         
         int i = q.executeUpdate();
         

@@ -97,6 +97,6 @@ create table scriptus.tbl_personal_msg (
  parent varchar(36),
  message clob not null,
  msg_from varchar(300),
- userId varchar(3000),
+ userId varchar(3000) not null,
  created long not null
 );

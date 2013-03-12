@@ -9,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.server.frontend.auth.BaseServlet;
@@ -40,7 +42,10 @@ public class PersonalTransportServlet extends BaseServlet {
             PersonalTransportMessageDAO m = new PersonalTransportMessageDAO();
             m.message = req.getParameter("msg");;
             m.from = req.getParameter("from");
-            m.parent = req.getParameter("parent");
+            if( StringUtils.isNotEmpty(req.getParameter("parent"))){
+                m.parent = req.getParameter("parent");
+            }
+            m.userId = openid;
             
             UUID u = d.savePersonalTransportMessage(m);
 
@@ -54,11 +59,11 @@ public class PersonalTransportServlet extends BaseServlet {
             
         } else if("del".equalsIgnoreCase(op)) {
 
-            d.deletePersonalTransportMessage(req.getParameter("id"));
+            d.deletePersonalTransportMessage(req.getParameter("id"), openid);
             
         }
 
-        req.getRequestDispatcher("/WEB-INF/jsp/personal.jsp").forward(req, resp);
+        resp.sendRedirect(req.getContextPath()+"/transports/personal");
 
     }
 

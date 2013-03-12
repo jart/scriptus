@@ -9,7 +9,6 @@ la buvette
 	programming on a human timescale
 	
 	freedom of assembly
-	
 
 	Use the program myself and get feedback from friends etc.
 		ask for update to go 8888 --> 8080 so we don't have to sudo
@@ -17,13 +16,8 @@ la buvette
 pooling
 
 	replace cmd transport with admin-page transport
-test	  servlet
-test	    DAO read & write
-X	      SQL
-	      testcases
-	       postgres
-	       embedded
-test	    JSP	
+test	      testcases
+	        postgres
 	    fix wiring to no longer use transportSwitch
 	    add transport column to scriptProcess
 	  add transport option to "launch process" page
@@ -782,4 +776,14 @@ X test	replace memoryImpl with h2memory
 X	housekeeping
 Xupload	release
 Xdone	  blog post
+X test	  servlet
+X	write
+X	reply
+x test	    DAO read & write
+X	     list
+X	     add
+X	     delete
+X	      SQL
+X	       embedded
+X test	    JSP	
 

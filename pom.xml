@@ -57,6 +57,7 @@
 						</connector>
 					</connectors>
 					<useTestClasspath>true</useTestClasspath>
+					<keepGenerated>true</keepGenerated>
 				</configuration>
 			</plugin>
 			<!-- This builds the executable WAR file -->

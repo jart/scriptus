@@ -7,9 +7,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.ex337.scriptus.SerializableUtils;
+import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -33,7 +35,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	@Override
 	protected void setUp() throws Exception {
 	    
-//	    ScriptusConfig.FORCE_CLEAN_INSTALL = true;
+	    ScriptusConfig.FORCE_CLEAN_INSTALL = true;
 	    
 		System.setProperty("scriptus.config", "test-scriptus.properties");
 //		System.setProperty("scriptus.config", "filesystem-based-scriptus.properties");
@@ -374,6 +376,32 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         
         assertTrue("empty list now", l.isEmpty());
         
+    }
+    
+    public void testPersonalMessages() {
+        
+        String uid = UUID.randomUUID().toString();
+        String msg = UUID.randomUUID().toString();
+        String parent = UUID.randomUUID().toString();
+        
+        PersonalTransportMessageDAO m = new PersonalTransportMessageDAO();
+        m.userId = uid;
+        m.parent = parent;
+        m.message = msg;
+        m.from="from";
+        
+        datastore.savePersonalTransportMessage(m);
+        
+        List<PersonalTransportMessageDAO> d = datastore.getPersonalTransportMessages(uid);
+        
+        assertEquals("found", 1, d.size());
+        assertEquals("stored", msg, d.get(0).message);
+        
+        datastore.deletePersonalTransportMessage(d.get(0).id, uid);
+        
+        d = datastore.getPersonalTransportMessages(uid);
+        
+        assertEquals("deleted", 0, d.size());
     }
     
 }

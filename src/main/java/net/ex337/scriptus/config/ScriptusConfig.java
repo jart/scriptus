@@ -117,9 +117,9 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     // private String twitterAccessToken="";
     // private String twitterAccessTokenSecret="";
 
-    private TransportType transportType;
+    private TransportType transportType = TransportType.Dummy;
 
-    private DatastoreType datastoreType;
+    private DatastoreType datastoreType = DatastoreType.Embedded;
 
     private byte[] salt;
     private transient Map<String, byte[]> keys = new HashMap<String, byte[]>();
@@ -484,7 +484,9 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
             throw new ScriptusRuntimeException(e);
         }
         
-        load(r);
+        if(r != null){
+            load(r);
+        }
         
         /*
         <property name="url" value="jdbc:postgresql://${dbServer}:${dbPort}/${dbName}?${dbParameters}"/>
