@@ -15,13 +15,15 @@ la buvette
 	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
 pooling
 
+	crap, test-scriptus.properties is in github...
+	
 	replace cmd transport with admin-page transport
 test	      testcases
 	        postgres
 	    fix wiring to no longer use transportSwitch
-	    add transport column to scriptProcess
+test	    add transport column to scriptProcess
 	  add transport option to "launch process" page
-	  add transport field to Message, MessageCorrelation
+test	  add transport field to Message, MessageCorrelation
 	  wire in transport to process facade
 
 

@@ -50,7 +50,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	}
 
 	public void test_lifecycle() throws IOException {
-		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", true, "", "");
+		ScriptProcess newp = datastore.newProcess("test", "addTwoNumbers.js", true, "", "", TransportType.Dummy);
 		newp.setArgs("foo bar");
 		
 		newp.save();
@@ -94,13 +94,13 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 		
 		datastore.registerMessageCorrelation(m);
 
-		Set<MessageCorrelation> cc = datastore.getMessageCorrelations(c, f, u);
+		Set<MessageCorrelation> cc = datastore.getMessageCorrelations(c, f, u, TransportType.Dummy);
 		
 		assertTrue("correct pid returned", cc.contains(m));
 		
 		datastore.unregisterMessageCorrelation(m);
 		
-		assertTrue("nothing left", ! datastore.getMessageCorrelations(c, f, u).contains(m));
+		assertTrue("nothing left", ! datastore.getMessageCorrelations(c, f, u, TransportType.Dummy).contains(m));
 
 		//listen({to:"user", messageId:"foo"})
         MessageCorrelation both      = new MessageCorrelation(UUID.randomUUID(), f,    c,    System.currentTimeMillis(), TransportType.Dummy, u);
@@ -119,8 +119,8 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
         datastore.registerMessageCorrelation(byNull);
         datastore.registerMessageCorrelation(byNullOtheruser);
         
-        Set<MessageCorrelation> cboth = datastore.getMessageCorrelations(c, f, u);
-        Set<MessageCorrelation> cbyuser = datastore.getMessageCorrelations(null, f, u);
+        Set<MessageCorrelation> cboth = datastore.getMessageCorrelations(c, f, u, TransportType.Dummy);
+        Set<MessageCorrelation> cbyuser = datastore.getMessageCorrelations(null, f, u, TransportType.Dummy);
 
         assertTrue("user contains user", cbyuser.contains(byuser));
         assertTrue("userte contains null", cbyuser.contains(byNull));
@@ -251,7 +251,7 @@ public class Testcase_ScriptusDAO extends BaseTestCase {
 	    
 	    String uid = UUID.randomUUID().toString();
 	    
-	    ScriptProcess p = datastore.newProcess(uid, "addTwoNumbers.js", false, "aarfgs", uid);
+	    ScriptProcess p = datastore.newProcess(uid, "addTwoNumbers.js", false, "aarfgs", uid, TransportType.Dummy);
 	    p.setSource("");
 	    datastore.writeProcess(p);
 	    

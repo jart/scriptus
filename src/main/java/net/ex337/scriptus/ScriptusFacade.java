@@ -87,9 +87,9 @@ public class ScriptusFacade {
     public void registerMessageCorrelation(MessageCorrelation cid) {
         datastore.registerMessageCorrelation(cid);
     }
-    public Set<MessageCorrelation> getMessageCorrelationByID(String inReplyTo, String from, String userId) {
-        return datastore.getMessageCorrelations(inReplyTo, from, userId);
-    }
+//    public Set<MessageCorrelation> getMessageCorrelationByID(String inReplyTo, String from, String userId) {
+//        return datastore.getMessageCorrelations(inReplyTo, from, userId);
+//    }
     public void unregisterMessageCorrelation(MessageCorrelation correlation) {
         datastore.unregisterMessageCorrelation(correlation);
     }
@@ -133,10 +133,6 @@ public class ScriptusFacade {
 
     public void markProcessFinished(UUID pid) {
         datastore.markProcessFinished(pid);
-    }
-
-    public TransportType getTransportType() {
-        return config.getTransportType();
     }
 
     public void saveLogMessage(UUID pid, String userId, String message) {

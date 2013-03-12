@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.transport.MessageRouting;
 import net.ex337.scriptus.transport.Transport;
@@ -65,7 +66,7 @@ public class DummyTransport implements Transport {
                     //TNSH;
                     throw new RuntimeException(e);
                 }
-                Message m = new Message(to, getResponse(msg), System.currentTimeMillis(), "dummy_user");
+                Message m = new Message(to, getResponse(msg), System.currentTimeMillis(), "dummy_user", TransportType.Dummy);
                 m.setInReplyToMessageId(id);
                 
                 List<Message> responseList = new ArrayList<Message>();

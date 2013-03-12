@@ -20,7 +20,6 @@ public class Testcase_Twitter extends BaseTestCase {
 		
 		conf = (ScriptusConfig) getAppContext().getBean("config");
 		datastore = (ScriptusDatastore) getAppContext().getBean("datastore");
-		conf.setTransportType(TransportType.Twitter);
 		
 		i = (TwitterTransportImpl) getAppContext().getBean("twitterTransport");
 		i.init();

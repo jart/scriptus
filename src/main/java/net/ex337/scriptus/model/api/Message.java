@@ -2,6 +2,7 @@ package net.ex337.scriptus.model.api;
 
 import java.io.Serializable;
 
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.ConvertsToScriptable;
 
 import org.mozilla.javascript.Context;
@@ -16,13 +17,15 @@ public class Message implements Serializable, ConvertsToScriptable {
     private String inReplyToMessageId;
     private long creation;
     private String userId;
+    private TransportType transport;
 	
-	public Message(String from, String msg, long creation, String userId) {
+	public Message(String from, String msg, long creation, String userId, TransportType transport) {
 		super();
 		this.from = from;
 		this.msg = msg;
 		this.creation = creation;
 		this.userId = userId;
+		this.transport = transport;
 	}
 	
 	public String getFrom() {
@@ -71,6 +74,14 @@ public class Message implements Serializable, ConvertsToScriptable {
 
     public String getUserId() {
         return userId;
+    }
+
+    public TransportType getTransport() {
+        return transport;
+    }
+
+    public void setTransport(TransportType transport) {
+        this.transport = transport;
     }
 	
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.server.frontend.auth.BaseServlet;
@@ -49,10 +50,9 @@ public class PersonalTransportServlet extends BaseServlet {
             
             UUID u = d.savePersonalTransportMessage(m);
 
-            final Message mm = new Message(m.from, m.message, System.currentTimeMillis(), openid);
+            final Message mm = new Message(m.from, m.message, System.currentTimeMillis(), openid, TransportType.Personal);
             if(m.parent != null) {
-                //FIXME transport!
-                mm.setInReplyToMessageId(u.toString());
+                mm.setInReplyToMessageId("personal:"+u.toString());
             }
             
             r.handleIncomings(new ArrayList<Message>() {{add(mm);}});

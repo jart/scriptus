@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.datastore.impl.BaseScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
@@ -67,6 +68,8 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	
     private Date lastmod;
     private Date created;
+    
+    private TransportType transport;
 	
 	@Resource(name="datastore")
 	private transient ScriptusDatastore datastore;
@@ -89,7 +92,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 	 * @param args
 	 * @param owner
 	 */
-	public void init(String userId, final String sourceName, boolean sample, String args, String owner) {
+	public void init(String userId, final String sourceName, boolean sample, String args, String owner, TransportType transport) {
 
 		LOG.debug("ctor, source=" + sourceName);
 
@@ -98,6 +101,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		this.sourceName = sourceName;
 		this.args = args;
 		this.owner = owner;
+		this.transport = transport;
 		
 		String sourceOwner = userId;
 		if(sample){
@@ -447,6 +451,14 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 
     public void setAlive(boolean isAlive) {
         this.isAlive = isAlive;
+    }
+
+    public TransportType getTransport() {
+        return transport;
+    }
+
+    public void setTransport(TransportType transport) {
+        this.transport = transport;
     }
 
 }

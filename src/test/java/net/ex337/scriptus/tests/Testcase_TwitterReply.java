@@ -94,7 +94,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
     public void test_ask() throws IOException {
 
-        ScriptProcess p = datastore.newProcess(TEST_USER, "ask.js", false, "", "owner");
+        ScriptProcess p = datastore.newProcess(TEST_USER, "ask.js", false, "", "owner", TransportType.Twitter);
 
         ScriptAction r = p.call();
 
@@ -117,7 +117,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         r.visit(f, p); // sould say
 
-        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(tweetId.get(), "ianso", TEST_USER);
+        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(tweetId.get(), "ianso", TEST_USER, TransportType.Twitter);
 
         assertEquals("1 correlation", 1, ccc.size());
 
@@ -148,7 +148,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
     public void test_listen() throws IOException {
 
-        ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", false, "", "owner");
+        ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", false, "", "owner", TransportType.Twitter);
 
         ScriptAction r = p.call();
 
@@ -171,7 +171,7 @@ public class Testcase_TwitterReply extends BaseTestCase {
 
         r.visit(f, p); // sould say
 
-        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(null, "ianso", TEST_USER);
+        Set<MessageCorrelation> ccc = datastore.getMessageCorrelations(null, "ianso", TEST_USER, TransportType.Twitter);
 
         assertEquals("1 correlation", 1, ccc.size());
 

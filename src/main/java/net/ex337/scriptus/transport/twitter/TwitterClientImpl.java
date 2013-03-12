@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.TransportAccessToken;
 import twitter4j.Status;
@@ -29,10 +27,6 @@ public class TwitterClientImpl implements TwitterClient {
     private String screenName;
 
     public void setCredentials(TransportAccessToken token) {
-        
-        if(config.getTransportType() != TransportType.Twitter) {
-            return;
-        }
         
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)

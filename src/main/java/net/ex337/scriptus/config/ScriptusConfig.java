@@ -384,14 +384,6 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
         this.twitterConsumerSecret = twitterConsumerSecret;
     }
 
-    public TransportType getTransportType() {
-        return transportType;
-    }
-
-    public void setTransportType(TransportType transportType) {
-        this.transportType = transportType;
-    }
-
     public DatastoreType getDatastoreType() {
         return datastoreType;
     }

@@ -53,6 +53,7 @@ create table scriptus.tbl_process (
 	owner varchar(3000),
 	state bytea,
 	state_label varchar(3000),
+	transport varchar(100) not null,
 	root boolean not null,
 	alive boolean not null,
 	script_state bytea,

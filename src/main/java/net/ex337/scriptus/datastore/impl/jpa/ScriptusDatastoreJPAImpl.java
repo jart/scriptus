@@ -107,6 +107,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             result.setSourceName(d.sourceId);
             result.setUserId(d.userId);
             result.setArgs(d.args);
+            result.setTransport(TransportType.valueOf(d.transport));
 
             {
                 ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(d.script_state));
@@ -201,6 +202,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             d.sourceId = p.getSourceName();
             d.userId = p.getUserId();
             d.isAlive = p.isAlive();
+            d.transport = p.getTransport().toString();
             d.version = p.getVersion() + 1;
             p.setVersion(d.version);
             if (p.getWaiterPid() != null) {
@@ -365,16 +367,17 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
 
     @Override
     @Transactional(readOnly = true)
-    public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String from, String userId) {
+    public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String from, String userId, TransportType transport) {
 
         StringBuilder b = new StringBuilder("select d from MessageCorrelationDAO d"
-                + " where d.userId = :userId and (d.messageId is null and d.from is null)" + " or (d.messageId is null and d.from = :from)");
+                + " where d.transport=:transport and d.userId = :userId and (d.messageId is null and d.from is null)" + " or (d.messageId is null and d.from = :from)");
 
         if (inReplyToMessageId != null) {
             b.append(" or (d.messageId = :messageId and d.from is null)"
                     + " or (d.messageId = :messageId and d.from = :from)");
         }
         Query q = em.createQuery(b.toString());
+        q.setParameter("transport", transport.toString());
         q.setParameter("from", from);
         q.setParameter("userId", userId);
         if (inReplyToMessageId != null) {

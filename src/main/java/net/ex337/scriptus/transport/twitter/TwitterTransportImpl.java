@@ -70,10 +70,6 @@ public abstract class TwitterTransportImpl implements Transport {
         
         screenNameCache = new MapMaker().expireAfterAccess(config.getSchedulerPollInterval()*2, config.getSchedulerTimeUnit()).makeMap();
 
-        if (config.getTransportType() != TransportType.Twitter) {
-            return;
-        }
-
         scheduledTwitterChecker = new ScheduledThreadPoolExecutor(2);
 
         /*
@@ -201,7 +197,7 @@ public abstract class TwitterTransportImpl implements Transport {
                     break;
                 }
 
-                Message m = new Message(s.getScreenName(), cleanTweet(s, screenName), s.getCreation(), userId);
+                Message m = new Message(s.getScreenName(), cleanTweet(s, screenName), s.getCreation(), userId, TransportType.Twitter);
                 if (s.getInReplyToId() != -1) {
                     m.setInReplyToMessageId("tweet:" + s.getInReplyToId());
                 }
