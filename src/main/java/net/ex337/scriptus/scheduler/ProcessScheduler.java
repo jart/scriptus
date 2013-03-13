@@ -2,6 +2,7 @@ package net.ex337.scriptus.scheduler;
 
 import java.util.UUID;
 
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 
 public interface ProcessScheduler {
@@ -16,7 +17,7 @@ public interface ProcessScheduler {
 	 */
 	public void runWithLock(UUID pid, Runnable r);
 
-	public void executeNewProcess(String userId, String sourceName, boolean sample, String args, String owner);
+	public void executeNewProcess(String userId, String sourceName, boolean sample, String args, String owner, TransportType transport);
 
 	public void execute(final UUID pid);
 

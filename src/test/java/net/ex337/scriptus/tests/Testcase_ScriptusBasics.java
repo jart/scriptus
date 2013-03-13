@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ProcessNotFoundException;
 import net.ex337.scriptus.model.ScriptAction;
@@ -135,7 +136,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
     public void test_return() throws IOException {
         
-        ScriptProcess p = datastore.newProcess(TEST_USER, "return.js", false, "", "owner");
+        ScriptProcess p = datastore.newProcess(TEST_USER, "return.js", false, "", "owner", TransportType.Dummy);
         
         p.save();
         
@@ -153,7 +154,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
     public void test_returnArgs() throws IOException {
         
-        ScriptProcess p = datastore.newProcess(TEST_USER, "returnArgs.js", false, "aaarghs", "owner");
+        ScriptProcess p = datastore.newProcess(TEST_USER, "returnArgs.js", false, "aaarghs", "owner", TransportType.Dummy);
         
         p.save();
         
@@ -173,7 +174,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_log() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "log.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "log.js", false, "", "owner", TransportType.Dummy);
 		
 		p.save();
 		
@@ -198,7 +199,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	 */
 	public void test_prototypes() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "prototypes.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "prototypes.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -223,7 +224,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_syntaxError() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "syntaxError.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "syntaxError.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 
@@ -233,7 +234,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_throwException() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "throw.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "throw.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 
@@ -244,7 +245,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_fiddleWithAPI() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "fiddle.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "fiddle.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -253,7 +254,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_fiddleWithAPI2() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "fiddle2.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "fiddle2.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -264,7 +265,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_fork() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "fork.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "fork.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -276,7 +277,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_forkNoPrefix() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "forkNoPrefix.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "forkNoPrefix.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -288,7 +289,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_exit() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "exit.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "exit.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -299,7 +300,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_exec() throws IOException {
 		
-		final ScriptProcess p = datastore.newProcess(TEST_USER, "exec.js", false, "ags", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "exec.js", false, "ags", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -331,7 +332,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepHour() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepHour.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepHour.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -341,7 +342,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_getHttp() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "getHttp.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "getHttp.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -366,7 +367,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_evalGet() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -392,7 +393,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_evalGetBug() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "evalgetBUG.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalgetBUG.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -418,7 +419,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	
 	public void test_getHttps() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "getHttps.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "getHttps.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -442,7 +443,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepDate() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDate.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDate.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -452,7 +453,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepDateObject() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDateObject.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDateObject.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -462,7 +463,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepDuration() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDuration.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepDuration.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -487,7 +488,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepBadDuration() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepBadDuration.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepBadDuration.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -498,7 +499,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_sleepBadDate() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepBadDate.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "sleepBadDate.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -511,7 +512,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	 */
 	public void test_wait() throws IOException {
 
-		final ScriptProcess p = datastore.newProcess(TEST_USER, "wait.js", false, "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "wait.js", false, "", "owner", TransportType.Dummy);
 		
 		p.save();
 		
@@ -589,7 +590,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 	 */
 	public void test_wait2() throws IOException {
 
-		final ScriptProcess p = datastore.newProcess(TEST_USER, "wait2.js", false, "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "wait2.js", false, "", "owner", TransportType.Dummy);
 		
 		p.save();
 		
@@ -697,7 +698,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_kill() throws IOException {
 
-		final ScriptProcess p = datastore.newProcess(TEST_USER, "kill.js", false, "", "owner");
+		final ScriptProcess p = datastore.newProcess(TEST_USER, "kill.js", false, "", "owner", TransportType.Dummy);
 		
 		p.save();
 		
@@ -787,7 +788,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_ask() throws IOException {
 
-		ScriptProcess p = datastore.newProcess(TEST_USER, "ask.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "ask.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -802,7 +803,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_defaultAsk() throws IOException {
 
-		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultAsk.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultAsk.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -818,7 +819,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_askTimeout() throws IOException {
 
-		ScriptProcess p = datastore.newProcess(TEST_USER, "askTimeout.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "askTimeout.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -833,7 +834,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_say() throws IOException {
 
-		ScriptProcess p = datastore.newProcess(TEST_USER, "say.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "say.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -848,7 +849,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_defaultSay() throws IOException {
 
-		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultSay.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultSay.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -859,7 +860,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_listen() throws IOException {
 
-		ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "listen.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -873,7 +874,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_defaultListen() throws IOException {
 
-		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultListen.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "defaultListen.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -887,7 +888,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_evalBroken() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "evalBroken.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalBroken.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -896,7 +897,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_eval() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "eval.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "eval.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		
@@ -911,7 +912,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 //
 //		((DummyTransport)m).defaultResponse = "4";
 //
-//		ScriptProcess p = datastore.newProcess(TEST_USER, "addTwoNumbers.js", "", "owner");
+//		ScriptProcess p = datastore.newProcess(TEST_USER, "addTwoNumbers.js", "", "owner", TransportType.Dummy);
 //		
 //		ScriptAction r = p.call();
 //
@@ -927,7 +928,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_breakSecurity() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec.js", false, "", "owner", TransportType.Dummy);
 		
 		p.save();
 		
@@ -942,7 +943,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_breakSecurity2() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec2.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec2.js", false, "", "owner", TransportType.Dummy);
 
 		p.save();
 
@@ -957,7 +958,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_breakSecurity3() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec3.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec3.js", false, "", "owner", TransportType.Dummy);
 		
         p.save();
         
@@ -972,7 +973,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_breakSecurity4() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec4.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec4.js", false, "", "owner", TransportType.Dummy);
 		
         p.save();
         
@@ -987,7 +988,7 @@ public class Testcase_ScriptusBasics extends BaseTestCase {
 
 	public void test_breakSecurity5() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec5.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "breakSec5.js", false, "", "owner", TransportType.Dummy);
 		
         p.save();
         

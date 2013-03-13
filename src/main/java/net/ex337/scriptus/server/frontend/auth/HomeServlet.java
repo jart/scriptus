@@ -6,8 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.server.ScriptusHeadlineReader;
 
 /**

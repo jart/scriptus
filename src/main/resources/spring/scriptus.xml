@@ -37,8 +37,8 @@
     	</property>
    	</bean>
     	
-<!--     <bean id="personalTransport" class="net.ex337.scriptus.transport.impl.CommandLineTransport" />
- -->
+    <bean id="personalTransport" class="net.ex337.scriptus.transport.impl.PersonalTransport" />
+
     <bean id="twitterTransport" class="net.ex337.scriptus.transport.twitter.TwitterTransportImpl">
 		<lookup-method name="createTwitterClient" bean="twitterClient"/>
     </bean>
@@ -47,8 +47,6 @@
     <bean id="twitterClientImpl" class="net.ex337.scriptus.transport.twitter.TwitterClientImpl" scope="prototype"/>
 
     <alias name="twitterClientMock" alias="twitterClient" />
-
-    <bean id="transport" class="net.ex337.scriptus.transport.TransportSwitch" />
 
 	<bean scope="prototype" id="scriptProcess" class="net.ex337.scriptus.model.ScriptProcess"/>
 	<bean scope="prototype" id="transportAccessToken" class="net.ex337.scriptus.model.TransportAccessToken"/>

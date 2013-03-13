@@ -2,7 +2,6 @@
 package net.ex337.scriptus.tests;
 
 import junit.framework.TestCase;
-
 import net.ex337.scriptus.config.ScriptusConfig;
 
 import org.springframework.context.ApplicationContext;

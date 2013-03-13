@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.ex337.scriptus.ScriptusFacade;
 import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptAction;
 import net.ex337.scriptus.model.ScriptProcess;
@@ -71,7 +72,7 @@ public class Testcase_ScriptusAndDateJS extends BaseTestCase {
 	
 	public void test_evalGet() throws IOException {
 		
-		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", false, "", "owner");
+		ScriptProcess p = datastore.newProcess(TEST_USER, "evalget.js", false, "", "owner", TransportType.Dummy);
 		
 		ScriptAction r = p.call();
 		

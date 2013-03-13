@@ -8,12 +8,12 @@ import java.util.UUID;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
-import net.ex337.scriptus.datastore.impl.jpa.dao.TransportTokenDAO;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ProcessListItem;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.TransportAccessToken;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
+import net.ex337.scriptus.tests.Testcase_ScriptusDAO;
 
 /**
  * 

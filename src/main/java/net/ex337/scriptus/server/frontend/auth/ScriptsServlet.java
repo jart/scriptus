@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 
 import org.apache.commons.lang.StringUtils;
@@ -130,7 +131,9 @@ public class ScriptsServlet extends BaseServlet {
 			
 			boolean sample = Boolean.TRUE.toString().equalsIgnoreCase(req.getParameter("sample"));
 			
-			s.executeNewProcess(openid, script, sample, args, owner);
+			TransportType t = TransportType.valueOf(req.getParameter("transport"));
+			
+			s.executeNewProcess(openid, script, sample, args, owner, t);
 
 			resp.sendRedirect("list");
 			return;

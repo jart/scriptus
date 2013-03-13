@@ -1,11 +1,9 @@
 package net.ex337.scriptus.tests;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.UUID;
 
 import net.ex337.scriptus.config.ScriptusConfig;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
 
 public class Testcase_ScriptusConfig extends BaseTestCase {
 

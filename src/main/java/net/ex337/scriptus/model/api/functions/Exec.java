@@ -33,7 +33,7 @@ public class Exec extends ScriptAction implements Serializable {
 	@Override
 	public void visit(final ScriptusFacade scriptus, final ScriptProcess process) {
 
-		ScriptProcess p = scriptus.newProcess(process.getUserId(), script, args, process.getOwner());
+		ScriptProcess p = scriptus.newProcess(process.getUserId(), script, args, process.getOwner(), process.getTransport());
 		
 		p.setPid(process.getPid());
 		p.setVersion(process.getVersion());

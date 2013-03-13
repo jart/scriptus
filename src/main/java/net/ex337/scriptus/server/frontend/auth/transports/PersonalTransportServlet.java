@@ -9,12 +9,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
 import net.ex337.scriptus.model.api.Message;
 import net.ex337.scriptus.server.frontend.auth.BaseServlet;
+
+import org.apache.commons.lang.StringUtils;
 
 public class PersonalTransportServlet extends BaseServlet {
 

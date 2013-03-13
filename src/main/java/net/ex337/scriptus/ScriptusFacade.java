@@ -1,7 +1,6 @@
 package net.ex337.scriptus;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -9,14 +8,18 @@ import javax.annotation.Resource;
 import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.MessageCorrelation;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
 import net.ex337.scriptus.scheduler.ProcessScheduler;
 import net.ex337.scriptus.transport.Transport;
+import net.ex337.scriptus.transport.impl.DummyTransport;
+import net.ex337.scriptus.transport.impl.PersonalTransport;
+import net.ex337.scriptus.transport.twitter.TwitterTransportImpl;
 
 /**
- * A facadfe object giving access to almost all the functionality
+ * A facade object giving access to almost all the functionality
  * of Scriptus. This is the object used by API calls to do their
  * stuff.
  * 
@@ -31,10 +34,15 @@ public class ScriptusFacade {
     @Resource
     private ProcessScheduler scheduler;
     @Resource
-    private Transport transport;
+    private DummyTransport dummy;
+    @Resource
+    private PersonalTransport personal;
+    @Resource
+    private TwitterTransportImpl twitter;
     @Resource
     private ScriptusConfig config;
 
+    private Transport testTransport;
     /*
      * zero-arg constructor for prototype bean
      */
@@ -42,14 +50,21 @@ public class ScriptusFacade {
         
     }
 
+    /**
+     * used only in test-cases so that we can do inline overriding of method&s
+     * @param datastore
+     * @param scheduler
+     * @param transport
+     * @param config
+     */
     public ScriptusFacade(ScriptusDatastore datastore, ProcessScheduler scheduler, Transport transport, ScriptusConfig config) {
         this.datastore = datastore;
         this.scheduler = scheduler;
-        this.transport = transport;
+        this.testTransport = transport;
         this.config = config;
     }
-    public ScriptProcess newProcess(String userId, String source, String args, String owner) {
-        return datastore.newProcess(userId, source, false, args, owner);
+    public ScriptProcess newProcess(String userId, String source, String args, String owner, TransportType transport) {
+        return datastore.newProcess(userId, source, false, args, owner, transport);
     }
     public ScriptProcess getProcess(UUID uuid) {
         return datastore.getProcess(uuid);
@@ -111,8 +126,23 @@ public class ScriptusFacade {
     public void markAsKilledIfRunning(UUID pid) {
         scheduler.markAsKilledIfRunning(pid);
     }
-    public String send(String userId, String to, String msg) {
-        return transport.send(userId, to, msg);
+    public String send(String userId, TransportType transport, String to, String msg) {
+        
+        if(testTransport != null) {
+            return testTransport.send(userId, to, msg);
+        }
+        if(transport == TransportType.Twitter){
+            return twitter.send(userId, to, msg);
+        }
+        if(transport == TransportType.Personal){
+            return personal.send(userId, to, msg);
+        }
+        if(transport == TransportType.Dummy){
+            return dummy.send(userId, to, msg);
+        }
+        
+        throw new ScriptusRuntimeException("transport type not recognised "+transport);
+        
     }
 
     public void scheduleTask(ScheduledScriptAction action) {
