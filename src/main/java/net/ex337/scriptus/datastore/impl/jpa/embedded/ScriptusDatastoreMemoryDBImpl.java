@@ -7,14 +7,20 @@ import javax.annotation.PostConstruct;
 
 public abstract class ScriptusDatastoreMemoryDBImpl extends ScriptusDatastoreEmbeddedDBImpl {
     
+    private static boolean doneSchemaForThisVM = false;
+    
     @PostConstruct
     public void init() throws SQLException, IOException {
+        
+        if(doneSchemaForThisVM) {
+            return;
+        }
         
         /*
          * does everything like embedded, but creates schema evey time.
          */
         super.createDBSchema();
 
-        
+        doneSchemaForThisVM = true;
     }
 }

@@ -52,7 +52,7 @@ public class PersonalTransportServlet extends BaseServlet {
 
             final Message mm = new Message(m.from, m.message, System.currentTimeMillis(), openid, TransportType.Personal);
             if(m.parent != null) {
-                mm.setInReplyToMessageId("personal:"+u.toString());
+                mm.setInReplyToMessageId("personal:"+m.parent);
             }
             
             r.handleIncomings(new ArrayList<Message>() {{add(mm);}});

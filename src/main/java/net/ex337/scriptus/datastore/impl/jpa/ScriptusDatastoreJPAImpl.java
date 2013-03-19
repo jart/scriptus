@@ -355,6 +355,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Override
     @Transactional(readOnly = false)
     public void registerMessageCorrelation(MessageCorrelation cid) {
+        System.out.println(cid.toString());
         MessageCorrelationDAO d = new MessageCorrelationDAO();
         d.pid = cid.getPid().toString();
         d.timestamp = cid.getTimestamp();
@@ -368,7 +369,9 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Override
     @Transactional(readOnly = true)
     public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String from, String userId, TransportType transport) {
-
+        
+        System.out.println("String inReplyToMessageId=\""+inReplyToMessageId+"\"; String from=\""+from+"\"; String userId=\""+userId+"\"; TransportType transport=TransportType."+transport.toString()+";");
+        
         StringBuilder b = new StringBuilder("select d from MessageCorrelationDAO d"
                 + " where d.transport=:transport and d.userId = :userId and (d.messageId is null and d.from is null)" + " or (d.messageId is null and d.from = :from)");
 
@@ -548,7 +551,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
 
         List<ProcessListItem> result = new ArrayList<ProcessListItem>();
 
-        Query q = em.createQuery("select p from ProcessListItemDAO p where p.uid = :uid");
+        Query q = em.createQuery("select p from ProcessListItemDAO p where p.uid = :uid order by p.lastmod desc");
         q.setParameter("uid", uid);
 
         List<ProcessListItemDAO> dd = q.getResultList();

@@ -279,6 +279,7 @@ public class ScriptProcess implements Callable<ScriptAction>, Runnable, Serializ
 		r.config = this.config;
 		r.owner = this.owner;
 		r.facade = this.facade;
+		r.transport  = this.transport;
 		// ?
 		r.isRoot = false;
 		r.isAlive = true;

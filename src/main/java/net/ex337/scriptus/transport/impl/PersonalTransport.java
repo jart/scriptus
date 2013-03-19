@@ -24,7 +24,7 @@ public class PersonalTransport implements Transport {
         m.userId = userId;
         UUID id = datastore.savePersonalTransportMessage(m);
         
-        return id.toString();
+        return "personal:"+id.toString();
         
 //        /*
 //         * we have to p

@@ -14,17 +14,13 @@ la buvette
 		ask for update to go 8888 --> 8080 so we don't have to sudo
 	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
 pooling
-
-	crap, test-scriptus.properties is in github...
 	
 	replace cmd transport with admin-page transport
-test	      testcases
-	        postgres
-	    fix wiring to no longer use transportSwitch
-test	    add transport column to scriptProcess
-	  add transport option to "launch process" page
-test	  add transport field to Message, MessageCorrelation
-	  wire in transport to process facade
+	  documentation
+	  introduction to Scriptus has quite a few concepts to introduce now
+	   - scripts, processes, transports
+	  only registered transports in list
+	  autofill from
 
 
 	add facebook transport? it's already half-done...
@@ -788,4 +784,17 @@ X	     delete
 X	      SQL
 X	       embedded
 X test	    JSP	
+X test	      testcases
+X test	        postgres
+X test	    fix wiring to no longer use transportSwitch
+X test	    add transport column to scriptProcess
+X test	  add transport option to "launch process" page
+X test	  add transport field to Message, MessageCorrelation
+X not any moooore	crap, test-scriptus.properties is in github...
+X test	  wire in transport to process facade
+X ???	    replies don't work
+X	     - message correlation not stored correctly
+X no	     - query wrong
+X no	     - message correlatoin not retrieved correctly
+X not yet	     - MessageRouting wrong
 

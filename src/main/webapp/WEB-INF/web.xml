@@ -32,11 +32,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet>
 	
 	<servlet>
-		<servlet-name>settings</servlet-name>
-		<servlet-class>net.ex337.scriptus.server.frontend.auth.SettingsServlet</servlet-class>
-	</servlet>
-	
-	<servlet>
 		<servlet-name>you</servlet-name>
 		<servlet-class>net.ex337.scriptus.server.frontend.auth.YouServlet</servlet-class>
 	</servlet>
@@ -77,11 +72,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>logs</servlet-name>
 		<url-pattern>/processes/logs</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>settings</servlet-name>
-		<url-pattern>/settings</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
