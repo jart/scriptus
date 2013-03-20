@@ -172,5 +172,6 @@ public interface ScriptusDatastore {
     public UUID savePersonalTransportMessage(PersonalTransportMessageDAO m);
 
     public void deletePersonalTransportMessage(String id, String userId);
-	
+
+    
 }

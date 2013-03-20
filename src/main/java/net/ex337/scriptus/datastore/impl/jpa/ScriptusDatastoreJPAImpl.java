@@ -748,8 +748,6 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         }
         
     }
-    
-    
-    
+
 
 }

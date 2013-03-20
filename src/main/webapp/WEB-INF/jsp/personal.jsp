@@ -23,13 +23,18 @@ function del(id) {
 	return false;
 }
 
-function reply(parent) {
+function reply(parent, from) {
 
 	document.getElementById("replyDiv").style.display="";
 	if(parent) {
 		document.getElementById("parent").value = parent;
 	} else {
 		document.getElementById("parent").value = "";
+	}
+	if(from) {
+		document.getElementById("from").value = from;
+	} else {
+		document.getElementById("from").value = "";
 	}
 	if(parent) {
 		$("#messageLegend").html("Reply");
@@ -93,7 +98,7 @@ List<PersonalTransportMessageDAO> m = (List<PersonalTransportMessageDAO>)request
 						 <a href="#<%=p.parent%>" title="<%=p.parent%>"><%=p.parent.substring(0,10)%>...</a>
 					<%} %></td>
 					<td>
-						<a class="btn btn-primary" onclick="reply('<%=p.id%>')">Reply</a>
+						<a class="btn btn-primary" onclick="reply('<%=p.id%>', '<%=p.from%>')">Reply</a>
 						<a class="btn btn-danger" onclick="del('<%=p.id%>')">Delete</a>
 					</td>
 				</tr>

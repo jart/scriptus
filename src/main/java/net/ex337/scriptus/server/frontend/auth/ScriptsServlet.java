@@ -1,6 +1,7 @@
 package net.ex337.scriptus.server.frontend.auth;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -32,8 +33,16 @@ public class ScriptsServlet extends BaseServlet {
 
         req.setAttribute("config", ctx.getBean("config"));
 
+        List<TransportType> transports = d.getInstalledTransports(openid);
+        transports.add(TransportType.Personal);
+        transports.add(TransportType.Dummy);
+
+        req.setAttribute("transports", transports);
+
 		if("/list/yours".equals(path) || "/list".equals(path)){
 
+		    req.setAttribute("transports", transports);
+		    
 			Set<String> scripts = d.listScripts(openid);
 			
 			if(scripts == null || scripts.isEmpty()){

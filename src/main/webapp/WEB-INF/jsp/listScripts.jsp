@@ -118,7 +118,9 @@ if(clean){%>
 			<p>
 				<label for="transport">Transport:</label>
 				<select id="transport" name="transport"><%
-				for(TransportType t : TransportType.values()) {
+				List<TransportType> tt = (List<TransportType>)request.getAttribute("transports");
+				
+				for(TransportType t : tt) {
 					%><option value="<%=t.toString()%>"><%=t.toString()%></option><%
 				}
 				%>
