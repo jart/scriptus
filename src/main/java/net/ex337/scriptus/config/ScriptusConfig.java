@@ -74,7 +74,7 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     public static final String SCRIPTUS_CONFIG_SYSVAR = "scriptus.config";
 
     public static enum TransportType {
-        Twitter(true), Personal(false), Dummy(false),
+        Twitter(true), Personal(false), Dummy(false), Facebook(true),
 
         ;
 
@@ -114,8 +114,8 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     private String twitterConsumerKey = "";
     private String twitterConsumerSecret = "";
 
-    // private String twitterAccessToken="";
-    // private String twitterAccessTokenSecret="";
+    private String facebookAppKey="";
+    private String facebookAppSecret="";
 
     private TransportType transportType = TransportType.Dummy;
 
@@ -270,6 +270,8 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     private void load(Properties props) {
         twitterConsumerKey = props.getProperty("twitterConsumerKey");
         twitterConsumerSecret = props.getProperty("twitterConsumerSecret");
+        facebookAppKey = props.getProperty("facebookAppKey");
+        facebookAppSecret = props.getProperty("facebookAppSecret");
         // twitterAccessToken = props.getProperty("twitterAccessToken");
         // twitterAccessTokenSecret =
         // props.getProperty("twitterAccessTokenSecret");
@@ -331,8 +333,8 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
 
         props.put("twitterConsumerKey", twitterConsumerKey);
         props.put("twitterConsumerSecret", twitterConsumerSecret);
-        // props.put("twitterAccessToken", twitterAccessToken);
-        // props.put("twitterAccessTokenSecret", twitterAccessTokenSecret);
+        props.put("facebookAppKey", facebookAppKey);
+        props.put("facebookAppSecret", facebookAppSecret);
         props.put("transport", transportType.toString());
         props.put("datastore", datastoreType.toString());
 
@@ -358,23 +360,6 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
     public void setTwitterConsumerKey(String twitterConsumerKey) {
         this.twitterConsumerKey = twitterConsumerKey;
     }
-
-    // public String getTwitterAccessToken() {
-    // return twitterAccessToken;
-    // }
-    //
-    // public void setTwitterAccessToken(String twitterAccessToken) {
-    // this.twitterAccessToken = twitterAccessToken;
-    // }
-    //
-    // public String getTwitterAccessTokenSecret() {
-    // return twitterAccessTokenSecret;
-    // }
-    //
-    // public void setTwitterAccessTokenSecret(String twitterAccessTokenSecret)
-    // {
-    // this.twitterAccessTokenSecret = twitterAccessTokenSecret;
-    // }
 
     public String getTwitterConsumerSecret() {
         return twitterConsumerSecret;
@@ -518,4 +503,21 @@ public class ScriptusConfig implements ApplicationContextInitializer<Configurabl
         }
         
     }
+
+    public String getFacebookAppKey() {
+        return facebookAppKey;
+    }
+
+    public void setFacebookAppKey(String facebookAppKey) {
+        this.facebookAppKey = facebookAppKey;
+    }
+
+    public String getFacebookAppSecret() {
+        return facebookAppSecret;
+    }
+
+    public void setFacebookAppSecret(String facebookAppSecret) {
+        this.facebookAppSecret = facebookAppSecret;
+    }
+
 }
