@@ -11,6 +11,7 @@ import java.util.zip.ZipInputStream;
 import javax.annotation.Resource;
 
 import net.ex337.scriptus.config.ScriptusConfig;
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.TransportAccessToken;
@@ -98,11 +99,11 @@ public abstract class BaseScriptusDatastore implements ScriptusDatastore {
 
 
 	@Override
-	public final ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner) {
+	public final ScriptProcess newProcess(String userId, String sourceId, boolean sample, String args, String owner, TransportType transport) {
 
 		ScriptProcess result = createScriptProcess();
 
-		result.init(userId, sourceId, sample, args, owner);
+		result.init(userId, sourceId, sample, args, owner, transport);
 
 		return result;
 	}

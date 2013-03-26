@@ -64,7 +64,7 @@ public class MessageRouting {
         for(Message s : messages) {
             
             //then it could be a reply to an ask();
-            Set<MessageCorrelation> cc = datastore.getMessageCorrelations(s.getInReplyToMessageId(), s.getFrom(), s.getUserId());
+            Set<MessageCorrelation> cc = datastore.getMessageCorrelations(s.getInReplyToMessageId(), s.getFrom(), s.getUserId(), s.getTransport());
 
             /*
              * if I've setup scriptus with my own account,

@@ -9,17 +9,18 @@ la buvette
 	programming on a human timescale
 	
 	freedom of assembly
-	
-	housekeeping
-upload	release
-done	  blog post
 
 	Use the program myself and get feedback from friends etc.
 		ask for update to go 8888 --> 8080 so we don't have to sudo
-	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
-pooling
+		http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
+		pooling
+		
+	  deploy on server
 
-	replace cmd transport with admin-page transport
+	  documentation
+	  introduction to Scriptus has quite a few concepts to introduce now
+	   - scripts, processes, transports
+	facebook
 
 		better colour scheme? -> http://paintstrap.com/
 		
@@ -766,4 +767,43 @@ X	  document new config file, DB setup options
 X	  merge into master, 
 X test	interface
 X	  del log
+X test	replace memoryImpl with h2memory
+X	housekeeping
+Xupload	release
+Xdone	  blog post
+X test	  servlet
+X	write
+X	reply
+x test	    DAO read & write
+X	     list
+X	     add
+X	     delete
+X	      SQL
+X	       embedded
+X test	    JSP	
+X test	      testcases
+X test	        postgres
+X test	    fix wiring to no longer use transportSwitch
+X test	    add transport column to scriptProcess
+X test	  add transport option to "launch process" page
+X test	  add transport field to Message, MessageCorrelation
+X not any moooore	crap, test-scriptus.properties is in github...
+X test	  wire in transport to process facade
+X ???	    replies don't work
+X	     - message correlation not stored correctly
+X no	     - query wrong
+X no	     - message correlatoin not retrieved correctly
+X not yet	     - MessageRouting wrong
+X	replace cmd transport with admin-page transport
+merged	add facebook transport? it might be already half-done...
+X test	  only registered transports in list
+X test	  autofill from
+
+In the lastest version of Scriptus, you can now chooe a transpoert on a per-process basis, instead of configuring one global transpot for hte whole application. 
+
+Personal transport
+
+In addition to this, I've merged in the work dony by XXX during one of his projects at XXX. The code is there, but not working, since Scriptus has changed a lot since the work was done - I merged now to aviod even more pain in future.
+
+The latest version of Scriptus can be found in the usual place.
 

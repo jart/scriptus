@@ -1,4 +1,4 @@
-package net.ex337.scriptus.server.frontend.auth;
+package net.ex337.scriptus.server.frontend.auth.transports;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,9 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
+import net.ex337.scriptus.server.frontend.auth.BaseServlet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -25,24 +24,20 @@ import org.apache.commons.lang.StringUtils;
  * @author ian
  *
  */
-public class ConnectServlet extends BaseServlet {
+public class TransportsServlet extends BaseServlet {
 
     private static final long serialVersionUID = -4615310743688687976L;
 
-    private ScriptusConfig config;
-    
     @Override
     public void init() {
         super.init();
-        
-        config = (ScriptusConfig) super.ctx.getBean("config");
 
     }
 	
 	@Override
 	protected void doAuthGet(HttpServletRequest req, HttpServletResponse resp, String openid) throws ServletException, IOException {
 	    
-	    List<TransportType> installedTransports = ((ScriptusDatastore)ctx.getBean("datastore")).getInstalledTransports(openid);
+	    List<TransportType> installedTransports = d.getInstalledTransports(openid);
 	    
 	    List<TransportType> freeTransports = new ArrayList<TransportType>(Arrays.asList(TransportType.values()));
 	    
@@ -56,7 +51,7 @@ public class ConnectServlet extends BaseServlet {
         req.setAttribute("installedTransports", installedTransports);
         req.setAttribute("freeTransports", freeTransports);
 
-	    req.getRequestDispatcher("/WEB-INF/jsp/connect.jsp").forward(req, resp);
+	    req.getRequestDispatcher("/WEB-INF/jsp/transports.jsp").forward(req, resp);
 
 	}
 
@@ -68,19 +63,19 @@ public class ConnectServlet extends BaseServlet {
         if(t == TransportType.Twitter){
             
             if(StringUtils.equals("del", req.getParameter("op"))) {
-                ((ScriptusDatastore)ctx.getBean("datastore")).deleteTransportAccessToken(openid, t);
+                d.deleteTransportAccessToken(openid, t);
             }
             
-            req.getRequestDispatcher("/connect/twitter").forward(req, resp);
+            req.getRequestDispatcher("/transports/twitter").forward(req, resp);
             return;
         }
         
-        resp.sendRedirect(req.getContextPath()+"/connect");
+        resp.sendRedirect(req.getContextPath()+"/transports");
 	}
 
     @Override
     protected String getPageLabel() {
-        return "connect";
+        return "transports";
     }
 
 }

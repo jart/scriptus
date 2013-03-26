@@ -2,7 +2,9 @@
 <html lang="en">
 <head><title>Scriptus - user scripts</title>
 <%@include file="head.jsp"%>
+<%@page import="java.util.*"%>
 <%@page import="net.ex337.scriptus.config.ScriptusConfig"%>
+<%@page import="net.ex337.scriptus.config.ScriptusConfig.TransportType"%>
 <%
 ScriptusConfig cfg = (ScriptusConfig)request.getAttribute("config");
 %>
@@ -113,6 +115,17 @@ if(clean){%>
 			<p>
 				<label for="args">Arguments:</label>
 				<input type="text" name="args" id="args"/>
+			</p>
+			<p>
+				<label for="transport">Transport:</label>
+				<select id="transport" name="transport"><%
+				List<TransportType> tt = (List<TransportType>)request.getAttribute("transports");
+				
+				for(TransportType t : tt) {
+					%><option value="<%=t.toString()%>"><%=t.toString()%></option><%
+				}
+				%>
+				</select>
 			</p>
 			<p>
 				<input type="submit" id="submit" value="Run" class="btn btn-primary"/>

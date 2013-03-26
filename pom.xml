@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.ex337</groupId>
 	<artifactId>scriptus</artifactId>
@@ -57,6 +58,7 @@
 						</connector>
 					</connectors>
 					<useTestClasspath>true</useTestClasspath>
+					<keepGenerated>true</keepGenerated>
 				</configuration>
 			</plugin>
 			<!-- This builds the executable WAR file -->
@@ -332,6 +334,7 @@
 			<scope>compile</scope>
 		</dependency>
 
+
   		<!--  dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>org.eclipse.persistence.jpa</artifactId>
@@ -463,6 +466,12 @@
   <artifactId>socialauth</artifactId>
   <version>3.0</version>
 </dependency>
+
+		<dependency>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>1.6.9</version>
+		</dependency>
 
 	</dependencies>
 

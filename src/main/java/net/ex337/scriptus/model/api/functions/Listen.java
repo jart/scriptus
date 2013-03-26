@@ -49,7 +49,7 @@ public class Listen extends ScriptAction implements Serializable, HasTimeout, Ha
 		scriptus.scheduleTask(new Wake(process.getPid(), nonce, timeout.getTimeInMillis()));
 		
 		//who and messageId can both be null
-        scriptus.registerMessageCorrelation(new MessageCorrelation(process.getPid(), getWho(), getMessageId(), System.currentTimeMillis(), scriptus.getTransportType(), process.getUserId()));
+        scriptus.registerMessageCorrelation(new MessageCorrelation(process.getPid(), getWho(), getMessageId(), System.currentTimeMillis(), process.getTransport(), process.getUserId()));
 
 		
 	}

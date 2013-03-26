@@ -2,17 +2,12 @@ package net.ex337.scriptus.server.frontend.auth;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
-import net.ex337.scriptus.scheduler.ProcessScheduler;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 
@@ -35,9 +30,9 @@ public class LogsServlet extends BaseServlet {
 		
 		String path = req.getPathInfo();
 
-        req.setAttribute("config", ctx.getBean("config"));
+        req.setAttribute("config", f);
         
-        List<LogMessageDAO> logs = ((ScriptusDatastore)ctx.getBean("datastore")).getLogMessages(openid);
+        List<LogMessageDAO> logs = d.getLogMessages(openid);
 
         req.setAttribute("logs", logs);
         
@@ -56,7 +51,7 @@ public class LogsServlet extends BaseServlet {
 			
 			String logId = req.getParameter("id");
 			
-			((ScriptusDatastore) ctx.getBean("datastore")).deleteLogMessage(logId, openid);
+			d.deleteLogMessage(logId, openid);
 			
 			resp.sendRedirect(req.getContextPath()+"/processes/logs");
 			return;

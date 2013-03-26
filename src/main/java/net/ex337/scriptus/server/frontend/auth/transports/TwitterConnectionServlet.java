@@ -1,4 +1,4 @@
-package net.ex337.scriptus.server.frontend.auth;
+package net.ex337.scriptus.server.frontend.auth.transports;
 
 import java.io.IOException;
 import java.util.Map;
@@ -8,11 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.ex337.scriptus.config.ScriptusConfig;
 import net.ex337.scriptus.config.ScriptusConfig.TransportType;
-import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.exceptions.ScriptusRuntimeException;
 import net.ex337.scriptus.model.TransportAccessToken;
+import net.ex337.scriptus.server.frontend.auth.BaseServlet;
 
 import org.brickred.socialauth.AuthProvider;
 import org.brickred.socialauth.SocialAuthConfig;
@@ -34,8 +33,6 @@ public class TwitterConnectionServlet extends BaseServlet {
 
     private static final String SOCIAL_AUTH_MANAGER = "socialAuthManager";
     
-    private ScriptusConfig config;
-    
     private SocialAuthConfig socialAuthConfig;
     
     private boolean notConfigured;
@@ -44,17 +41,15 @@ public class TwitterConnectionServlet extends BaseServlet {
     public void init() {
         super.init();
         
-        config = (ScriptusConfig) super.ctx.getBean("config");
-        
         Properties socialAuthProps = new Properties();
         
-        if(config.getTwitterConsumerKey() == null) {
+        if(f.getTwitterConsumerKey() == null) {
             notConfigured = true;
             return;
         }
         
-        socialAuthProps.put("twitter.com.consumer_key", config.getTwitterConsumerKey());
-        socialAuthProps.put("twitter.com.consumer_secret", config.getTwitterConsumerSecret());
+        socialAuthProps.put("twitter.com.consumer_key", f.getTwitterConsumerKey());
+        socialAuthProps.put("twitter.com.consumer_secret", f.getTwitterConsumerSecret());
         
         socialAuthConfig = SocialAuthConfig.getDefault();
         try{
@@ -94,11 +89,11 @@ public class TwitterConnectionServlet extends BaseServlet {
 
         TransportAccessToken twitterT = new TransportAccessToken(openid, TransportType.Twitter, tokenKey, tokenSecret);
         
-        ((ScriptusDatastore)ctx.getBean("datastore")).saveTransportAccessToken(twitterT);
+        d.saveTransportAccessToken(twitterT);
         
         req.getSession().removeAttribute(SOCIAL_AUTH_MANAGER);
         
-        resp.sendRedirect(req.getContextPath()+"/connect");
+        resp.sendRedirect(req.getContextPath()+"/transports");
 
 	}
 
@@ -126,7 +121,7 @@ public class TwitterConnectionServlet extends BaseServlet {
 
     @Override
     protected String getPageLabel() {
-        return "scripts";
+        return "transports";
     }
 
 }

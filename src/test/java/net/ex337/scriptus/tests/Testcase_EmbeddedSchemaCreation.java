@@ -32,9 +32,9 @@ public class Testcase_EmbeddedSchemaCreation extends BaseTestCase {
         
         UUID s = UUID.randomUUID();
         
-        datastore.updateTransportCursor(TransportType.CommandLine, s.toString());
+        datastore.updateTransportCursor(TransportType.Dummy, s.toString());
         
-        UUID t  = UUID.fromString(datastore.getTransportCursor(TransportType.CommandLine));
+        UUID t  = UUID.fromString(datastore.getTransportCursor(TransportType.Dummy));
         
         assertEquals("cursor updated", s, t);
         

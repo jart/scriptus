@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
+import net.ex337.scriptus.config.ScriptusConfig.TransportType;
 import net.ex337.scriptus.datastore.ScriptusDatastore;
 import net.ex337.scriptus.model.ScriptProcess;
 import net.ex337.scriptus.model.scheduler.ScheduledScriptAction;
@@ -77,11 +78,11 @@ public class ProcessSchedulerImpl implements ProcessScheduler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.ex337.scriptus.ProcessScheduler#newProcess(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see net.ex337.scriptus.ProcessScheduler#newProcess(java.lang.String, java.lang.String, java.lang.String, java.lang.String, TransportType)
 	 */
 	@Override
-	public void executeNewProcess(String userId, String sourceName, boolean sample, String args, String owner) {
-		ScriptProcess p = datastore.newProcess(userId, sourceName, sample, args, owner);
+	public void executeNewProcess(String userId, String sourceName, boolean sample, String args, String owner, TransportType transport) {
+		ScriptProcess p = datastore.newProcess(userId, sourceName, sample, args, owner, transport);
 		p.save();
 		execute(p.getPid());
 	}

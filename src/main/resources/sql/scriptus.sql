@@ -49,6 +49,7 @@ create table scriptus.tbl_process (
 	state_label varchar(3000),
 	root boolean not null,
 	alive boolean not null,
+	transport varchar(100) not null,
 	script_state blob,
 	created bigint not null,
 	lastmod bigint not null,
@@ -92,3 +93,11 @@ create table scriptus.tbl_log (
 	message clob not null
 );
 
+create table scriptus.tbl_personal_msg (
+ id varchar(36) not null,
+ parent varchar(36),
+ message clob not null,
+ msg_from varchar(300),
+ userId varchar(3000) not null,
+ created long not null
+);

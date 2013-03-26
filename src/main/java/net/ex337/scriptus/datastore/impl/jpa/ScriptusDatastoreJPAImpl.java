@@ -28,6 +28,7 @@ import net.ex337.scriptus.datastore.impl.jpa.dao.ChildProcessPIDDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.LogMessageDAOId;
 import net.ex337.scriptus.datastore.impl.jpa.dao.MessageCorrelationDAO;
+import net.ex337.scriptus.datastore.impl.jpa.dao.PersonalTransportMessageDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ProcessDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScheduledScriptActionDAO;
 import net.ex337.scriptus.datastore.impl.jpa.dao.ScriptDAO;
@@ -106,6 +107,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             result.setSourceName(d.sourceId);
             result.setUserId(d.userId);
             result.setArgs(d.args);
+            result.setTransport(TransportType.valueOf(d.transport));
 
             {
                 ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(d.script_state));
@@ -200,6 +202,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
             d.sourceId = p.getSourceName();
             d.userId = p.getUserId();
             d.isAlive = p.isAlive();
+            d.transport = p.getTransport().toString();
             d.version = p.getVersion() + 1;
             p.setVersion(d.version);
             if (p.getWaiterPid() != null) {
@@ -352,6 +355,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
     @Override
     @Transactional(readOnly = false)
     public void registerMessageCorrelation(MessageCorrelation cid) {
+        System.out.println(cid.toString());
         MessageCorrelationDAO d = new MessageCorrelationDAO();
         d.pid = cid.getPid().toString();
         d.timestamp = cid.getTimestamp();
@@ -364,16 +368,19 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
 
     @Override
     @Transactional(readOnly = true)
-    public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String from, String userId) {
-
+    public Set<MessageCorrelation> getMessageCorrelations(String inReplyToMessageId, String from, String userId, TransportType transport) {
+        
+        System.out.println("String inReplyToMessageId=\""+inReplyToMessageId+"\"; String from=\""+from+"\"; String userId=\""+userId+"\"; TransportType transport=TransportType."+transport.toString()+";");
+        
         StringBuilder b = new StringBuilder("select d from MessageCorrelationDAO d"
-                + " where d.userId = :userId and (d.messageId is null and d.from is null)" + " or (d.messageId is null and d.from = :from)");
+                + " where d.transport=:transport and d.userId = :userId and (d.messageId is null and d.from is null)" + " or (d.messageId is null and d.from = :from)");
 
         if (inReplyToMessageId != null) {
             b.append(" or (d.messageId = :messageId and d.from is null)"
                     + " or (d.messageId = :messageId and d.from = :from)");
         }
         Query q = em.createQuery(b.toString());
+        q.setParameter("transport", transport.toString());
         q.setParameter("from", from);
         q.setParameter("userId", userId);
         if (inReplyToMessageId != null) {
@@ -544,7 +551,7 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
 
         List<ProcessListItem> result = new ArrayList<ProcessListItem>();
 
-        Query q = em.createQuery("select p from ProcessListItemDAO p where p.uid = :uid");
+        Query q = em.createQuery("select p from ProcessListItemDAO p where p.uid = :uid order by p.lastmod desc");
         q.setParameter("uid", uid);
 
         List<ProcessListItemDAO> dd = q.getResultList();
@@ -704,7 +711,43 @@ public abstract class ScriptusDatastoreJPAImpl extends BaseScriptusDatastore imp
         }
         
     }
-    
-    
+
+    @Override
+    public List<PersonalTransportMessageDAO> getPersonalTransportMessages(String openid) {
+
+        Query  q = em.createQuery("select m from PersonalTransportMessageDAO m where m.userId = :userId order by m.created desc");
+        q.setParameter("userId", openid);
+
+        return q.getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UUID savePersonalTransportMessage(PersonalTransportMessageDAO m) {
+        UUID id = UUID.randomUUID();
+        m.id = id.toString();
+        m.created = System.currentTimeMillis();
+        
+        em.persist(m);
+        
+        return id;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deletePersonalTransportMessage(String id, String userId) {
+        
+        Query  q = em.createQuery("delete from PersonalTransportMessageDAO m where m.id = :id and m.userId = :userId");
+        q.setParameter("id", id);
+        q.setParameter("userId", userId);
+        
+        int i = q.executeUpdate();
+        
+        if( i == 0) {
+            LOG.debug("no record found for "+id);
+        }
+        
+    }
+
 
 }

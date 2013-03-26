@@ -58,4 +58,7 @@ public class ProcessDAO {
     @Column(name="lastmod")
     public long lastmod;
 
+    @Column(name="transport")
+    public String transport;
+
 }

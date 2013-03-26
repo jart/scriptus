@@ -9,7 +9,7 @@ if(pageLabel == null) pageLabel = "";
 			<%if(session.getAttribute("openid") != null) {%>
 				<li class="<%=pageLabel.equals("scripts") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/scripts/list">Scripts</a></li>
 				<li class="<%=(pageLabel.equals("processes") || pageLabel.equals("logs")) ? "active" : "" %>"><a href="<%=request.getContextPath()%>/processes/list">Processes</a></li>
-				<li class="<%=pageLabel.equals("connect") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/connect">Connect</a></li>
+				<li class="<%=pageLabel.equals("transports") ? "active" : "" %>"><a href="<%=request.getContextPath()%>/transports">Transports</a></li>
 			<%}%>
 			
 			

@@ -57,9 +57,9 @@ public class Ask extends ScriptAction implements Serializable, HasTimeout, HasSt
 
 		scriptus.scheduleTask(new Wake(process.getPid(), nonce, timeout.getTimeInMillis()));
 
-		String messageId = scriptus.send(process.getUserId(), getWho(), getMsg());
+		String messageId = scriptus.send(process.getUserId(), process.getTransport(), getWho(), getMsg());
 		
-        scriptus.registerMessageCorrelation(new MessageCorrelation(process.getPid(), getWho(), messageId, System.currentTimeMillis(), scriptus.getTransportType(), process.getUserId()));
+        scriptus.registerMessageCorrelation(new MessageCorrelation(process.getPid(), getWho(), messageId, System.currentTimeMillis(), process.getTransport(), process.getUserId()));
 		
 	}
     @Override
