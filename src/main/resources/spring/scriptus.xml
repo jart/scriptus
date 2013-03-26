@@ -48,11 +48,11 @@
 
     <alias name="twitterClientMock" alias="twitterClient" />
     	
-    <bean id="facebookTransport" class="net.ex337.scriptus.transport.impl.facebook.FacebookTransportImpl" >
+    <bean id="facebookTransport" class="net.ex337.scriptus.transport.facebook.FacebookTransportImpl" >
 		<lookup-method name="createFacebookClient" bean="facebookClient"/>
     </bean>
 
-	<bean id="facebookClientImpl" class="net.ex337.scriptus.transport.facebook.FacebookTransportClientImpl" scope="prototype"/>
+	<bean id="facebookClientImpl" class="net.ex337.scriptus.transport.facebook.FacebookClientImpl" scope="prototype"/>
 
 	<alias name="facebookClientImpl" alias="facebookClient" />
 

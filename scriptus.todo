@@ -12,17 +12,17 @@ la buvette
 
 	Use the program myself and get feedback from friends etc.
 		ask for update to go 8888 --> 8080 so we don't have to sudo
-	http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
-pooling
+		http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
+		pooling
 		
+test	  only registered transports in list
+test	  autofill from
+	  deploy on server
+
 	  documentation
 	  introduction to Scriptus has quite a few concepts to introduce now
 	   - scripts, processes, transports
-test	  only registered transports in list
-test	  autofill from
-
-
-	add facebook transport? it might be already half-done...
+	facebook
 
 		better colour scheme? -> http://paintstrap.com/
 		
@@ -797,4 +797,5 @@ X no	     - query wrong
 X no	     - message correlatoin not retrieved correctly
 X not yet	     - MessageRouting wrong
 X	replace cmd transport with admin-page transport
+merged	add facebook transport? it might be already half-done...
 
