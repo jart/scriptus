@@ -2,6 +2,7 @@
 <html lang="en">
 <head><title>Scriptus - user scripts</title>
 <%@include file="head.jsp"%>
+<%@page import="java.util.*"%>
 <%@page import="net.ex337.scriptus.config.ScriptusConfig"%>
 <%@page import="net.ex337.scriptus.config.ScriptusConfig.TransportType"%>
 <%

@@ -44,7 +44,7 @@ function reply(parent, from) {
 		document.getElementById("submit").setAttribute("value", "Send");
 	}
 	
-	document.getElementById("from").focus();
+	document.getElementById("msg").focus();
 
 	return false;
 }

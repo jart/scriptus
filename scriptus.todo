@@ -15,8 +15,6 @@ la buvette
 		http://jdbc.postgresql.org/documentation/91/ds-ds.html#ds-ds-imp
 		pooling
 		
-test	  only registered transports in list
-test	  autofill from
 	  deploy on server
 
 	  documentation
@@ -798,4 +796,14 @@ X no	     - message correlatoin not retrieved correctly
 X not yet	     - MessageRouting wrong
 X	replace cmd transport with admin-page transport
 merged	add facebook transport? it might be already half-done...
+X test	  only registered transports in list
+X test	  autofill from
+
+In the lastest version of Scriptus, you can now chooe a transpoert on a per-process basis, instead of configuring one global transpot for hte whole application. 
+
+Personal transport
+
+In addition to this, I've merged in the work dony by XXX during one of his projects at XXX. The code is there, but not working, since Scriptus has changed a lot since the work was done - I merged now to aviod even more pain in future.
+
+The latest version of Scriptus can be found in the usual place.
 
