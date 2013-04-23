@@ -1,10 +1,10 @@
 package net.ex337.scriptus.tests;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
+import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
 
 public class TestMisc {
 
@@ -12,25 +12,30 @@ public class TestMisc {
 	
 	public static void main(String[] args) throws MalformedURLException, IOException {
 	    
-	    InetAddress a = InetAddress.getLocalHost();
+	    String s = IOUtils.toString(new URL("https://my.inglease.be/csc/").openStream());
+
+	    System.out.println(s);
 	    
-	    String hostName = null;
-	    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-	    {
-	        while (interfaces.hasMoreElements()) {
-	            NetworkInterface nic = interfaces.nextElement();
-	            Enumeration<InetAddress> addresses = nic.getInetAddresses();
-	            while (hostName == null && addresses.hasMoreElements()) {
-	                InetAddress address = addresses.nextElement();
-//	                if (!address.isLoopbackAddress()) {
-//	                    hostName = address.getHostName();
-//	                }
-	                System.out.println(address.getHostName() + "/"+address.getHostAddress());
-	            }
-	        }
-	    }	   
 	    
-	    System.out.print(hostName);
+//	    InetAddress a = InetAddress.getLocalHost();
+//	    
+//	    String hostName = null;
+//	    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+//	    {
+//	        while (interfaces.hasMoreElements()) {
+//	            NetworkInterface nic = interfaces.nextElement();
+//	            Enumeration<InetAddress> addresses = nic.getInetAddresses();
+//	            while (hostName == null && addresses.hasMoreElements()) {
+//	                InetAddress address = addresses.nextElement();
+////	                if (!address.isLoopbackAddress()) {
+////	                    hostName = address.getHostName();
+////	                }
+//	                System.out.println(address.getHostName() + "/"+address.getHostAddress());
+//	            }
+//	        }
+//	    }	   
+//	    
+//	    System.out.print(hostName);
 	    
 	    
 //		{

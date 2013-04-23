@@ -124,7 +124,6 @@ public class ScriptusAPI extends ScriptableObject implements Serializable {
         add(new ScriptusMethod("wait", "wait(function, pid)", 
                 "Waits for the process specified by pid, or the last child process created if the pid is absent, executing the optional function provided with the result, if any.", 
                 true));
-        //FIXME wait
     }});
 	
 	public Scriptable createScope(Context cx) throws SecurityException, NoSuchMethodException {

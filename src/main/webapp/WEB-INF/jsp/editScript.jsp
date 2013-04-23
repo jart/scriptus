@@ -4,7 +4,7 @@
 String scriptId = (String)request.getAttribute("scriptId");
 String scriptSource = (String)request.getAttribute("scriptSource");
 %>
-<head><title><%= (scriptId == null ? "New Script" : "Edit script "+scriptId) %></title>
+<head><title>Test script</title>
 <%@include file="head.jsp"%>
 <script src="../js/ace.js" type="text/javascript" charset="UTF-8"></script>
 <script src="../js/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
